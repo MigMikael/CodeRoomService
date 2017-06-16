@@ -16,11 +16,11 @@ class CreateProblemScoreTable extends Migration
         Schema::create('problem_score', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('analysis_id')->unsigned();
-            $table->integer('class')->default(0);
-            $table->integer('package')->default(0);
-            $table->integer('enclose')->default(0);
-            $table->text('attribute');
-            $table->text('method');
+            $table->float('class')->default(0);
+            $table->float('package')->default(0);
+            $table->float('enclose')->default(0);
+            $table->float('extends')->default(0);;
+            $table->float('implements')->default(0);;
             $table->timestamps();
 
             $table->foreign('analysis_id')

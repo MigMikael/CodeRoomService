@@ -23,6 +23,8 @@ class CreateStudentTable extends Migration
             $table->string('token')->unique();
             $table->ipAddress('ip');
             $table->string('status');
+            $table->string('username');
+            $table->string('password');
             $table->timestamps();
 
             $table->foreign('image')
