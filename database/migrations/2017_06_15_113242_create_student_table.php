@@ -24,6 +24,11 @@ class CreateStudentTable extends Migration
             $table->ipAddress('ip');
             $table->string('status');
             $table->timestamps();
+
+            $table->foreign('image')
+                ->references('id')
+                ->on('file')
+                ->onDelete('cascade');
         });
     }
 

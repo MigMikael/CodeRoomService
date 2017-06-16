@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCourseTable extends Migration
+class CreateSubmissionOutputTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,17 @@ class CreateCourseTable extends Migration
      */
     public function up()
     {
-        Schema::create('course', function (Blueprint $table)
+        Schema::create('submission_output', function(Blueprint $table)
         {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('image')->unsigned();
-            $table->string('color');
-            $table->string('token');
-            $table->string('status');
-            $table->timestamps();
+            $table->integer('submission_file_id')->unsigned();
+            $table->text('content');
+            $table->float('score');
+            $table->string('error');
 
-            $table->foreign('image')
+            $table->foreign('submission_file_id')
                 ->references('id')
-                ->on('file')
+                ->on('submission_file')
                 ->onDelete('cascade');
         });
     }
@@ -37,6 +35,6 @@ class CreateCourseTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('course');
+        Schema::dropIfExists('submission_output');
     }
 }

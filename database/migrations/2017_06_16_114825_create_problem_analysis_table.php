@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTeacherTable extends Migration
+class CreateProblemAnalysisTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,19 @@ class CreateTeacherTable extends Migration
      */
     public function up()
     {
-        Schema::create('teacher', function(Blueprint $table) {
+        Schema::create('problem_analysis', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('email');
-            $table->integer('image')->unsigned();
-            $table->string('token')->unique();
-            $table->enum('role', ['admin', 'teacher']);
-            $table->string('status');
+            $table->integer('problem_file_id')->unsigned();
+            $table->string('class');
+            $table->string('package');
+            $table->string('enclose');
+            $table->string('extends');
+            $table->string('implements');
             $table->timestamps();
 
-            $table->foreign('image')
+            $table->foreign('problem_file_id')
                 ->references('id')
-                ->on('file')
+                ->on('problem_file')
                 ->onDelete('cascade');
         });
     }
@@ -37,6 +37,6 @@ class CreateTeacherTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('teacher');
+        Schema::dropIfExists('problem_analysis');
     }
 }

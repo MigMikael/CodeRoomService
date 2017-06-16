@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTeacherTable extends Migration
+class CreateAnnounceTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,18 @@ class CreateTeacherTable extends Migration
      */
     public function up()
     {
-        Schema::create('teacher', function(Blueprint $table) {
+        Schema::create('announcement', function (Blueprint $table)
+        {
             $table->increments('id');
-            $table->string('name');
-            $table->string('email');
-            $table->integer('image')->unsigned();
-            $table->string('token')->unique();
-            $table->enum('role', ['admin', 'teacher']);
-            $table->string('status');
+            $table->integer('course_id')->unsigned();
+            $table->string('title');
+            $table->text('content');
+            $table->integer('priority');
             $table->timestamps();
 
-            $table->foreign('image')
+            $table->foreign('course_id')
                 ->references('id')
-                ->on('file')
+                ->on('course')
                 ->onDelete('cascade');
         });
     }
@@ -37,6 +36,6 @@ class CreateTeacherTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('teacher');
+        Schema::dropIfExists('announcement');
     }
 }

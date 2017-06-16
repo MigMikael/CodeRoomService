@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTeacherTable extends Migration
+class CreateResultAttributeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,19 @@ class CreateTeacherTable extends Migration
      */
     public function up()
     {
-        Schema::create('teacher', function(Blueprint $table) {
+        Schema::create('result_attribute', function (Blueprint $table)
+        {
             $table->increments('id');
+            $table->integer('result_id')->unsigned();
+            $table->string('access_modifier');
+            $table->string('non_access_modifier');
+            $table->string('data_type');
             $table->string('name');
-            $table->string('email');
-            $table->integer('image')->unsigned();
-            $table->string('token')->unique();
-            $table->enum('role', ['admin', 'teacher']);
-            $table->string('status');
-            $table->timestamps();
+            $table->float('score')->default(0);
 
-            $table->foreign('image')
+            $table->foreign('result_id')
                 ->references('id')
-                ->on('file')
+                ->on('result')
                 ->onDelete('cascade');
         });
     }
@@ -37,6 +37,6 @@ class CreateTeacherTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('teacher');
+        Schema::dropIfExists('result_attribute');
     }
 }

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCourseTable extends Migration
+class CreateProblemOutputTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,18 @@ class CreateCourseTable extends Migration
      */
     public function up()
     {
-        Schema::create('course', function (Blueprint $table)
+        Schema::create('problem_output', function(Blueprint $table)
         {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('image')->unsigned();
-            $table->string('color');
-            $table->string('token');
-            $table->string('status');
-            $table->timestamps();
+            $table->integer('problem_file_id')->unsigned();
+            $table->integer('version');
+            $table->string('filename');
+            $table->text('content');
+            $table->float('score');
 
-            $table->foreign('image')
+            $table->foreign('problem_file_id')
                 ->references('id')
-                ->on('file')
+                ->on('problem_file')
                 ->onDelete('cascade');
         });
     }
@@ -37,6 +36,6 @@ class CreateCourseTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('course');
+        Schema::dropIfExists('problem_output');
     }
 }

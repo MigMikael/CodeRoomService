@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTeacherTable extends Migration
+class CreateStudentBadgeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,20 @@ class CreateTeacherTable extends Migration
      */
     public function up()
     {
-        Schema::create('teacher', function(Blueprint $table) {
+        Schema::create('student_badge', function (Blueprint $table)
+        {
             $table->increments('id');
-            $table->string('name');
-            $table->string('email');
-            $table->integer('image')->unsigned();
-            $table->string('token')->unique();
-            $table->enum('role', ['admin', 'teacher']);
-            $table->string('status');
+            $table->integer('student_id')->unsigned();
+            $table->integer('badge_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('image')
+            $table->foreign('student_id')
                 ->references('id')
-                ->on('file')
+                ->on('student')
+                ->onDelete('cascade');
+            $table->foreign('badge_id')
+                ->references('id')
+                ->on('badge')
                 ->onDelete('cascade');
         });
     }
@@ -37,6 +38,6 @@ class CreateTeacherTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('teacher');
+        Schema::dropIfExists('student_badge');
     }
 }
