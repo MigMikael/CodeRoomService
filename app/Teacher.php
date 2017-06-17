@@ -10,6 +10,7 @@ class Teacher extends Model
     public $timestamps = true;
 
     protected $hidden = [
+        'username',
         'password',
         'token',
         'created_at',

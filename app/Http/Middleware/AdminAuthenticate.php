@@ -2,11 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Student;
 use Closure;
-use Log;
+use App\Teacher;
 
-class StudentAuthenticate
+class AdminAuthenticate
 {
     /**
      * Handle an incoming request.
@@ -18,15 +17,11 @@ class StudentAuthenticate
     public function handle($request, Closure $next)
     {
         $token = $request->header('Authorization_Token');
-        $student = Student::where('token', '=', $token)->first();
+        $teacher = Teacher::where('token', '=', $token)->first();
 
-        $student->ip = $request->getClientIp();
-        $student->save();
-
-        if($student == null){
+        if($teacher == null || $teacher->role != 'admin'){
             return response()->json(['status' => 'user unauthorized']);
         }
-
         return $next($request);
     }
 }

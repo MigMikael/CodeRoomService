@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Student;
+use App\Lesson;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -33,14 +34,15 @@ class TestController extends Controller
 
     public function test(Request $request)
     {
-        session_start();
-        //$request->session()->put('number', 123);
+        /*session_start();
 
         if (isset($_SESSION['userID'])){
             $userID = $_SESSION['userID'];
         }else{
             $userID = 'null';
         }
-        return 'store session complete : '.$userID;
+        return 'store session complete : '.$userID;*/
+
+        return Lesson::where('course_id', 1)->max('order') + 1;
     }
 }

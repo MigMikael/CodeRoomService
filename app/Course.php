@@ -19,6 +19,8 @@ class Course extends Model
 
     protected $hidden = [
         'token',
+        'created_at',
+        'updated_at'
     ];
 
     public function badges()

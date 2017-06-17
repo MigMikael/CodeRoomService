@@ -1,0 +1,87 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Teacher;
+use Illuminate\Http\Request;
+
+class TeacherController extends Controller
+{
+    public function dashboard()
+    {
+        $userID = $_SESSION['userID'];
+
+        $teacher = Teacher::findOrFail($userID);
+        $teacher['courses'] = $teacher->courses()->withCount([
+            'students', 'teachers', 'lessons',
+        ])->get();
+
+        $data = [];
+        $data['teacher'] = $teacher;
+
+        return $data;
+    }
+
+    public function profile($id)
+    {
+        $teacher = Teacher::findOrFail($id);
+        $teacher->courses;
+        return $teacher;
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $id = $request->get('id');
+        $teacher = Teacher::findOrFail($id);
+
+        $name = $request->get('name');
+        $email = $request->get('email');
+        $username = $request->get('username');
+
+        $teacher->name = $name;
+        $teacher->email = $email;
+        $teacher->username = $username;
+        $teacher->save();
+
+        return response()->json(['msg' => 'edit complete']);
+    }
+
+    public function changePassword(Request $request)
+    {
+        $teacher_id = $request->get('teacher_id');
+        $old_pass = $request->get('old_password');
+        $new_pass = $request->get('new_password');
+
+        $teacher = Teacher::findOrFail($teacher_id);
+        $current_pass = $teacher->password;
+
+        if(password_verify($old_pass, $current_pass)){
+            $teacher->password = password_hash($new_pass, PASSWORD_DEFAULT);
+            $teacher->save();
+
+            return response()->json(['msg' => 'change password complete']);
+
+        }else{
+            return response()->json(['msg' => 'password is incorrect']);
+        }
+    }
+
+    public function changeStatus($teacher_id)
+    {
+        $teacher = Teacher::findOrFail($teacher_id);
+        if($teacher->status == 'enable'){
+            $teacher->status = 'disable';
+        }else{
+            $teacher->status = 'enable';
+        }
+        $teacher->save();
+
+        return response()->json(['msg' => 'change teacher status success']);
+    }
+
+    public function getAll()
+    {
+        $teachers = Teacher::all();
+        return $teachers;
+    }
+}

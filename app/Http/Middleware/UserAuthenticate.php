@@ -23,7 +23,7 @@ class UserAuthenticate
         //handle session expire
         $time_now = Carbon::now();
         $diff = $time_now->diffInMinutes($_SESSION['time']);
-        //Log::info('diff = '.$diff);
+        Log::info('diff = '.$diff);
         if ($diff > 60){
             session_unset();
             session_destroy();

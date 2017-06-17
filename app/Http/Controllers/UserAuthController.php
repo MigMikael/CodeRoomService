@@ -44,6 +44,10 @@ class UserAuthController extends Controller
             if(password_verify($password, $teacher->password)){
                 $_SESSION['userID'] = $teacher->id;
                 $_SESSION['userRole'] = 'teacher';
+                $_SESSION['time'] = Carbon::now();
+
+                $teacher['role'] = 'teacher';
+                $teacher->makeVisible('token');
                 return $teacher;
 
             }else{
