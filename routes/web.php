@@ -106,9 +106,9 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 23
         Route::get('problem/{id}', 'ProblemController@show');
-        # 24 Todo Fix this
+        # 24 Todo finish this
         Route::post('problem/edit', 'ProblemController@update');
-        # 25 Todo Fix this
+        # 25 Todo Handle is_parse prob
         Route::post('problem/store', 'ProblemController@store');
         # 26
         Route::post('problem/store_score', 'ProblemController@storeScore');

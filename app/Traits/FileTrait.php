@@ -9,6 +9,7 @@ namespace App\Traits;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\App;
+use Chumper\Zipper\Zipper;
 
 trait FileTrait
 {
@@ -37,6 +38,17 @@ trait FileTrait
         return $path;
     }
 
+    public function local_path()
+    {
+        if (App::environment('local')) {
+            $path = storage_path() . '\\app\\';
+        }else{
+            $path = storage_path() . '/app/';
+        }
+
+        return $path;
+    }
+
     public function storeQuestion($name)
     {
         $question_file = [
@@ -46,6 +58,14 @@ trait FileTrait
         ];
         $question_file = File::create($question_file);
         return $question_file;
+    }
+
+    public function unzip($file)
+    {
+        $des_path = self::local_path();
+        $filePath = self::path($file);
+        $zipper = new Zipper();
+        $zipper->make($filePath)->extractTo($des_path);
     }
 
     public function deleteFile($file)

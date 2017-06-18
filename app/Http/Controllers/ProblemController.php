@@ -10,7 +10,6 @@ use App\ProblemConstructor;
 use App\ProblemMethod;
 use App\Student;
 use Illuminate\Http\Request;
-use Chumper\Zipper\Zipper;
 use App\Traits\FileTrait;
 
 class ProblemController extends Controller
@@ -52,11 +51,7 @@ class ProblemController extends Controller
         }
 
         $file = self::storeFile($file);
-
-        $des_path = storage_path() . '\\app\\';
-        $filePath = storage_path() . '\\app\\' . $file->name;
-        $zipper = new Zipper();
-        $zipper->make($filePath)->extractTo($des_path);
+        self::unzip($file);
 
         $name = $request->get('name');
         $question_file = self::storeQuestion($name);
