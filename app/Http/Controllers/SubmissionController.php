@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class SubmissionController extends Controller
 {
+    public function store(Request $request)
+    {
+        
+    }
+    
     public function result($problem_id, $student_id)
     {
         $data = [];

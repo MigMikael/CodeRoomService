@@ -8,9 +8,15 @@ use App\Course;
 use App\StudentCourse;
 use App\StudentLesson;
 use Illuminate\Http\Request;
+use App\Traits\ImageTrait;
+use App\Traits\FileTrait;
+use Excel;
+use Log;
 
 class StudentController extends Controller
 {
+    use ImageTrait, FileTrait;
+
     public function dashboard()
     {
         $userID = $_SESSION['userID'];
@@ -99,11 +105,14 @@ class StudentController extends Controller
             // student already in db
             $student = Student::where('student_id', $student_id)->first();
         }else{
+            $id = Student::count() + 1;
+            $image = self::genImage($id);
+
             $student = [
                 'student_id' => $student_id,
                 'name' => $name,
                 'email' => '',
-                'image' => 1,
+                'image' => $image->id,
                 'token' => (new TokenGenerate())->generate(32),
                 'status' => 'enable',
                 'username' => $student_id,
@@ -124,7 +133,50 @@ class StudentController extends Controller
 
     public function addMembers(Request $request)
     {
-        
+        $course_id = $request->get('course_id');
+        $studentListFile = $request->file('studentList');
+
+        $file = self::storeFile($studentListFile);
+        $path = self::path($file);
+
+        $data = Excel::load($path, function ($reader){
+        })->get();
+
+        $students = [];
+        if(!empty($data) && $data->count()){
+            foreach ($data as $key => $value) {
+                $students[] = ['student_id' => $value->student_id, 'name' => $value->name];
+                //Log::info('###### '. $value->student_id.' '.$value->name);
+            }
+
+        }else{
+            return response()->json(['msg' => 'error in data File']);
+        }
+
+        $token = new TokenGenerate();
+        foreach ($students as $student){
+            $id = Student::count() + 1;
+            $image = self::genImage($id);
+
+            $student['email'] = '';
+            $student['image'] = $image->id;
+            $student['token'] = $token->generate(32);
+            $student['ip'] = '';
+            $student['status'] = 'enable';
+            $student['username'] = $student['student_id'];
+            $student['password'] = password_hash($student['student_id'], PASSWORD_DEFAULT);
+            $student = Student::firstOrCreate($student);
+
+            $studentCourse = [
+                'student_id' => $student->id,
+                'course_id' => $course_id,
+                'status' => 'enable',
+                'progress' => 0,
+            ];
+            StudentCourse::firstOrCreate($studentCourse);
+        }
+
+        return response()->json(['msg' => 'add students success']);
     }
 
     public function disable($student_id, $course_id)

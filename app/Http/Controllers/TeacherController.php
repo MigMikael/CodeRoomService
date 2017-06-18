@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\TokenGenerate;
 use App\Teacher;
 use Illuminate\Http\Request;
+use App\Traits\ImageTrait;
 
 class TeacherController extends Controller
 {
+    use ImageTrait;
     public function dashboard()
     {
         $userID = $_SESSION['userID'];
@@ -27,6 +30,28 @@ class TeacherController extends Controller
         $teacher = Teacher::findOrFail($id);
         $teacher->courses;
         return $teacher;
+    }
+
+    public function store(Request $request)
+    {
+        $name = $request->get('name');
+        $email = $request->get('email');
+
+        $id = Teacher::count() + 1;
+        $image = self::genImage($id);
+        $teacher = [
+            'name' => $name,
+            'email' => $email,
+            'image' => $image->id,
+            'token' => (new TokenGenerate())->generate(32),
+            'role' => 'teacher',
+            'status' => 'enable',
+            'username' => $email,
+            'password' => password_hash($email, PASSWORD_DEFAULT),
+        ];
+        Teacher::create($teacher);
+
+        return response()->json(['msg' => 'create teacher success']);
     }
 
     public function updateProfile(Request $request)

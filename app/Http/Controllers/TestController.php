@@ -35,14 +35,27 @@ class TestController extends Controller
     public function test(Request $request)
     {
         /*session_start();
-
         if (isset($_SESSION['userID'])){
             $userID = $_SESSION['userID'];
         }else{
             $userID = 'null';
         }
-        return 'store session complete : '.$userID;*/
+        return 'store session complete : '.$userID;
+        return Lesson::where('course_id', 1)->max('order') + 1;*/
 
-        return Lesson::where('course_id', 1)->max('order') + 1;
+
+        /*$identicon = new \Identicon\Identicon();
+        $img = $identicon->getImageDataUri(45, 200);
+        $des_path = storage_path() . '/app/';
+        $img = str_replace('data:image/png;base64,', '', $img);
+        $img = str_replace(' ', '+', $img);
+        $data = base64_decode($img);
+        $file = $des_path . uniqid() . '.png';
+        $success = file_put_contents($file, $data);
+        return $success;*/
+
+
+        $course_id = 1;
+
     }
 }

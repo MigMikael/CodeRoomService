@@ -12,7 +12,7 @@ class ProblemTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('problem')->insert([
+        /*DB::table('problem')->insert([
             'lesson_id' => 1,
             'name' => 'SigmoidFunction',
             'description' => 'ฝึกฝนการใช้ if-else',
@@ -63,6 +63,19 @@ class ProblemTableSeeder extends Seeder
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
+
+        DB::table('problem')->insert([
+            'lesson_id' => 1,
+            'name' => 'PrimeNumber',
+            'description' => 'ฝึกทักษะการใช้ Loop',
+            'evaluator' => 'java',
+            'order' => 5,
+            'timelimit' => 1,
+            'memorylimit' => 32000,
+            'is_parse' => 'true',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ]);*/
 
         DB::table('problem')->insert([
             'lesson_id' => 1,

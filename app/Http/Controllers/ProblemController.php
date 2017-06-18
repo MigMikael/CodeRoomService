@@ -34,27 +34,6 @@ class ProblemController extends Controller
         return $problem;
     }
 
-    public function update(Request $request)
-    {
-        /*$id = $request->get('id');
-        $problem = Problem::findOfFail($id);
-
-        $problem->name = $request->get('name');
-        $problem->description = $request->get('description');
-        $problem->evaluator = $request->get('evaluator');
-        $problem->timelimit = $request->get('timelimit');
-        $problem->memorylimit = $request->get('memorylimit');
-        $problem->lesson_id = $request->get('lesson_id');
-        $problem->is_parse = $request->get('is_parse');
-
-        if($request->hasFile('file')){
-            $file = $request->file('file');
-            self::sendToProblemFile($problem, $file, 'edit');
-        }
-
-        return response()->json(['msg' => 'success']);*/
-    }
-
     public function store(Request $request)
     {
         $lesson_id = $request->get('lesson_id');
@@ -95,6 +74,28 @@ class ProblemController extends Controller
         } else {
             return response()->json(['msg' => 'file not found']);
         }
+    }
+
+
+    public function update(Request $request)
+    {
+        /*$id = $request->get('id');
+        $problem = Problem::findOfFail($id);
+
+        $problem->name = $request->get('name');
+        $problem->description = $request->get('description');
+        $problem->evaluator = $request->get('evaluator');
+        $problem->timelimit = $request->get('timelimit');
+        $problem->memorylimit = $request->get('memorylimit');
+        $problem->lesson_id = $request->get('lesson_id');
+        $problem->is_parse = $request->get('is_parse');
+
+        if($request->hasFile('file')){
+            $file = $request->file('file');
+            self::sendToProblemFile($problem, $file, 'edit');
+        }
+
+        return response()->json(['msg' => 'success']);*/
     }
 
     public function storeScore(Request $request)

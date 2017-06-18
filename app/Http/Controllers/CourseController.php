@@ -9,16 +9,26 @@ use App\StudentCourse;
 use App\StudentLesson;
 use App\TeacherCourse;
 use Illuminate\Http\Request;
+use App\Traits\ImageTrait;
 
 class CourseController extends Controller
 {
+    use ImageTrait;
+
+    public function index()
+    {
+        $courses = Course::enable()->get();
+        return $courses;
+    }
+
     public function store(Request $request)
     {
+        $image = self::storeImage($request->file('image'));
         $course = [
             'name' => $request->get('name'),
             'color' => $request->get('color'),
             'token' => (new TokenGenerate())->generate(6),
-            'image' => 1,
+            'image' => $image->id,
             'status' => 'enable'
         ];
         Course::create($course);

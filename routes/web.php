@@ -30,11 +30,13 @@ Route::get('logout', 'UserAuthController@logout');
 Route::post('register', 'UserAuthController@registerUser');
 Route::get('register', 'UserAuthController@register');
 
-Route::get('api/user/home', 'CourseController@showCourseUser');
+Route::get('image/show/{id}', 'ImageController@show');
 
 #--------------------------------------------------------------------------------------------------------
 
 Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
+
+    Route::get('user/home', 'CourseController@index');
 
     Route::group(['middleware' => 'studentAuth', 'prefix' => 'student'], function (){
 
@@ -60,107 +62,114 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('lesson/{id}', 'LessonController@show');
         # 9
         Route::get('announcement/{id}', 'AnnouncementController@show');
+
+
         # 10
         Route::get('submission/{problem_id}/{student_id}', 'SubmissionController@result');
+        # 11 [Change Name] Todo Finish This
+        Route::post('submission', 'SubmissionController@store');
+
 
     });
 
     Route::group(['middleware' => 'teacherAuth', 'prefix' => 'teacher'], function (){
 
-        # 11
-        Route::get('dashboard', 'TeacherController@dashboard');
         # 12
-        Route::get('profile/{id}', 'TeacherController@profile');
+        Route::get('dashboard', 'TeacherController@dashboard');
         # 13
-        Route::post('profile/edit', 'TeacherController@updateProfile');
+        Route::get('profile/{id}', 'TeacherController@profile');
         # 14
+        Route::post('profile/edit', 'TeacherController@updateProfile');
+        # 15
         Route::post('change_password', 'TeacherController@changePassword');
 
 
-        # 15
-        Route::get('course/{course_id}', 'CourseController@showTeacher');
         # 16
+        Route::get('course/{course_id}', 'CourseController@showTeacher');
+        # 17
         Route::get('course/{id}/member', 'CourseController@member');
 
 
-        # 17
-        Route::get('lesson/{id}', 'LessonController@show');
         # 18
-        Route::post('lesson/edit', 'LessonController@update');
+        Route::get('lesson/{id}', 'LessonController@show');
         # 19
-        Route::post('lesson/store', 'LessonController@store');
+        Route::post('lesson/edit', 'LessonController@update');
         # 20
-        Route::delete('lesson/delete/{id}', 'LessonController@delete');
+        Route::post('lesson/store', 'LessonController@store');
         # 21
+        Route::delete('lesson/delete/{id}', 'LessonController@delete');
+        # 22
         Route::post('lesson/change_order', 'LessonController@changeOrder');
 
 
-        # 22
+        # 23
         Route::get('problem/{id}', 'ProblemController@show');
-        # 23 Todo Fix this
-        Route::post('problem/edit', 'ProblemController@update');
         # 24 Todo Fix this
-        Route::post('problem/store', 'ProblemController@storeProblem');
-        # 25
-        Route::post('problem/store_score', 'ProblemController@storeScore');
+        Route::post('problem/edit', 'ProblemController@update');
+        # 25 Todo Fix this
+        Route::post('problem/store', 'ProblemController@store');
         # 26
-        Route::delete('problem/delete/{id}', 'ProblemController@delete');
+        Route::post('problem/store_score', 'ProblemController@storeScore');
         # 27
-        Route::post('problem/change_order', 'ProblemController@changeOrder');
+        Route::delete('problem/delete/{id}', 'ProblemController@delete');
         # 28
+        Route::post('problem/change_order', 'ProblemController@changeOrder');
+        # 29
         Route::get('problem/{id}/submission', 'ProblemController@submission');
 
 
-        # 29
+        # 30
         Route::get('submission/{id}/code', 'SubmissionController@code');
 
 
-        # 30
-        Route::get('announcement/{id}', 'AnnouncementController@show');
         # 31
+        Route::get('announcement/{id}', 'AnnouncementController@show');
+        # 32
         Route::post('announcement/edit', 'AnnouncementController@update');
-        # 32 Todo Priority
+        # 33 Todo Priority
         Route::post('announcement/store', 'AnnouncementController@store');
-        # 33
+        # 34
         Route::delete('announcement/delete/{id}', 'AnnouncementController@delete');
 
 
-        # 34
-        Route::get('student/{id}', 'StudentController@profile');
         # 35
+        Route::get('student/{id}', 'StudentController@profile');
+        # 36
         Route::post('student/store', 'StudentController@addMember');
-        # 36 Todo finish this
-        Route::post('students/store', 'StudentController@addMembers');
         # 37
+        Route::post('students/store', 'StudentController@addMembers');
+        # 38
         Route::get('student/disable/{student_id}/{course_id}', 'StudentController@disable');
-        # 38 Todo Change this stupid name
+        # 39 Todo Change this stupid name
         Route::get('student/all/{course_id}', 'StudentController@getAll');
 
 
-        # 39
+        # 40
         Route::get('remove/ip/{id}', 'StudentController@removeIP');
 
     });
 
     Route::group(['middleware' => 'adminAuth', 'prefix' => 'admin'], function (){
 
-        # 40
+        # 41
         Route::get('dashboard', 'AdminController@dashboard');
 
 
-        # 41 Todo Course Image
-        Route::post('course', 'CourseController@store');
         # 42
+        Route::post('course', 'CourseController@store');
+        # 43
         Route::get('course/status/{course_id}', 'CourseController@changeStatus');
-        # 43 Todo some problem here
+        # 44 Todo some problem here
         Route::post('course/add/teacher', 'CourseController@addTeacher');
 
 
-        # 44
-        Route::get('teacher', 'TeacherController@getAll');
         # 45
+        Route::get('teacher', 'TeacherController@getAll');
+        # 46 [New Api]
+        Route::post('teacher', 'TeacherController@store');
+        # 47
         Route::get('teacher/status/{teacher_id}', 'TeacherController@changeStatus');
-        # 46
+        # 48
         Route::get('teacher/course/{course_id}', 'CourseController@teacherMember');
 
     });
@@ -168,4 +177,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 });
 
 //Route::get('test/student', 'TestController@testStudent');
-//Route::get('test', 'TestController@test');
+Route::get('test', 'TestController@test');
+
+//Deprecated api
+Route::post('api/submission/code', 'SubmissionController@store');
