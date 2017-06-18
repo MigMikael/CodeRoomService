@@ -75,7 +75,7 @@ class ProblemTableSeeder extends Seeder
             'is_parse' => 'true',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-        ]);*/
+        ]);
 
         DB::table('problem')->insert([
             'lesson_id' => 1,
@@ -88,6 +88,6 @@ class ProblemTableSeeder extends Seeder
             'is_parse' => 'true',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-        ]);
+        ]);*/
     }
 }

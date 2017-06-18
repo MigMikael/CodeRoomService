@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\File;
 use App\Problem;
 use App\ProblemScore;
 use App\ProblemAttribute;
@@ -9,9 +10,13 @@ use App\ProblemConstructor;
 use App\ProblemMethod;
 use App\Student;
 use Illuminate\Http\Request;
+use Chumper\Zipper\Zipper;
+use App\Traits\FileTrait;
 
 class ProblemController extends Controller
 {
+    use FileTrait;
+
     public function show($id)
     {
         $problem = Problem::findOrFail($id);
@@ -39,43 +44,42 @@ class ProblemController extends Controller
         $lesson_id = $request->get('lesson_id');
         $order = Problem::where('lesson_id', $lesson_id)->max('order') + 1;
 
+        if($request->hasFile('file')){
+            $file = $request->file('file');
+        }
+        else{
+            return response()->json(['msg' => 'file not found']);
+        }
+
+        $file = self::storeFile($file);
+
+        $des_path = storage_path() . '\\app\\';
+        $filePath = storage_path() . '\\app\\' . $file->name;
+        $zipper = new Zipper();
+        $zipper->make($filePath)->extractTo($des_path);
+
+        $name = $request->get('name');
+        $question_file = self::storeQuestion($name);
+
         $problem = [
             'lesson_id' => $lesson_id,
-            'name' => $request->get('name'),
+            'name' => $name,
             'description' => $request->get('description'),
             'evaluator' => $request->get('evaluator'),
             'order' => $order,
+            'question' => $question_file->id,
             'timelimit' => $request->get('timelimit'),
             'memorylimit' => $request->get('memorylimit'),
             'is_parse' => $request->get('is_parse'),
         ];
+        $problem = Problem::create($problem);
 
-        if($request->hasFile('file')){
-            $problem = Problem::create($problem);
-            $file = $request->file('file');
-            $msg = self::sendToProblemFile($problem, $file, 'create');
+        if($problem->is_parse == 'true'){
 
-            if(strpos($msg, 'finish') !== false){
-                foreach ($problem->problemFiles as $problemFile){
-                    $problemFile['code'] = '';
-                    foreach ($problemFile->problemAnalysis as $analysis){
-                        $analysis->score;
-                        $analysis->attributes;
-                        $analysis->constructors;
-                        $analysis->methods;
-                    }
-                }
-                return $problem;
-
-            }else{
-                return response()->json(['msg' => 'error while parse code']);
-            }
-
-        } else {
-            return response()->json(['msg' => 'file not found']);
         }
+        
+        return response()->json(['msg' => 'create problem success']);
     }
-
 
     public function update(Request $request)
     {

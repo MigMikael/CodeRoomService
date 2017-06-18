@@ -37,6 +37,17 @@ trait FileTrait
         return $path;
     }
 
+    public function storeQuestion($name)
+    {
+        $question_file = [
+            'name' => $name.'.pdf',
+            'mime' => 'application/pdf',
+            'original_name' => $name. '.pdf'
+        ];
+        $question_file = File::create($question_file);
+        return $question_file;
+    }
+
     public function deleteFile($file)
     {
         Storage::delete($file->name);

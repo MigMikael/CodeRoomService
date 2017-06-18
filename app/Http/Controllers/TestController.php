@@ -5,9 +5,15 @@ namespace App\Http\Controllers;
 use App\Student;
 use App\Lesson;
 use Illuminate\Http\Request;
+use Chumper\Zipper\Zipper;
+use App\Traits\FileTrait;
+use Illuminate\Support\Facades\Storage;
+use Log;
 
 class TestController extends Controller
 {
+    use FileTrait;
+
     public function start(Request $request, $value)
     {
         $request->session()->put('number', $value);
@@ -54,8 +60,15 @@ class TestController extends Controller
         $success = file_put_contents($file, $data);
         return $success;*/
 
+        $file = $request->file('file');
+        $file = self::storeFile($file);
 
-        $course_id = 1;
+        $des_path = storage_path() . '\\app\\';
+        $filePath = storage_path() . '\\app\\' . $file->name;
 
+        $zipper = new Zipper();
+        $zipper->make($filePath)->extractTo($des_path);
+
+        return response()->json(['msg' => 'extract complete']);
     }
 }

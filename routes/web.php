@@ -38,6 +38,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
     Route::get('user/home', 'CourseController@index');
 
+    Route::get('problem/{id}/question', 'FileController@question');
+
     Route::group(['middleware' => 'studentAuth', 'prefix' => 'student'], function (){
 
         # 1
@@ -177,7 +179,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 });
 
 //Route::get('test/student', 'TestController@testStudent');
-Route::get('test', 'TestController@test');
+Route::post('test', 'TestController@test');
 
 //Deprecated api
 Route::post('api/submission/code', 'SubmissionController@store');
+Route::get('problem/getQuestion/{problem_id}', 'FileController@question');
