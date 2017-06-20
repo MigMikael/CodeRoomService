@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Problem;
 use App\Student;
 use App\Lesson;
+use App\Submission;
 use Illuminate\Http\Request;
 use Chumper\Zipper\Zipper;
 use App\Traits\FileTrait;
@@ -80,7 +82,7 @@ class TestController extends Controller
         $files = Storage::disk('local')->allFiles($path);
         return $files;*/
 
-        $file = 'LastDigit/src/com/example/driver/LastDigit.java';
+        /*$file = 'LastDigit/src/com/example/driver/LastDigit.java';
         $file = explode('/src/', $file);
 
         if(strrpos($file[1], '/')) {
@@ -88,7 +90,15 @@ class TestController extends Controller
             $package = substr($file[1], 0, strrpos($file[1], '/'));
             $package = str_replace('/','.', $package);
             return $package;
-        }
-        return 'default package';
+        }*/
+
+        /*$problem = Problem::find(1);
+        $problemFile = $problem->problemFiles->first();
+
+        return $problemFile->inputs->count();*/
+
+        $submission = Submission::all()->last();
+
+        return $submission->submissionFiles->first();
     }
 }
