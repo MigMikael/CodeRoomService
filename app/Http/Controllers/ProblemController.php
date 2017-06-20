@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\File;
 use App\Problem;
+use App\ProblemFile;
 use App\ProblemScore;
 use App\ProblemAttribute;
 use App\ProblemConstructor;
@@ -11,6 +12,9 @@ use App\ProblemMethod;
 use App\Student;
 use Illuminate\Http\Request;
 use App\Traits\FileTrait;
+use App\ProblemInput;
+use App\ProblemOutput;
+use Log;
 
 class ProblemController extends Controller
 {
@@ -50,8 +54,9 @@ class ProblemController extends Controller
             return response()->json(['msg' => 'file not found']);
         }
 
+        $next_id = Problem::count();
         $file = self::storeFile($file);
-        self::unzip($file);
+        self::unzipProblem($file, $next_id + 1);
 
         $name = $request->get('name');
         $question_file = self::storeQuestion($name);
@@ -69,6 +74,8 @@ class ProblemController extends Controller
         ];
         $problem = Problem::create($problem);
 
+        self::storeProblemFile($problem);
+
         if($problem->is_parse == 'true'){
 
         }
@@ -76,9 +83,72 @@ class ProblemController extends Controller
         return response()->json(['msg' => 'create problem success']);
     }
 
+    public function storeProblemFile($problem)
+    {
+        $src_path = 'problem/'.$problem->id.'/'. $problem->name. '/src';
+        $files = self::getFiles($src_path);
+        foreach ($files as $file){
+            //Log::info('#### '. $file); # LastDigit/src/LastDigit.java
+            $code = self::getFile($file);
+
+            $file = explode('/src/', $file);
+            Log::info('#### '. $file[1]);
+
+            if(strrpos($file[1], '/')) {
+                $package = substr($file[1], 0, strrpos($file[1], '/'));
+
+                $file_name = str_replace($package, '', $file[1]);
+
+                $package = str_replace('/','.', $package);
+            }
+            else{
+                $package = 'default package';
+                $file_name = $file[1];
+            }
+
+            $problem_file = [
+                'problem_id' => $problem->id,
+                'package' => $package,
+                'filename' => $file_name,
+                'mime' => 'java',
+                'code' => $code,
+            ];
+
+            $problem_file = ProblemFile::create($problem_file);
+
+            $inputPath = 'problem/'.$problem->id.'/'. $problem->name. '/testCase/';
+            $inputFiles = self::getFiles($inputPath);
+            foreach ($inputFiles as $inputFile){
+                $temps = explode('/', $inputFile);
+                $fileName = $temps[sizeof($temps) - 1];
+                $version = 1;
+
+                if(strpos($fileName, 'in') != false) {          // This is input file
+                    $problemInput = [
+                        'problem_file_id' => $problem_file->id,
+                        'version' => $version,
+                        'filename' => $fileName,
+                        'content' => self::getFile($inputFile)
+                    ];
+                    ProblemInput::create($problemInput);
+                }
+                else if(strpos($fileName, 'sol') != false) {    //This is output file
+                    $problemOutput = [
+                        'problem_file_id' => $problem_file->id,
+                        'version' => $version,
+                        'filename' => $fileName,
+                        'content' => self::getFile($inputFile),
+                        'score' => 10
+                    ];
+                    ProblemOutput::create($problemOutput);
+                }
+            }
+        }
+    }
+
     public function update(Request $request)
     {
-        /*$id = $request->get('id');
+        $id = $request->get('id');
         $problem = Problem::findOfFail($id);
 
         $problem->name = $request->get('name');
@@ -94,7 +164,7 @@ class ProblemController extends Controller
             self::sendToProblemFile($problem, $file, 'edit');
         }
 
-        return response()->json(['msg' => 'success']);*/
+        return response()->json(['msg' => 'success']);
     }
 
     public function storeScore(Request $request)

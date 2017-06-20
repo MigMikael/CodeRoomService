@@ -40,6 +40,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
     Route::get('problem/{id}/question', 'FileController@question');
 
+
     Route::group(['middleware' => 'studentAuth', 'prefix' => 'student'], function (){
 
         # 1
@@ -106,9 +107,9 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 23
         Route::get('problem/{id}', 'ProblemController@show');
-        # 24 Todo finish this
+        # 24 Todo Edit Problem File
         Route::post('problem/edit', 'ProblemController@update');
-        # 25 Todo Handle is_parse prob
+        # 25 Todo finish this
         Route::post('problem/store', 'ProblemController@store');
         # 26
         Route::post('problem/store_score', 'ProblemController@storeScore');
@@ -180,7 +181,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 //Route::get('test/student', 'TestController@testStudent');
 Route::post('test', 'TestController@test');
+Route::get('test2', 'TestController@test2');
 
 //Deprecated api
 Route::post('api/submission/code', 'SubmissionController@store');
-Route::get('problem/getQuestion/{problem_id}', 'FileController@question');
+Route::get('problem/getQuestion/{id}', 'FileController@question');

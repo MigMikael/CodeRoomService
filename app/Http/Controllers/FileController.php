@@ -16,10 +16,10 @@ class FileController extends Controller
         $question = File::findOrFail($problem->question);
 
         if (App::environment('local')) {
-            $file = Storage::disk('local')->get($problem->name.'\\'.$question->name);
+            $file = Storage::get('problem\\'.$problem->id.'\\'.$problem->name.'\\'.$question->name);
 
         }else{
-            $file = Storage::disk('local')->get($problem->name.'/'.$question->name);
+            $file = Storage::get('problem/'.$problem->id.'/'.$problem->name.'/'.$question->name);
         }
 
         return response($file, 200)

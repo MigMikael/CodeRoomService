@@ -71,4 +71,24 @@ class TestController extends Controller
 
         return response()->json(['msg' => 'extract complete']);
     }
+
+    public function test2()
+    {
+        /*$prob_name = 'LastDigit';
+        $path = $prob_name . '/src' ;
+        Log::info($path);
+        $files = Storage::disk('local')->allFiles($path);
+        return $files;*/
+
+        $file = 'LastDigit/src/com/example/driver/LastDigit.java';
+        $file = explode('/src/', $file);
+
+        if(strrpos($file[1], '/')) {
+            Log::info(strrpos($file[1], '/'));
+            $package = substr($file[1], 0, strrpos($file[1], '/'));
+            $package = str_replace('/','.', $package);
+            return $package;
+        }
+        return 'default package';
+    }
 }
