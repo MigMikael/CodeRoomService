@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Result;
+use App\ResultAttribute;
+use App\ResultConstructor;
+use App\ResultMethod;
 use App\Submission;
 use App\SubmissionFile;
 use App\SubmissionOutput;
@@ -33,6 +37,9 @@ class SubmissionController extends Controller
         if($request->hasFile('file')){
             $file = $request->file('file');
         }
+        elseif ($request->hasFile('files')){
+            $file = $request->file('files');
+        }
         else{
             return response()->json(['msg' => 'file not found']);
         }
@@ -47,26 +54,51 @@ class SubmissionController extends Controller
         }
 
         $problem = $submission->problem;
+        if ($problem->is_parse == 'true'){
+            foreach ($submission->submissionFiles as $submissionFile){
+                $classes = self::analyzeFile($submissionFile);
+                self::saveResult($classes, $submissionFile);
+                self::calStructureScore($submissionFile);
+            }
+        }
+
         $hasDriver = self::checkDriver($problem);
         $currentVer = self::getCurrentVersion($problem);
 
-        if(!$hasDriver){
+        if(!$hasDriver) {
             // this submit in problem that not have driver
-            $data = self::checkInputVersion($problem);
-            if($data['in'] == null || $data['in'][0]['version'] != $currentVer){
+            $data = self::checkInputVersion($problem, $hasDriver);
+            if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
                 self::sendNewInput($problem);
             }
 
-            $data = self::checkOutputVersion($problem);
-            if($data['sol'] == null || $data['sol'][0]['version'] != $currentVer){
+            $data = self::checkOutputVersion($problem, $hasDriver);
+            if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
                 self::sendNewOutput($problem);
             }
 
             // send Student Code to Evaluator
-            $score = self::evaluateFile($submission);
-            self::saveScore($score, $submission);
+            $scores = self::evaluateFile($submission);
+            self::saveScore($scores, $submission);
+
+        }else{
+            $data = self::checkInputVersion($problem, $hasDriver);
+            if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
+                self::sendNewInput2($problem);
+            }
+
+            $data = self::checkOutputVersion($problem, $hasDriver);
+            if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
+                self::sendNewOutput2($problem);
+            }
+
+            self::sendDriver($problem);
+            $scores = self::evaluateFile2($submission);
+            self::saveScore2($scores, $submission);
         }
+
         return response()->json(['msg' => 'submit success']);
+        //return $scores;
     }
 
     public function storeSubmissionFile($submission)
@@ -86,10 +118,9 @@ class SubmissionController extends Controller
 
             if(strrpos($file[1], '/')) {
                 $package = substr($file[1], 0, strrpos($file[1], '/'));
-
-                $file_name = str_replace($package, '', $file[1]);
-
                 $package = str_replace('/','.', $package);
+
+                $file_name = str_replace($package.'/', '', $file[1]);
             }
             else{
                 $package = 'default package';
@@ -129,6 +160,50 @@ class SubmissionController extends Controller
                         'error' => '',
                     ];
                     SubmissionOutput::create($submissionOutput);
+                }
+            }
+        }
+        if ($isAccept == true){
+            $submission->is_accept = 'true';
+        }else{
+            $submission->is_accept = 'false';
+        }
+        $submission->save();
+    }
+
+    public function saveScore2($scores, $submission)
+    {
+        $problem = $submission->problem;
+        $problemFiles = $problem->problemFiles;
+
+        $isAccept = true;
+        foreach ($problemFiles as $problemFile){
+            if($problemFile->package == 'driver'){
+                $submissionFile = [
+                    'submission_id' => $submission->id,
+                    'package' => $problemFile->package,
+                    'filename' => $problemFile->filename,
+                    'mime' => $problemFile->mime,
+                    'code' => 'driver from teacher',
+                ];
+                $submissionFile = SubmissionFile::create($submissionFile);
+                $temps = explode('.',$submissionFile->filename);
+                $fileName = $temps[0];
+
+                foreach ($scores as $score){
+                    if($score['name'] == $fileName){
+                        if($score != 100){
+                            $isAccept = false;
+                        }
+                        $output = [
+                            'submission_file_id' => $submissionFile->id,
+                            'content' => '',
+                            'score' => $score['score'],
+                            'error' => '',
+                        ];
+                        SubmissionOutput::create($output);
+                        //Log::info('#### '.$output->submissionfile_id);
+                    }
                 }
             }
         }
@@ -221,5 +296,77 @@ class SubmissionController extends Controller
     {
         $submissionFiles = SubmissionFile::where('submission_id', $id)->get();
         return $submissionFiles;
+    }
+
+    public function saveResult($classes, $submissionFile)
+    {
+        foreach ($classes['class'] as $class){
+            $im = '';
+            foreach ($class['implements'] as $implement){
+                $im .= $implement['name'];
+            }
+
+            $result = [
+                'submission_file_id' => $submissionFile->id,
+                'class' => $class['modifier'].';'.$class['static_required'].';'.$class['name'],
+                'enclose' => $class['enclose'],
+                'extends' => $class['extends'],
+                'implements' => $im,
+            ];
+            $result = Result::create($result);
+
+            foreach ($class['attribute'] as $attribute){
+                $att = [
+                    'result_id' => $result->id,
+                    'access_modifier' => $attribute['modifier'],
+                    'non_access_modifier' => $attribute['static_required'],
+                    'data_type' => $attribute['datatype'],
+                    'name' => $attribute['name']
+                ];
+                ResultAttribute::create($att);
+            }
+
+            foreach ($class['constructure'] as $constructor){
+                $pa = '';
+                foreach ($constructor['params'] as $param){
+                    $pa .= $param['datatype'].';'.$param['name'].'|';
+                }
+
+                $con = [
+                    'result_id' => $result->id,
+                    'access_modifier' => $constructor['modifier'],
+                    'name' => $constructor['name'],
+                    'parameter' => $pa
+                ];
+                ResultConstructor::create($con);
+            }
+
+            foreach ($class['method'] as $method){
+                $pa = '';
+                foreach ($method['params'] as $param){
+                    $pa .= $param['datatype'].';'.$param['name'].'|';
+                }
+
+                $me = [
+                    'result_id' => $result->id,
+                    'access_modifier' => $method['modifier'],
+                    'non_access_modifier' => $method['static_required'],
+                    'return_type' => $method['return_type'],
+                    'name' => $method['name'],
+                    'parameter' => $pa,
+                    'recursive' => $method['recursive'],
+                    'loop' => $method['loop_exist']
+                ];
+                ResultMethod::create($me);
+            }
+        }
+    }
+
+    public function calStructureScore($submissionFile)
+    {
+        $submission = $submissionFile->submission;
+        $problem = $submission->problem;
+
+
     }
 }

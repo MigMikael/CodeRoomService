@@ -69,7 +69,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 10
         Route::get('submission/{problem_id}/{student_id}', 'SubmissionController@result');
-        # 11 [Change Name] Todo Finish This
+        # 11
         Route::post('submission', 'SubmissionController@store');
 
 

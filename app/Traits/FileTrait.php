@@ -18,7 +18,8 @@ trait FileTrait
     public function storeFile($file)
     {
         $ex = $file->getClientOriginalExtension();
-        Storage::disk('local')->put($file->getFilename(). '.' . $ex, File::get($file));
+        Storage::put($file->getFilename(). '.' . $ex, File::get($file));
+
         $fileRecord = [
             'name' => $file->getFilename(). '.' . $ex,
             'mime' => $file->getClientMimeType(),
@@ -98,6 +99,7 @@ trait FileTrait
         $filePath = self::path($file);
         $zipper = new Zipper();
         $zipper->make($filePath)->extractTo($des_path);
+        //Storage::delete($file->name);
     }
 
     public function deleteFile($file)

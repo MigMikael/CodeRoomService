@@ -10,6 +10,7 @@ use App\ProblemAttribute;
 use App\ProblemConstructor;
 use App\ProblemMethod;
 use App\Student;
+use App\Traits\EvaluatorTrait;
 use Illuminate\Http\Request;
 use App\Traits\FileTrait;
 use App\ProblemInput;
@@ -18,7 +19,7 @@ use Log;
 
 class ProblemController extends Controller
 {
-    use FileTrait;
+    use FileTrait, EvaluatorTrait;
 
     public function show($id)
     {
@@ -77,7 +78,7 @@ class ProblemController extends Controller
         self::storeProblemFile($problem);
 
         if($problem->is_parse == 'true'){
-
+            self::analyzeFile();
         }
         
         return response()->json(['msg' => 'create problem success']);
@@ -96,10 +97,9 @@ class ProblemController extends Controller
 
             if(strrpos($file[1], '/')) {
                 $package = substr($file[1], 0, strrpos($file[1], '/'));
-
-                $file_name = str_replace($package, '', $file[1]);
-
                 $package = str_replace('/','.', $package);
+
+                $file_name = str_replace($package.'/', '', $file[1]);
             }
             else{
                 $package = 'default package';

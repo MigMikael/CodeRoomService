@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\File;
 use App\Problem;
 use App\Student;
 use App\Lesson;
@@ -97,8 +98,8 @@ class TestController extends Controller
 
         return $problemFile->inputs->count();*/
 
-        $submission = Submission::all()->last();
-
-        return $submission->submissionFiles->first();
+        $file = File::find(48);
+        Storage::delete($file->name);
+        return 'delete success';
     }
 }
