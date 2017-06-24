@@ -16,7 +16,7 @@ class AdminAuthenticate
      */
     public function handle($request, Closure $next)
     {
-        $token = $request->header('Authorization_Token');
+        $token = $request->header('AuthorizationToken');
         $teacher = Teacher::where('token', '=', $token)->first();
 
         if($teacher == null || $teacher->role != 'admin'){

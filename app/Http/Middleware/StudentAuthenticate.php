@@ -17,7 +17,7 @@ class StudentAuthenticate
      */
     public function handle($request, Closure $next)
     {
-        $token = $request->header('Authorization_Token');
+        $token = $request->header('AuthorizationToken');
         $student = Student::where('token', '=', $token)->first();
 
         $student->ip = $request->getClientIp();

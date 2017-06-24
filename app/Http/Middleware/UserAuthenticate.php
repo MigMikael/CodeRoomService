@@ -32,11 +32,11 @@ class UserAuthenticate
             $_SESSION['time'] = Carbon::now();
         }
 
-        if($request->hasHeader('Authorization_Token')){
-            $student = Student::where('token', '=', $request->header('Authorization_Token'))->first();
+        if($request->hasHeader('AuthorizationToken')){
+            $student = Student::where('token', '=', $request->header('AuthorizationToken'))->first();
 
             if($student == null){
-                $teacher = Teacher::where('token', '=', $request->header('Authorization_Token'))->first();
+                $teacher = Teacher::where('token', '=', $request->header('AuthorizationToken'))->first();
 
                 if($teacher == null){
                     return response()->json(['status' => 'request unauthorized']);
