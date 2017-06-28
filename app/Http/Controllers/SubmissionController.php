@@ -6,6 +6,7 @@ use App\Result;
 use App\ResultAttribute;
 use App\ResultConstructor;
 use App\ResultMethod;
+use App\StudentLesson;
 use App\Submission;
 use App\SubmissionFile;
 use App\SubmissionOutput;
@@ -165,10 +166,13 @@ class SubmissionController extends Controller
         }
         if ($isAccept == true){
             $submission->is_accept = 'true';
+            $submission->save();
+            self::updateProgress($submission);
         }else{
             $submission->is_accept = 'false';
+            $submission->save();
         }
-        $submission->save();
+
     }
 
     public function saveScore2($scores, $submission)
@@ -209,10 +213,11 @@ class SubmissionController extends Controller
         }
         if ($isAccept == true){
             $submission->is_accept = 'true';
+            $submission->save();
         }else{
             $submission->is_accept = 'false';
+            $submission->save();
         }
-        $submission->save();
     }
 
     public function checkDriver($problem)
@@ -368,5 +373,38 @@ class SubmissionController extends Controller
         $problem = $submission->problem;
 
 
+    }
+
+    public function updateProgress($submission)
+    {
+        $problem = $submission->problem;
+        $student = $submission->student;
+
+        $lesson = $problem->lesson;
+        $student_lesson = StudentLesson::where([
+            ['student_id', $student->id],
+            ['lesson_id', $lesson->id]
+        ])->first();
+
+        $prob_count = $lesson->problems->count();
+
+        $accept_count = 0;
+        foreach ($lesson->problems as $problem){
+            $accept_submissions = Submission::where([
+                ['student_id', $student->id],
+                ['problem_id', $problem->id]
+            ])->get();
+
+            foreach ($accept_submissions as $accept_submission){
+                if($accept_submission->is_accept = 'true'){
+                    $accept_count++;
+                }
+            }
+        }
+
+        $progress = ($accept_count/$prob_count)*100;
+
+        $student_lesson->progress = $progress;
+        $student_lesson->save();
     }
 }
