@@ -78,7 +78,7 @@ class ProblemController extends Controller
         self::storeProblemFile($problem);
 
         if($problem->is_parse == 'true'){
-            self::analyzeFile();
+            //self::analyzeFile();
         }
         
         return response()->json(['msg' => 'create problem success']);

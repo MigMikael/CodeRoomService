@@ -70,7 +70,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         # 10
         Route::get('submission/{problem_id}/{student_id}', 'SubmissionController@result');
         # 11
-        Route::post('submission', 'SubmissionController@store');
+        Route::post('submission', 'SubmissionController@store2');
 
 
     });

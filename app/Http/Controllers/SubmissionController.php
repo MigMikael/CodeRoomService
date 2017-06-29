@@ -102,6 +102,73 @@ class SubmissionController extends Controller
         //return $scores;
     }
 
+    public function store2(Request $request)
+    {
+        $student_id = $request->get('student_id');
+        $problem_id = $request->get('problem_id');
+
+        $sub_num = self::getSubNum($student_id, $problem_id);
+        $submission = [
+            'student_id' => $student_id,
+            'problem_id' => $problem_id,
+            'sub_num' => $sub_num,
+            'is_accept' => 'false'
+        ];
+        $submission = Submission::create($submission);
+        $files = $request->get('files');
+        $submit_success = self::storeSubmissionFile2($submission, $files);
+
+        if(!$submit_success){
+            return response()->json(['msg' => 'submit file not found']);
+        }
+
+        $problem = $submission->problem;
+        if ($problem->is_parse == 'true'){
+            foreach ($submission->submissionFiles as $submissionFile){
+                $classes = self::analyzeFile($submissionFile);
+                self::saveResult($classes, $submissionFile);
+                self::calStructureScore($submissionFile);
+            }
+        }
+
+        $hasDriver = self::checkDriver($problem);
+        $currentVer = self::getCurrentVersion($problem);
+
+        if(!$hasDriver) {
+            // this submit in problem that not have driver
+            $data = self::checkInputVersion($problem, $hasDriver);
+            if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
+                self::sendNewInput($problem);
+            }
+
+            $data = self::checkOutputVersion($problem, $hasDriver);
+            if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
+                self::sendNewOutput($problem);
+            }
+
+            // send Student Code to Evaluator
+            $scores = self::evaluateFile($submission);
+            self::saveScore($scores, $submission);
+
+        }else{
+            $data = self::checkInputVersion($problem, $hasDriver);
+            if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
+                self::sendNewInput2($problem);
+            }
+
+            $data = self::checkOutputVersion($problem, $hasDriver);
+            if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
+                self::sendNewOutput2($problem);
+            }
+
+            self::sendDriver($problem);
+            $scores = self::evaluateFile2($submission);
+            self::saveScore2($scores, $submission);
+        }
+
+        return response()->json(['msg' => 'submit success']);
+    }
+
     public function storeSubmissionFile($submission)
     {
         $src_path = 'submission/'.$submission->id.'/'. $submission->problem->name. '/src';
@@ -136,6 +203,22 @@ class SubmissionController extends Controller
                 'code' => $code
             ];
             SubmissionFile::create($submission_file);
+        }
+        return true;
+    }
+
+    public function storeSubmissionFile2($submission, $files)
+    {
+        for($i = 0; $i < sizeof($files); $i++){
+            $file = $files[$i];
+            $f = [
+                'submission_id' => $submission->id,
+                'package' => $file['package'],
+                'filename' => $file['filename'],
+                'mime' => $file['mime'],
+                'code' => $file['code'],
+            ];
+            SubmissionFile::create($f);
         }
         return true;
     }

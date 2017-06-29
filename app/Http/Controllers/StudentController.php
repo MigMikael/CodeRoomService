@@ -54,7 +54,7 @@ class StudentController extends Controller
                 }
             }
         }
-        return $student;
+        return $student->makeVisible('username');
     }
 
     public function updateProfile(Request $request)
