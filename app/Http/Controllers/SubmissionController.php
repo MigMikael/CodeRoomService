@@ -472,7 +472,8 @@ class SubmissionController extends Controller
         if(sizeof($student_lesson) == 0){
             $student_lesson = [
                 'student_id' => $student->id,
-                'lesson_id' => $lesson->id
+                'lesson_id' => $lesson->id,
+                'progress' => 0
             ];
             $student_lesson = StudentLesson::create($student_lesson);
         }
