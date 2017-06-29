@@ -20,6 +20,10 @@ class StudentAuthenticate
         $token = $request->header('AuthorizationToken');
         $student = Student::where('token', '=', $token)->first();
 
+        if($student->ip != ''){
+            return response()->json(['status' => 'you already login']);
+        }
+
         $student->ip = $request->getClientIp();
         $student->save();
 
