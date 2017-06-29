@@ -213,7 +213,7 @@ class StudentController extends Controller
     {
         $student = Student::findOrFail($id);
         $student->ip = '';
-        $student->save;
+        $student->save();
         return response()->json(['msg' => 'remove ip complete']);
     }
 }
