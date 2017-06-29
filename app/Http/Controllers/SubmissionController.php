@@ -166,7 +166,19 @@ class SubmissionController extends Controller
             self::saveScore2($scores, $submission);
         }
 
-        return response()->json(['msg' => 'submit success']);
+        foreach ($submission->submissionFiles as $submissionFile){
+            $submissionFile->outputs;
+
+            foreach ($submissionFile->results as $result){
+                $result->score;
+                $result->attributes;
+                $result->constructors;
+                $result->methods;
+            }
+        }
+        return $submission;
+
+        //return response()->json(['msg' => 'submit success']);
     }
 
     public function storeSubmissionFile($submission)
@@ -493,6 +505,8 @@ class SubmissionController extends Controller
             }
         }
 
+        Log::info('Accept Count : '.$accept_count);
+        Log::info('Prob Count : '.$accept_count);
         $progress = ($accept_count/$prob_count)*100;
 
         $student_lesson->progress = $progress;
