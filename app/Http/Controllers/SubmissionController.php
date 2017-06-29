@@ -199,7 +199,7 @@ class SubmissionController extends Controller
                 'submission_id' => $submission->id,
                 'package' => $package,
                 'filename' => $file_name,
-                'mime' => 'java',
+                'mime' => $file['mime'],
                 'code' => $code
             ];
             SubmissionFile::create($submission_file);
@@ -469,6 +469,13 @@ class SubmissionController extends Controller
             ['lesson_id', $lesson->id]
         ])->first();
 
+        if(sizeof($student_lesson) == 0){
+            $student_lesson = [
+                'student_id' => $student->id,
+                'lesson_id' => $lesson->id
+            ];
+            $student_lesson = StudentLesson::create($student_lesson);
+        }
         $prob_count = $lesson->problems->count();
 
         $accept_count = 0;
