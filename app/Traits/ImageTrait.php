@@ -17,7 +17,7 @@ trait ImageTrait
     public function genImage($id)
     {
         $identicon = new \Identicon\Identicon();
-        $img = $identicon->getImageDataUri($id, 200);
+        $img = $identicon->getImageDataUri($id, 100);
 
         $des_path = storage_path() . '/app/';
 

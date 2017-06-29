@@ -21,7 +21,7 @@ class StudentAuthenticate
         $student = Student::where('token', '=', $token)->first();
 
         $current_ip = $request->getClientIp();
-        
+
         if($student->ip != $current_ip){
             return response()->json(['status' => 'you already login from another machine']);
         }

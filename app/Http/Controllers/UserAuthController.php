@@ -25,6 +25,11 @@ class UserAuthController extends Controller
 
         if($student != null){
             if(password_verify($password, $student->password)){
+                $current_ip = $request->getClientIp();
+                if($student->ip != '' && $current_ip != $student->ip){
+                    return response()->json(['msg' => 'you already login from another machine']);
+                }
+
                 $_SESSION['userID'] = $student->id;
                 $_SESSION['userRole'] = 'student';
                 $_SESSION['time'] = Carbon::now();
@@ -32,7 +37,6 @@ class UserAuthController extends Controller
                 /*Log::info('userID : '.$_SESSION['userID']);
                 Log::info('userRole : '.$_SESSION['userRole']);*/
 
-                $current_ip = $request->getClientIp();
                 $student->ip = $current_ip;
                 $student->save();
 
