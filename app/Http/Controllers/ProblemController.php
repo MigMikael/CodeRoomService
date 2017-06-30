@@ -119,9 +119,10 @@ class ProblemController extends Controller
 
             if(strrpos($file[1], '/')) {
                 $package = substr($file[1], 0, strrpos($file[1], '/'));
-                $package = str_replace('/','.', $package);
 
                 $file_name = str_replace($package.'/', '', $file[1]);
+
+                $package = str_replace('/','.', $package);
             }
             else{
                 $package = 'default package';
