@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class ProblemMethod extends Model
 {
     public $timestamps = false;
-    protected $table = 'method';
+    protected $table = 'problem_method';
 
     protected $fillable = [
         'analysis_id',
