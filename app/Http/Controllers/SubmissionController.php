@@ -177,7 +177,7 @@ class SubmissionController extends Controller
             $problem = $submission->problem;
             foreach ($problem->problemFiles as $problemFile){
                 foreach ($problemFile->problemAnalysis as $analysis){
-                    $analysis->attributes;
+                    $analysis->score;
                     $analysis->attributes;
                     $analysis->constructors;
                     $analysis->methods;
