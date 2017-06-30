@@ -292,6 +292,13 @@ class ProblemController extends Controller
                     $pa .= $param['datatype'].';'.$param['name'].'|';
                 }
 
+                if($method['recursive'] == null){
+                    $method['recursive'] = 'null';
+                }
+                if($method['recursive'] == null){
+                    $method['recursive'] = 'null';
+                }
+
                 $me = [
                     'analysis_id' => $problemAnalysis->id,
                     'access_modifier' => $method['modifier'],
