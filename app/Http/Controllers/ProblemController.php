@@ -295,8 +295,8 @@ class ProblemController extends Controller
                 if($method['recursive'] == null){
                     $method['recursive'] = 'null';
                 }
-                if($method['recursive'] == null){
-                    $method['recursive'] = 'null';
+                if($method['loop_exist'] == null){
+                    $method['loop_exist'] = 'null';
                 }
 
                 $me = [
