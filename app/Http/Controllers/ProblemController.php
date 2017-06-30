@@ -57,7 +57,13 @@ class ProblemController extends Controller
             return response()->json(['msg' => 'file not found']);
         }
 
-        $next_id = Problem::count();
+        $lastProb = Problem::orderBy('created_at', 'desc')->first();
+        if(sizeof($lastProb) > 0){
+            $next_id = $lastProb->id;
+        }else{
+            $next_id = 0;
+        }
+
         $file = self::storeFile($file);
         self::unzipProblem($file, $next_id + 1);
 
