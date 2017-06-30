@@ -43,7 +43,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
     Route::group(['middleware' => 'studentAuth', 'prefix' => 'student'], function (){
 
-        # 1
+
         Route::get('dashboard', 'StudentController@dashboard');
         # 2
         Route::get('profile/{id}', 'StudentController@profile');

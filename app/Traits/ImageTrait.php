@@ -133,7 +133,7 @@ trait ImageTrait
     /**
      * deleteImage.
      *
-     * delete image file using Laravel _filesystem_
+     * ลบไฟล์ที่จัดเก็บในระบบโดยใช้ _Laravel Filesystem_
      *
      * @author  MigMikale <chanachai_mig@hotmail.com>
      * @param $file

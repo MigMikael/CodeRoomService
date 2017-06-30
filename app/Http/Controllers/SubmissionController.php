@@ -127,12 +127,13 @@ class SubmissionController extends Controller
             return response()->json(['msg' => 'submit file not found']);
         }
 
+        $wrong = [];
         $problem = $submission->problem;
         if ($problem->is_parse == 'true'){
             foreach ($submission->submissionFiles as $submissionFile){
                 $classes = self::analyzeSubmitFile($submissionFile);
                 self::saveResult($classes, $submissionFile);
-                self::calStructureScore($submissionFile);
+                $wrong = self::calStructureScore($submissionFile);
             }
         }
 
@@ -191,6 +192,8 @@ class SubmissionController extends Controller
                 $result->methods;
             }
         }
+
+        $submission['wrong'] = $wrong;
         return $submission;
 
         //return response()->json(['msg' => 'submit success']);
@@ -500,6 +503,7 @@ class SubmissionController extends Controller
     {
         $submission = $submissionFile->submission;
         $problem = $submission->problem;
+        $wrong = [];
 
         foreach ($submissionFile->results as $result){
             $problemAnalysis = ProblemAnalysis::where('class', '=', $result->class)->first();
@@ -515,24 +519,29 @@ class SubmissionController extends Controller
                     $package_score = $problemAnalysis->score->package;
                 }else{
                     $package_score = 0;
+                    array_push($wrong, $result->class.' มี package '.$result->package . ' ไม่ตรง');
                 }
 
                 if($result->enclose == $problemAnalysis->enclose){
                     $enclose_score = $problemAnalysis->score->enclose;
                 }else{
                     $enclose_score = 0;
+                    array_push($wrong, $result->class.' มี enclose '.$result->enclose . ' ไม่ตรง');
                 }
 
                 if($result->extends == $problemAnalysis->extends){
                     $extends_score = $problemAnalysis->score->extends;
                 }else{
                     $extends_score = 0;
+                    array_push($wrong, $result->class.' มี extends '.$result->extends . ' ไม่ตรง');
                 }
 
                 if($result->implements == $problemAnalysis->implements){
                     $implements_score = $problemAnalysis->score->extends;
                 }else{
                     $implements_score = 0;
+                    array_push($wrong, $result->class.' มี implements '.$result->implements . ' ไม่ตรง');
+
                 }
             }else{
                 $class_score = 0;
@@ -587,6 +596,7 @@ class SubmissionController extends Controller
                     $attribute->score = $prob_attr->score;
                 }else{
                     $attribute->score = 0;
+                    array_push($wrong, $result->class.' มี attribute '.$attribute->name . ' ไม่ตรง');
                 }
                 $attribute->save();
                 /*Log::info('Attribute IS CORRECT '. $correct);
@@ -633,6 +643,8 @@ class SubmissionController extends Controller
                     $constructor->score = $prob_con->score;
                 }else{
                     $constructor->score = 0;
+                    array_push($wrong, $result->class.' มี constructor '.$constructor->name . ' ไม่ตรง');
+
                 }
                 $constructor->save();
 
@@ -674,12 +686,15 @@ class SubmissionController extends Controller
                     $method->score = $prob_me->score;
                 }else{
                     $method->score = 0;
+                    array_push($wrong, $result->class.' มี method '.$method->name . ' ไม่ตรง');
                 }
                 $method->save();
 
                 //Log::info('Method IS CORRECT '. $is_correct);
             }
         }
+
+        return $wrong;
     }
 
     public function updateProgress($submission)
