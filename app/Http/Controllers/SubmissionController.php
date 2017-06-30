@@ -378,15 +378,19 @@ class SubmissionController extends Controller
         $data['submission'] = $submission;
 
         $problem = $submission->problem;
-        foreach ($problem->problemFiles as $problemFile){
-            $problemFile->code = '';
-            foreach ($problemFile->problemAnalysis as $probAnalysis){
-                $probAnalysis->score;
-                $probAnalysis->attributes;
-                $probAnalysis->constructors;
-                $probAnalysis->methods;
+        $problemFiles = $problem->problemFiles;
+        if (sizeof($problemFiles) >= 1){
+            foreach ($problemFiles as $problemFile){
+                $problemFile->code = '';
+                foreach ($problemFile->problemAnalysis as $probAnalysis){
+                    $probAnalysis->score;
+                    $probAnalysis->attributes;
+                    $probAnalysis->constructors;
+                    $probAnalysis->methods;
+                }
             }
         }
+
         $data['problem'] = $problem;
 
         return $submission;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\File;
 use App\Problem;
+use App\ProblemAnalysis;
 use App\ProblemFile;
 use App\ProblemScore;
 use App\ProblemAttribute;
@@ -79,7 +80,21 @@ class ProblemController extends Controller
         self::storeProblemFile($problem);
 
         if($problem->is_parse == 'true'){
-            //self::analyzeFile();
+            foreach ($problem->problemFiles as $problemFile){
+                $classes = self::analyzeProblemFile($problemFile);
+                self::saveResult($classes, $problemFile);
+            }
+
+            foreach ($problem->problemFiles as $problemFile){
+                $problemFile['code'] = '';
+                foreach ($problemFile->problemAnalysis as $analysis){
+                    $analysis->score;
+                    $analysis->attributes;
+                    $analysis->constructors;
+                    $analysis->methods;
+                }
+            }
+            return $problem;
         }
         
         return response()->json(['msg' => 'create problem success']);
@@ -149,7 +164,7 @@ class ProblemController extends Controller
 
     public function update(Request $request)
     {
-        $id = $request->get('id');
+        /*$id = $request->get('id');
         $problem = Problem::findOfFail($id);
 
         $problem->name = $request->get('name');
@@ -163,7 +178,7 @@ class ProblemController extends Controller
         if($request->hasFile('file')){
             $file = $request->file('file');
             self::sendToProblemFile($problem, $file, 'edit');
-        }
+        }*/
 
         return response()->json(['msg' => 'success']);
     }
@@ -205,6 +220,82 @@ class ProblemController extends Controller
                     $method->score = $met['score'];
                     $method->save();
                 }
+            }
+        }
+
+        return response()->json(['msg' => 'store score success']);
+    }
+
+    public function saveResult($classes, $problemFile)
+    {
+        foreach ($classes['class'] as $class){
+            $im = '';
+            foreach ($class['implements'] as $implement){
+                $im .= $implement['name'];
+            }
+
+            $problemAnalysis = [
+                'problem_file_id' => $problemFile->id,
+                'class' => $class['modifier'].';'.$class['static_required'].';'.$class['name'],
+                'enclose' => $class['enclose'],
+                'extends' => $class['extends'],
+                'implements' => $im,
+            ];
+            $problemAnalysis = ProblemAnalysis::create($problemAnalysis);
+
+            $problem_score = [
+                'analysis_id' => $problemAnalysis->id,
+                'class' => 0,
+                'package' => 0,
+                'enclose' => 0,
+                'extends' => 0,
+                'implements' => 0,
+            ];
+            ProblemScore::create($problem_score);
+
+            foreach ($class['constructure'] as $constructor){
+                $pa = '';
+                foreach ($constructor['params'] as $param){
+                    $pa .= $param['datatype'].';'.$param['name'].'|';
+                }
+
+                $con = [
+                    'analysis_id' => $problemAnalysis->id,
+                    'access_modifier' => $constructor['modifier'],
+                    'name' => $constructor['name'],
+                    'parameter' => $pa
+                ];
+                ProblemConstructor::create($con);
+            }
+
+            foreach ($class['attribute'] as $attribute){
+                $att = [
+                    'analysis_id' => $problemAnalysis->id,
+                    'access_modifier' => $attribute['modifier'],
+                    'non_access_modifier' => $attribute['static_required'],
+                    'data_type' => $attribute['datatype'],
+                    'name' => $attribute['name']
+                ];
+                ProblemAttribute::create($att);
+            }
+
+            foreach ($class['method'] as $method){
+                $pa = '';
+                foreach ($method['params'] as $param){
+                    $pa .= $param['datatype'].';'.$param['name'].'|';
+                }
+
+                $me = [
+                    'analysis_id' => $problemAnalysis->id,
+                    'access_modifier' => $method['modifier'],
+                    'non_access_modifier' => $method['static_required'],
+                    'return_type' => $method['return_type'],
+                    'name' => $method['name'],
+                    'parameter' => $pa,
+                    'recursive' => $method['recursive'],
+                    'loop' => $method['loop_exist']
+                ];
+                ProblemMethod::create($me);
             }
         }
     }

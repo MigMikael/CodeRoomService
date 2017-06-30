@@ -54,7 +54,7 @@ class UserAuthController extends Controller
                 $_SESSION['userRole'] = $teacher->role;
                 $_SESSION['time'] = Carbon::now();
 
-                $teacher['role'] = 'teacher';
+                $teacher['role'] = $teacher->role;
                 $teacher->makeVisible('token');
                 return $teacher;
 
