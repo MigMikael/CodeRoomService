@@ -376,7 +376,7 @@ trait EvaluatorTrait
         return $json;
     }
 
-    public function analyzeFile($submissionFile)
+    public function analyzeSubmitFile($submissionFile)
     {
         $evaluator_ip = env('EVALUATOR_IP');
         $codes = [];
@@ -384,6 +384,27 @@ trait EvaluatorTrait
 
         $client = new Client();
         $res = $client->request('POST', $evaluator_ip.'/api/student/code', [
+            'json' => [
+                'code' => $codes,
+            ]
+        ]);
+
+        $result = $res->getBody();
+        $json = json_decode($result, true);
+        Log::info('#### Data From Evaluator : '. $res->getBody());
+
+        return $json;
+    }
+
+    public function analyzeProblemFile($problemFile)
+    {
+        $evaluator_ip = env('EVALUATOR_IP');
+        $codes = [];
+
+        array_push($codes, $problemFile->code);
+
+        $client = new Client();
+        $res = $client->request('POST', $evaluator_ip.'/api/teacher/required', [
             'json' => [
                 'code' => $codes,
             ]

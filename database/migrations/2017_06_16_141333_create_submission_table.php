@@ -27,7 +27,8 @@ class CreateSubmissionTable extends Migration
                 ->onDelete('cascade');
             $table->foreign('problem_id')
                 ->references('id')
-                ->on('problem');
+                ->on('problem')
+                ->onDelete('casecade');
         });
     }
 

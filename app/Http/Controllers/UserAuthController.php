@@ -51,7 +51,7 @@ class UserAuthController extends Controller
         }elseif($teacher != null){
             if(password_verify($password, $teacher->password)){
                 $_SESSION['userID'] = $teacher->id;
-                $_SESSION['userRole'] = 'teacher';
+                $_SESSION['userRole'] = $teacher->role;
                 $_SESSION['time'] = Carbon::now();
 
                 $teacher['role'] = 'teacher';

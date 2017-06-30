@@ -57,7 +57,7 @@ class SubmissionController extends Controller
         $problem = $submission->problem;
         if ($problem->is_parse == 'true'){
             foreach ($submission->submissionFiles as $submissionFile){
-                $classes = self::analyzeFile($submissionFile);
+                $classes = self::analyzeSubmitFile($submissionFile);
                 self::saveResult($classes, $submissionFile);
                 self::calStructureScore($submissionFile);
             }
@@ -125,7 +125,7 @@ class SubmissionController extends Controller
         $problem = $submission->problem;
         if ($problem->is_parse == 'true'){
             foreach ($submission->submissionFiles as $submissionFile){
-                $classes = self::analyzeFile($submissionFile);
+                $classes = self::analyzeSubmitFile($submissionFile);
                 self::saveResult($classes, $submissionFile);
                 self::calStructureScore($submissionFile);
             }
@@ -470,6 +470,7 @@ class SubmissionController extends Controller
 
     }
 
+    // Todo fix bug calculate progress
     public function updateProgress($submission)
     {
         $problem = $submission->problem;

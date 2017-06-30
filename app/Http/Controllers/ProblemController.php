@@ -16,6 +16,7 @@ use App\Traits\FileTrait;
 use App\ProblemInput;
 use App\ProblemOutput;
 use Log;
+use Illuminate\Support\Facades\DB;
 
 class ProblemController extends Controller
 {
