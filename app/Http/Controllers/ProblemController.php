@@ -243,6 +243,7 @@ class ProblemController extends Controller
             $problemAnalysis = [
                 'problem_file_id' => $problemFile->id,
                 'class' => $class['modifier'].';'.$class['static_required'].';'.$class['name'],
+                'package' => $problemFile->package,
                 'enclose' => $class['enclose'],
                 'extends' => $class['extends'],
                 'implements' => $im,

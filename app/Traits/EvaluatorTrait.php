@@ -9,6 +9,7 @@ namespace App\Traits;
 
 use GuzzleHttp\Client;
 use App\ProblemInput;
+use Log;
 
 trait EvaluatorTrait
 {
