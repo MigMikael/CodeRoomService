@@ -162,7 +162,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::post('course', 'CourseController@store');
         # 43
         Route::get('course/status/{course_id}', 'CourseController@changeStatus');
-        # 44 Todo some problem here
+        # 44
         Route::post('course/add/teacher', 'CourseController@addTeacher');
 
 

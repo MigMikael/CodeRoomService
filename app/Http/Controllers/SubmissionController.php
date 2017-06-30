@@ -498,15 +498,14 @@ class SubmissionController extends Controller
 
         $accept_count = 0;
         foreach ($lesson->problems as $problem){
-            $accept_submissions = Submission::where([
+            $accept_submission = Submission::where([
                 ['student_id', $student->id],
-                ['problem_id', $problem->id]
-            ])->get();
+                ['problem_id', $problem->id],
+                ['is_accept', 'true']
+            ])->first();
 
-            foreach ($accept_submissions as $accept_submission){
-                if($accept_submission->is_accept = 'true'){
-                    $accept_count++;
-                }
+            if(sizeof($accept_submission) > 0){
+                $accept_count++;
             }
         }
 
