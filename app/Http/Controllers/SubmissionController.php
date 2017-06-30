@@ -396,8 +396,8 @@ class SubmissionController extends Controller
         $data['submission'] = $submission;
 
         $problem = $submission->problem;
-        $problemFiles = $problem->problemFiles;
-        if (sizeof($problemFiles) >= 1){
+        if(sizeof($problem) > 0){
+            $problemFiles = $problem->problemFiles;
             foreach ($problemFiles as $problemFile){
                 $problemFile->code = '';
                 foreach ($problemFile->problemAnalysis as $probAnalysis){
@@ -431,6 +431,7 @@ class SubmissionController extends Controller
             $result = [
                 'submission_file_id' => $submissionFile->id,
                 'class' => $class['modifier'].';'.$class['static_required'].';'.$class['name'],
+                'package' => $submissionFile->package,
                 'enclose' => $class['enclose'],
                 'extends' => $class['extends'],
                 'implements' => $im,
