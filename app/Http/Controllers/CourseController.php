@@ -31,9 +31,9 @@ class CourseController extends Controller
             'image' => $image->id,
             'status' => 'enable'
         ];
-        Course::create($course);
+        $course = Course::create($course);
 
-        return response()->json(['msg' => 'create course success']);
+        return $course;
     }
 
     public function member($id)
