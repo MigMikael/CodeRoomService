@@ -621,14 +621,16 @@ class SubmissionController extends Controller
             }
 
             foreach ($result->constructors as $constructor){
-                $prob_con = ProblemConstructor::where('name', '=', $constructor->name)->first();
-                if($prob_con != null){
-                    $this_problem = $prob_con->problemAnalysis->problemFile->problem;
-                }else {
-                    $this_problem->id = 0;
-                }
-                if($problem->id != $this_problem->id){
-                    $prob_con = null;
+                $problem_constructors = ProblemConstructor::where('name', '=', $constructor->name)->get();
+                $prob_con = null;
+                foreach ($problem_constructors as $problem_constructor){
+                    $this_problem = $problem_constructor->problemAnalysis->problemFile->problem;
+                    if($problem->id == $this_problem->id){
+                        $prob_con = $problem_constructor;
+                        break;
+                    }else{
+                        $prob_con = null;
+                    }
                 }
 
                 $is_correct = true;
@@ -654,14 +656,16 @@ class SubmissionController extends Controller
             }
 
             foreach ($result->methods as $method){
-                $prob_me = ProblemMethod::where('name', '=', $method->name)->first();
-                if($prob_me != null){
-                    $this_problem = $prob_me->problemAnalysis->problemFile->problem;
-                } else {
-                    $this_problem->id = 0;
-                }
-                if($problem->id != $this_problem->id){
-                    $prob_me = null;
+                $problem_methods = ProblemMethod::where('name', '=', $method->name)->get();
+                $prob_me = null;
+                foreach ($problem_methods as $problem_method){
+                    $this_problem = $problem_method->problemAnalysis->problemFile->problem;
+                    if($problem->id == $this_problem->id){
+                        $prob_me = $problem_method;
+                        break;
+                    }else{
+                        $prob_me = null;
+                    }
                 }
 
                 $is_correct = true;
@@ -693,7 +697,7 @@ class SubmissionController extends Controller
                 //Log::info('Method IS CORRECT '. $is_correct);
             }
         }
-        Log::info('wrong : '.$wrong);
+
         return $wrong;
     }
 
