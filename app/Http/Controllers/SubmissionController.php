@@ -586,7 +586,7 @@ class SubmissionController extends Controller
 
             foreach ($result->attributes as $attribute){
                 $problem_attributes = ProblemAttribute::where('name', '=', $attribute->name)
-                    ->orderBy('created_at', 'desc')
+                    ->orderBy('id', 'desc')
                     ->get();
                 $prob_attr = null;
                 foreach ($problem_attributes as $problem_attribute){
@@ -639,7 +639,7 @@ class SubmissionController extends Controller
 
             foreach ($result->constructors as $constructor){
                 $problem_constructors = ProblemConstructor::where('name', '=', $constructor->name)
-                    ->orderBy('created_at', 'desc')
+                    ->orderBy('id', 'desc')
                     ->get();
                 $prob_con = null;
                 foreach ($problem_constructors as $problem_constructor){
@@ -676,7 +676,7 @@ class SubmissionController extends Controller
 
             foreach ($result->methods as $method){
                 $problem_methods = ProblemMethod::where('name', '=', $method->name)
-                    ->orderBy('created_at', 'desc')
+                    ->orderBy('id', 'desc')
                     ->get();
                 $prob_me = null;
                 foreach ($problem_methods as $problem_method){
