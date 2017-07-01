@@ -135,6 +135,19 @@ class SubmissionController extends Controller
                 self::saveResult($classes, $submissionFile);
                 $wrong = self::calStructureScore($submissionFile);
             }
+
+            $results = [];
+            foreach ($submission->submissionFiles as $submissionFile){
+                $results = $submissionFile->results;
+            }
+
+            $problemAnalysis = [];
+            foreach ($problem->problemFiles as $problemFile){
+                $problemAnalysis = $problemFile->problemAnalysis;
+            }
+
+            $diff = $problemAnalysis->diff($results);
+            Log::info(var_dump($diff));
         }
 
         $hasDriver = self::checkDriver($problem);
@@ -570,7 +583,9 @@ class SubmissionController extends Controller
             ResultScore::create($result_score);
 
             foreach ($result->attributes as $attribute){
-                $problem_attributes = ProblemAttribute::where('name', '=', $attribute->name)->get();
+                $problem_attributes = ProblemAttribute::where('name', '=', $attribute->name)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
                 $prob_attr = null;
                 foreach ($problem_attributes as $problem_attribute){
                     $this_problem = $problem_attribute->problemAnalysis->problemFile->problem;
@@ -621,7 +636,9 @@ class SubmissionController extends Controller
             }
 
             foreach ($result->constructors as $constructor){
-                $problem_constructors = ProblemConstructor::where('name', '=', $constructor->name)->get();
+                $problem_constructors = ProblemConstructor::where('name', '=', $constructor->name)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
                 $prob_con = null;
                 foreach ($problem_constructors as $problem_constructor){
                     $this_problem = $problem_constructor->problemAnalysis->problemFile->problem;
@@ -656,7 +673,9 @@ class SubmissionController extends Controller
             }
 
             foreach ($result->methods as $method){
-                $problem_methods = ProblemMethod::where('name', '=', $method->name)->get();
+                $problem_methods = ProblemMethod::where('name', '=', $method->name)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
                 $prob_me = null;
                 foreach ($problem_methods as $problem_method){
                     $this_problem = $problem_method->problemAnalysis->problemFile->problem;
