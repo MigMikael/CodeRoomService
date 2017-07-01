@@ -98,8 +98,16 @@ class TestController extends Controller
 
         return $problemFile->inputs->count();*/
 
-        $file = File::find(48);
+        /*$file = File::find(48);
         Storage::delete($file->name);
-        return 'delete success';
+        return 'delete success';*/
+
+        $problemAnalysis = Student::find([1, 2, 3, 8, 16]);
+        $results = Student::find([1, 2, 4]);
+
+        $diff = $problemAnalysis->diff($results);
+        foreach ($diff as $d){
+            echo $d->id." ";
+        }
     }
 }

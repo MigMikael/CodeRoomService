@@ -146,8 +146,10 @@ class SubmissionController extends Controller
                 $problemAnalysis = $problemFile->problemAnalysis;
             }
 
-            $diff = $problemAnalysis->diff($results);
-            Log::info(var_dump($diff));
+            $class_diffs = $problemAnalysis->diff($results);
+            foreach ($class_diffs as $diff){
+                array_push($wrong, 'ไม่มีคลาส '.$diff->class);
+            }
         }
 
         $hasDriver = self::checkDriver($problem);
