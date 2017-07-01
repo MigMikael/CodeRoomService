@@ -146,8 +146,10 @@ class StudentController extends Controller
         if(!empty($data) && $data->count()){
             Log::info('###### '.sizeof($data));
             foreach ($data as $key => $value) {
-                $students[] = ['student_id' => $value->id, 'name' => $value->name];
-                //Log::info('###### '. $value->id.' '.$value->name);
+                $id = $value->id;
+                $id = str_replace(' ', '', $id);
+                $students[] = ['student_id' => $id, 'name' => $value->name];
+                Log::info('###### '. $id.' '.$value->name);
             }
         }else{
             return response()->json(['msg' => 'error in data File']);
