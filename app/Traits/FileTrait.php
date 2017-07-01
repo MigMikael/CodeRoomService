@@ -12,9 +12,22 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\App;
 use Chumper\Zipper\Zipper;
 
+/**
+ * Trait FileTrait
+ * @package App\Traits
+ */
 trait FileTrait
 {
     // Todo fix bug file name cannot in thai
+    /**
+     * storeFile.
+     *
+     * store file using Laravel _filesystem_
+     * and store file record in file table.
+     *
+     * @param $file
+     * @return \App\File
+     */
     public function storeFile($file)
     {
         $ex = $file->getClientOriginalExtension();
@@ -29,6 +42,15 @@ trait FileTrait
         return $file;
     }
 
+    /**
+     * path
+     *
+     * get path to specific file in project Storage
+     * determine by environment that currently operate.
+     *
+     * @param $file
+     * @return string
+     */
     public function path($file)
     {
         if (App::environment('local')) {
@@ -40,6 +62,15 @@ trait FileTrait
         return $path;
     }
 
+    /**
+     * problem_path.
+     *
+     * get path to specific problem file
+     * determine by environment thai currently operate.
+     *
+     * @param $prob_id
+     * @return string
+     */
     public function problem_path($prob_id)
     {
         if (App::environment('local')) {
@@ -51,6 +82,10 @@ trait FileTrait
         return $path;
     }
 
+    /**
+     * @param $submit_id
+     * @return string
+     */
     public function submission_path($submit_id)
     {
         if (App::environment('local')) {
@@ -62,18 +97,30 @@ trait FileTrait
         return $path;
     }
 
+    /**
+     * @param $file
+     * @return mixed
+     */
     public function getFile($file)
     {
         $file = Storage::get($file);
         return $file;
     }
 
+    /**
+     * @param $path
+     * @return mixed
+     */
     public function getFiles($path)
     {
         $files = Storage::allFiles($path);
         return $files;
     }
 
+    /**
+     * @param $name
+     * @return array
+     */
     public function storeQuestion($name)
     {
         $question_file = [
@@ -85,6 +132,10 @@ trait FileTrait
         return $question_file;
     }
 
+    /**
+     * @param $file
+     * @param $prob_id
+     */
     public function unzipProblem($file, $prob_id)
     {
         $des_path = self::problem_path($prob_id);
@@ -93,6 +144,10 @@ trait FileTrait
         $zipper->make($filePath)->extractTo($des_path);
     }
 
+    /**
+     * @param $file
+     * @param $submit_id
+     */
     public function unzipSubmission($file, $submit_id)
     {
         $des_path = self::submission_path($submit_id);
@@ -102,6 +157,9 @@ trait FileTrait
         //Storage::delete($file->name);
     }
 
+    /**
+     * @param $file
+     */
     public function deleteFile($file)
     {
         Storage::delete($file->name);

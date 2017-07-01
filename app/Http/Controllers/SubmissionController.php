@@ -316,7 +316,8 @@ class SubmissionController extends Controller
 
                 foreach ($scores as $score){
                     if($score['name'] == $fileName){
-                        if($score != 100){
+                        if($score != '100.000000'){
+                            // this is wrong
                             $isAccept = false;
                             $output = [
                                 'submission_file_id' => $submissionFile->id,
@@ -325,6 +326,7 @@ class SubmissionController extends Controller
                                 'error' => $score['score'],
                             ];
                         }else{
+                            // this is correct
                             $output = [
                                 'submission_file_id' => $submissionFile->id,
                                 'content' => '',
@@ -339,11 +341,10 @@ class SubmissionController extends Controller
         }
         if ($isAccept == true){
             $submission->is_accept = 'true';
-            $submission->save();
         }else{
             $submission->is_accept = 'false';
-            $submission->save();
         }
+        $submission->save();
     }
 
     public function checkDriver($problem)
@@ -647,9 +648,7 @@ class SubmissionController extends Controller
 
                 }
                 $constructor->save();
-
                 //Log::info('Constructor IS CORRECT '. $is_correct);
-
             }
 
             foreach ($result->methods as $method){
@@ -689,11 +688,10 @@ class SubmissionController extends Controller
                     array_push($wrong, $result->class.' มี method '.$method->name . ' ไม่ตรง');
                 }
                 $method->save();
-
                 //Log::info('Method IS CORRECT '. $is_correct);
             }
         }
-
+        Log::info('wrong : '.$wrong);
         return $wrong;
     }
 
