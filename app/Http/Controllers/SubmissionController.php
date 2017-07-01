@@ -570,14 +570,16 @@ class SubmissionController extends Controller
             ResultScore::create($result_score);
 
             foreach ($result->attributes as $attribute){
-                $prob_attr = ProblemAttribute::where('name', '=', $attribute->name)->first();
-                if($prob_attr != null){
-                    $this_problem = $prob_attr->problemAnalysis->problemFile->problem;
-                }else {
-                    $this_problem->id = 0;
-                }
-                if($problem->id != $this_problem->id){
-                    $prob_attr = null;
+                $problem_attributes = ProblemAttribute::where('name', '=', $attribute->name)->get();
+                $prob_attr = null;
+                foreach ($problem_attributes as $problem_attribute){
+                    $this_problem = $problem_attribute->problemAnalysis->problemFile->problem;
+                    if($problem->id == $this_problem->id){
+                        $prob_attr = $problem_attribute;
+                        break;
+                    }else{
+                        $prob_attr = null;
+                    }
                 }
 
                 $correct = true;
