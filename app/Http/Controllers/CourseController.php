@@ -162,10 +162,10 @@ class CourseController extends Controller
     public function changeMode($course_id)
     {
         $course = Course::findOrFail($course_id);
-        if($course->status == 'normal'){
-            $course->status = 'test';
+        if($course->mode == 'normal'){
+            $course->mode = 'test';
         }else{
-            $course->status = 'normal';
+            $course->mode = 'normal';
         }
         $course->save();
 

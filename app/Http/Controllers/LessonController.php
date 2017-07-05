@@ -44,9 +44,11 @@ class LessonController extends Controller
     {
         $lesson_id = $request->get('id');
         $new_name = $request->get('name');
+        $new_status = $request->get('status');
 
         $lesson = Lesson::findOrFail($lesson_id);
         $lesson->name = $new_name;
+        $lesson->status = $new_status;
         $lesson->save();
 
         return response()->json(['msg' => 'update lesson success']);
