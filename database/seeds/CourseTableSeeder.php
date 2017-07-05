@@ -19,6 +19,7 @@ class CourseTableSeeder extends Seeder
             'token' => $generator->generate(6),
             'color' => '244:67:54',
             'status' => 'enable',
+            'mode' => 'normal',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
@@ -29,6 +30,7 @@ class CourseTableSeeder extends Seeder
             'token' => $generator->generate(6),
             'color' => '239:108:0',
             'status' => 'enable',
+            'mode' => 'normal',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
@@ -39,6 +41,7 @@ class CourseTableSeeder extends Seeder
             'token' => $generator->generate(6),
             'color' => '0:131:143',
             'status' => 'enable',
+            'mode' => 'normal',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
@@ -49,6 +52,7 @@ class CourseTableSeeder extends Seeder
             'token' => $generator->generate(6),
             'color' => '63:81:181',
             'status' => 'enable',
+            'mode' => 'normal',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
@@ -59,6 +63,7 @@ class CourseTableSeeder extends Seeder
             'token' => $generator->generate(6),
             'color' => '0:105:92',
             'status' => 'disable',
+            'mode' => 'normal',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);

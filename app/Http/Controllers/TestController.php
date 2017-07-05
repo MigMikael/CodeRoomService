@@ -102,12 +102,31 @@ class TestController extends Controller
         Storage::delete($file->name);
         return 'delete success';*/
 
-        $problemAnalysis = Student::find([1, 2, 3, 8, 16]);
+        /*$problemAnalysis = Student::find([1, 2, 3, 8, 16]);
         $results = Student::find([1, 2, 4]);
 
         $diff = $problemAnalysis->diff($results);
         foreach ($diff as $d){
             echo $d->id." ";
+        }*/
+
+        $submission = Submission::orderBy('id', 'desc')->first();
+        $problem = $submission->problem;
+
+        $wrong = [];
+        $results = [];
+        foreach ($submission->submissionFiles as $submissionFile){
+            $results = $submissionFile->results;
+        }
+
+        $problemAnalysis = [];
+        foreach ($problem->problemFiles as $problemFile){
+            $problemAnalysis = $problemFile->problemAnalysis;
+        }
+
+        $class_diffs = $problemAnalysis->diff($results);
+        foreach ($class_diffs as $diff){
+            array_push($wrong, 'ไม่มีคลาส '.$diff->class);
         }
     }
 }

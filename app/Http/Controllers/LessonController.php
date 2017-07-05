@@ -28,7 +28,7 @@ class LessonController extends Controller
         $input = [
             'name' => $request->get('name'),
             'course_id' => $course_id,
-            'status' => 'false',
+            'status' => 'normal',
             'order' => Lesson::where('course_id', $course_id)->max('order') + 1
         ];
         Lesson::create($input);

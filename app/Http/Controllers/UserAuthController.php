@@ -25,10 +25,10 @@ class UserAuthController extends Controller
 
         if($student != null){
             if(password_verify($password, $student->password)){
-                $current_ip = $request->getClientIp();
-                if($student->ip != '' && $current_ip != $student->ip){
+
+                /*if($student->ip != '' && $current_ip != $student->ip){
                     return response()->json(['msg' => 'you already login from another machine']);
-                }
+                }*/
 
                 $_SESSION['userID'] = $student->id;
                 $_SESSION['userRole'] = 'student';
@@ -37,6 +37,7 @@ class UserAuthController extends Controller
                 /*Log::info('userID : '.$_SESSION['userID']);
                 Log::info('userRole : '.$_SESSION['userRole']);*/
 
+                $current_ip = $request->getClientIp();
                 $student->ip = $current_ip;
                 $student->save();
 
@@ -70,14 +71,6 @@ class UserAuthController extends Controller
     public function logout()
     {
         session_start();
-        $userRole = $_SESSION['userRole'];
-        if ($userRole == 'student'){
-            $userID = $_SESSION['userID'];
-            $student = Student::findOrFail($userID);
-            $student->ip = '';
-            $student->save();
-        }
-
         session_unset();
         session_destroy();
         return response()->json(['msg' => 'logout complete']);

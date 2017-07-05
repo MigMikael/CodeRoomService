@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Course;
 use App\Helper\TokenGenerate;
 use App\Lesson;
+use App\Student;
 use App\StudentCourse;
 use App\StudentLesson;
 use App\TeacherCourse;
@@ -29,7 +30,8 @@ class CourseController extends Controller
             'color' => $request->get('color'),
             'token' => (new TokenGenerate())->generate(6),
             'image' => $image->id,
-            'status' => 'enable'
+            'status' => 'enable',
+            'mode' => 'normal',
         ];
         $course = Course::create($course);
 
@@ -82,17 +84,31 @@ class CourseController extends Controller
         }
     }
 
-    public function showStudent($student_id, $course_id)
+    public function showStudent(Request $request, $student_id, $course_id)
     {
         $course = Course::withCount([
             'students', 'teachers', 'lessons', 'badges', 'announcements'
         ])->findOrFail($course_id);
 
-        $course['lessons'] = Lesson::where('course_id', $course_id)->ordered()->get();
 
-        foreach ($course['lessons'] as $lesson){
-            $lesson['problems_count'] = $lesson->problems()->count();
+        if($course->mode == 'normal'){                  // normal mode
+            $course['lessons'] = Lesson::where('course_id', $course_id)
+                ->normal()
+                ->ordered()
+                ->get();
+        }else{                                          // test mode
+            $student = Student::findOrFail($student_id);
+            $current_ip = $request->getClientIp();
+
+            if($student->ip != '' && $current_ip != $student->ip){
+                return response()->json(['msg' => 'you already login from another machine']);
+            }
+            $course['lessons'] = Lesson::where('course_id', $course_id)
+                ->test()
+                ->orderBy('order', 'desc')
+                ->first();
         }
+
         foreach ($course->lessons as $lesson){
             $student_lesson = StudentLesson::where([
                 ['student_id', '=', $student_id],
@@ -141,6 +157,19 @@ class CourseController extends Controller
         $course->save();
 
         return response()->json(['msg' => 'change course status success']);
+    }
+
+    public function changeMode($course_id)
+    {
+        $course = Course::findOrFail($course_id);
+        if($course->status == 'normal'){
+            $course->status = 'test';
+        }else{
+            $course->status = 'normal';
+        }
+        $course->save();
+
+        return response()->json(['msg' => 'change course mode success']);
     }
 
     public function addTeacher(Request $request)

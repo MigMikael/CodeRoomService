@@ -217,6 +217,19 @@ class StudentController extends Controller
         $student = Student::findOrFail($id);
         $student->ip = '';
         $student->save();
+
+        return response()->json(['msg' => 'remove ip complete']);
+    }
+
+    public function removeAllIP($course_id)
+    {
+        $course = Course::findOrFail($course_id);
+        $students = $course->students;
+        foreach ($students as $student){
+            $student->ip = '';
+            $student->save();
+        }
+
         return response()->json(['msg' => 'remove ip complete']);
     }
 }

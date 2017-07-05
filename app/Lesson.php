@@ -35,4 +35,14 @@ class Lesson extends Model
     {
         return $query->orderBy('order');
     }
+
+    public function scopeNormal($query)
+    {
+        return $query->where('status', '=', 'normal');
+    }
+
+    public function scopeTest($query)
+    {
+        return $query->where('status', '=', 'test');
+    }
 }

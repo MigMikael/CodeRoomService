@@ -21,6 +21,7 @@ class CreateCourseTable extends Migration
             $table->string('color');
             $table->string('token');
             $table->string('status');
+            $table->string('mode');
             $table->timestamps();
 
             $table->foreign('image')

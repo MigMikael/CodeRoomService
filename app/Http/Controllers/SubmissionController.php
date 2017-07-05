@@ -718,7 +718,7 @@ class SubmissionController extends Controller
                 //Log::info('Method IS CORRECT '. $is_correct);
             }
         }
-
+        Log::info(var_dump($wrong));
         return $wrong;
     }
 

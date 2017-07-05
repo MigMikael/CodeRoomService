@@ -72,7 +72,6 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         # 11
         Route::post('submission', 'SubmissionController@store2');
 
-
     });
 
     Route::group(['middleware' => 'teacherAuth', 'prefix' => 'teacher'], function (){
@@ -89,6 +88,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 16
         Route::get('course/{course_id}', 'CourseController@showTeacher');
+        # 18
+        Route::get('course/mode/{course_id}', 'CourseController@changeMode');
         # 17
         Route::get('course/{id}/member', 'CourseController@member');
 
@@ -149,6 +150,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 40
         Route::get('remove/ip/{id}', 'StudentController@removeIP');
+
+        Route::get('remove/ip_all/{course_id}', 'StudentController@removeAllIP');
 
     });
 

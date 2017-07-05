@@ -15,6 +15,7 @@ class Course extends Model
         'token',
         'color',
         'status',
+        'mode'
     ];
 
     protected $hidden = [
