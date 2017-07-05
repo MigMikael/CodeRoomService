@@ -100,7 +100,7 @@ class CourseController extends Controller
             $student = Student::findOrFail($student_id);
             $current_ip = $request->getClientIp();
 
-            if($student->ip != '' && $current_ip != $student->ip){
+            if($current_ip != $student->ip){
                 return response()->json(['msg' => 'you already login from another machine']);
             }
             $course['lessons'] = Lesson::where('course_id', $course_id)

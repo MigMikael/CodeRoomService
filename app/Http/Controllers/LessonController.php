@@ -28,7 +28,7 @@ class LessonController extends Controller
         $input = [
             'name' => $request->get('name'),
             'course_id' => $course_id,
-            'status' => 'normal',
+            'status' => 'normal',               // lesson status 'normal' or 'test'
             'order' => Lesson::where('course_id', $course_id)->max('order') + 1
         ];
         Lesson::create($input);
@@ -44,7 +44,12 @@ class LessonController extends Controller
     {
         $lesson_id = $request->get('id');
         $new_name = $request->get('name');
-        $new_status = $request->get('status');
+        if($request->has('status')){
+            $new_status = $request->get('status');
+        }
+        else{
+            $new_status = 'normal';
+        }
 
         $lesson = Lesson::findOrFail($lesson_id);
         $lesson->name = $new_name;
