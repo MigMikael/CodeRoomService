@@ -331,7 +331,7 @@ class SubmissionController extends Controller
 
                 foreach ($scores as $score){
                     if($score['name'] == $fileName){
-                        if($score != '100.000000'){
+                        if($score['score'] != '100.000000'){
                             // this is wrong
                             $isAccept = false;
                             $output = [
@@ -757,7 +757,7 @@ class SubmissionController extends Controller
         }
 
         Log::info('Accept Count : '.$accept_count);
-        Log::info('Prob Count : '.$accept_count);
+        Log::info('Prob Count : '.$prob_count);
         $progress = ($accept_count/$prob_count)*100;
 
         $student_lesson->progress = $progress;

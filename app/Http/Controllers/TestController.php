@@ -110,7 +110,7 @@ class TestController extends Controller
             echo $d->id." ";
         }*/
 
-        $submission = Submission::orderBy('id', 'desc')->first();
+        /*$submission = Submission::orderBy('id', 'desc')->first();
         $problem = $submission->problem;
 
         $wrong = [];
@@ -127,6 +127,11 @@ class TestController extends Controller
         $class_diffs = $problemAnalysis->diff($results);
         foreach ($class_diffs as $diff){
             array_push($wrong, 'ไม่มีคลาส '.$diff->class);
-        }
+        }*/
+
+        $id = 1;
+        $lesson = Lesson::findOfFail($id);
+        $lesson->students;
+        return $lesson;
     }
 }

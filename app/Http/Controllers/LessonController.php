@@ -80,4 +80,11 @@ class LessonController extends Controller
 
         return response()->json(['msg' => 'change order success']);
     }
+
+    public function exportScore($id)
+    {
+        $lesson = Lesson::findOfFail($id);
+        $lesson->students;
+        return $lesson;
+    }
 }

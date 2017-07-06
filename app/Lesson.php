@@ -21,9 +21,10 @@ class Lesson extends Model
         return $this->belongsTo('App\Course');
     }
 
-    public function lessons()
+    public function students()
     {
-        return $this->hasMany('App\Lesson');
+        return $this->belongsToMany('App\Student', 'student_lesson', 'lesson_id', 'student_id')
+            ->withPivot('progress');
     }
 
     public function problems()
