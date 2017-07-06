@@ -88,7 +88,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 16
         Route::get('course/{course_id}', 'CourseController@showTeacher');
-        # 18
+        # 
         Route::get('course/mode/{course_id}', 'CourseController@changeMode');
         # 17
         Route::get('course/{id}/member', 'CourseController@member');

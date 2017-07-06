@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Lesson;
 use App\Problem;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LessonController extends Controller
 {
@@ -83,8 +85,49 @@ class LessonController extends Controller
 
     public function exportScore($id)
     {
-        $lesson = Lesson::findOfFail($id);
-        $lesson->students;
-        return $lesson;
+        $lesson = Lesson::findOrFail($id);
+        $course = $lesson->course;
+        $students = $course->students;
+
+        foreach ($lesson->problems as $problem){
+            foreach ($problem->submissions as $submission){
+                if($submission->is_accept == 'true'){
+                    $score = 0;
+                    foreach ($submission->submissionFiles as $submissionFile){
+                        foreach ($submissionFile->outputs as $output){
+                            $score += $output->score;
+                        }
+                        $curr_std = $submission->student;
+                        $student = $students->where('id', $curr_std->id)->first();
+                        $student['score'] = $score;
+                    }
+                    $student['sub_num'] = $submission->sub_num;
+                }
+            }
+        }
+        $data_score = [];
+        foreach ($students as $student){
+            if(!isset($student->score)){
+                $student->score = '0';
+            }
+
+            if(!isset($student->sub_num)){
+                $student->sub_num = '-';
+            }
+            array_push($data_score, [
+                'id' => $student->student_id,
+                'name' => $student->name,
+                'score' => $student->score,
+                'submit count' => $student->sub_num
+            ]);
+        }
+
+        $filename = 'score-'.Carbon::now();
+        $filename = str_replace(' ', '-', $filename);
+        Excel::create($filename, function($excel) use ($data_score) {
+            $excel->sheet('sheet1', function($sheet) use ($data_score) {
+                $sheet->fromArray($data_score);
+            });
+        })->download('xlsx');
     }
 }

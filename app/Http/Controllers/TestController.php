@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Course;
 use App\File;
 use App\Problem;
 use App\Student;
 use App\Lesson;
 use App\Submission;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Chumper\Zipper\Zipper;
 use App\Traits\FileTrait;
 use Illuminate\Support\Facades\Storage;
 use Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TestController extends Controller
 {
@@ -129,9 +132,45 @@ class TestController extends Controller
             array_push($wrong, 'ไม่มีคลาส '.$diff->class);
         }*/
 
-        $id = 1;
-        $lesson = Lesson::findOfFail($id);
-        $lesson->students;
-        return $lesson;
+        $lesson = Lesson::findOrFail(1);
+        $course = $lesson->course;
+        $students = $course->students;
+
+        foreach ($lesson->problems as $problem){
+            foreach ($problem->submissions as $submission){
+                if($submission->is_accept == 'true'){
+                    $score = 0;
+                    foreach ($submission->submissionFiles as $submissionFile){
+                        foreach ($submissionFile->outputs as $output){
+                            $score += $output->score;
+                        }
+                        $curr_std = $submission->student;
+                        $student = $students->where('id', $curr_std->id)->first();
+                        $student['score'] = $score;
+                    }
+                    $student['sub_num'] = $submission->sub_num;
+                }
+            }
+        }
+        $data_score = [];
+        foreach ($students as $student){
+            if(!isset($student->score)){
+                $student->score = '0';
+            }
+            array_push($data_score, [
+                'id' => $student->student_id,
+                'name' => $student->name,
+                'score' => $student->score
+            ]);
+        }
+
+        $filename = 'score-'.Carbon::now();
+        $filename = str_replace(' ', '-', $filename);
+        Excel::create($filename, function($excel) use ($data_score) {
+            $excel->sheet('sheet1', function($sheet) use ($data_score) {
+                $sheet->fromArray($data_score);
+            });
+        })->download('xlsx');
+        //return 'create excel complete';
     }
 }
