@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
+    public function show($id)
+    {
+        $f = File::findOrFail($id);
+        $file = Storage::disk('local')->get($f->name);
+        return response($file, 200)->header('Content-Type', $f->mime);
+    }
+
     public function question($id)
     {
         $problem = Problem::findOrFail($id);

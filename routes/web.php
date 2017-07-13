@@ -24,13 +24,20 @@ Route::get('/', function () {
 #--------------------------------------------------------------------------------------------------------
 #                               General API
 #--------------------------------------------------------------------------------------------------------
+
 Route::post('login', 'UserAuthController@login');
+
 Route::get('logout', 'UserAuthController@logout');
 
+
+
 Route::post('register', 'UserAuthController@registerUser');
+
 Route::get('register', 'UserAuthController@register');
 
 Route::get('image/show/{id}', 'ImageController@show');
+
+Route::get('file/show/{id}', 'FileController@show');
 
 #--------------------------------------------------------------------------------------------------------
 
@@ -88,7 +95,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 16
         Route::get('course/{course_id}', 'CourseController@showTeacher');
-        # 
+        # New API
         Route::get('course/mode/{course_id}', 'CourseController@changeMode');
         # 17
         Route::get('course/{id}/member', 'CourseController@member');
@@ -104,7 +111,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::delete('lesson/delete/{id}', 'LessonController@delete');
         # 22
         Route::post('lesson/change_order', 'LessonController@changeOrder');
-        #
+        # New API
         Route::get('lesson/export/score/{id}', 'LessonController@exportScore');
 
 
@@ -112,7 +119,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('problem/{id}', 'ProblemController@show');
         # 24 Todo Edit Problem File
         Route::post('problem/edit', 'ProblemController@update');
-        # 25 Todo finish this
+        # 25
         Route::post('problem/store', 'ProblemController@store');
         # 26
         Route::post('problem/store_score', 'ProblemController@storeScore');
@@ -152,7 +159,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 40
         Route::get('remove/ip/{id}', 'StudentController@removeIP');
-
+        # New API
         Route::get('remove/ip_all/{course_id}', 'StudentController@removeAllIP');
 
     });
@@ -173,7 +180,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 45
         Route::get('teacher', 'TeacherController@getAll');
-        # 46 [New Api]
+        # 46 New Api
         Route::post('teacher', 'TeacherController@store');
         # 47
         Route::get('teacher/status/{teacher_id}', 'TeacherController@changeStatus');
@@ -185,9 +192,9 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 });
 
 //Route::get('test/student', 'TestController@testStudent');
-Route::post('test', 'TestController@test');
-Route::get('test2', 'TestController@test2');
+//Route::post('test', 'TestController@test');
+//Route::get('test2', 'TestController@test2');
 
 //Deprecated api
-Route::post('api/submission/code', 'SubmissionController@store');
-Route::get('problem/getQuestion/{id}', 'FileController@question');
+/*Route::post('api/submission/code', 'SubmissionController@store');
+Route::get('problem/getQuestion/{id}', 'FileController@question');*/
