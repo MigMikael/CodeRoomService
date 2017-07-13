@@ -18,7 +18,7 @@ class LessonController extends Controller
         $lesson['problems'] = $problems;
 
         foreach ($lesson['problems'] as $problem){
-            $problem['question'] = url('problem/getQuestion/'.$problem->id);
+            $problem['question'] = url('problem/'.$problem->id.'/question');
         }
 
         return $lesson;
