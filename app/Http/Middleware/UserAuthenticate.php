@@ -45,12 +45,12 @@ class UserAuthenticate
                 $teacher = Teacher::where('token', '=', $request->header('AuthorizationToken'))->first();
 
                 if($teacher == null){
-                    return response()->json(['status' => 'request unauthorized']);
+                    return response()->json(['status' => 'request unauthorized 2']);
                 }
             }
 
         }else{
-            return response()->json(['status' => 'request unauthorized']);
+            return response()->json(['status' => 'request unauthorized 1']);
         }
         return $next($request);
     }
