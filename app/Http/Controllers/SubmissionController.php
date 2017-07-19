@@ -278,7 +278,7 @@ class SubmissionController extends Controller
             $problemOutputNum = ProblemInput::where('problem_file_id', '=', $problemFile->id)->count();
 
             if($problemOutputNum > 0){
-                foreach ($scores['score'] as $score){
+                foreach ($scores as $score){
                     if($score['score'] != '100.000000'){
                         $isAccept = false;
                         $output = [
