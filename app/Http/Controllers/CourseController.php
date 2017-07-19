@@ -11,6 +11,7 @@ use App\StudentLesson;
 use App\TeacherCourse;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
+use Log;
 
 class CourseController extends Controller
 {
@@ -116,8 +117,8 @@ class CourseController extends Controller
                 ['student_id', '=', $student_id],
                 ['lesson_id', '=', $lesson->id]
             ])->first();
-
-            if($student_lesson == null){
+            Log::info('studentID = '.$student_id.' lessonID = '.$lesson->id);
+            if(sizeof($student_lesson) < 1){
                 $lesson['progress'] = 0;
             }else{
                 $lesson['progress'] = $student_lesson->progress;
