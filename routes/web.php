@@ -38,17 +38,17 @@ Route::get('register', 'UserAuthController@register');
 
 #--------------------------------------------------------------------------------------------------------
 
+# 5
+Route::get('image/show/{id}', 'ImageController@show');
+# 6
+Route::get('file/show/{id}', 'FileController@show');
+# 8
+Route::get('problem/{id}/question', 'FileController@question');
+
 Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
-    # 5
-    Route::get('image/show/{id}', 'ImageController@show');
-    # 6
-    Route::get('file/show/{id}', 'FileController@show');
     # 7
     Route::get('user/home', 'CourseController@index');
-    # 8
-    Route::get('problem/{id}/question', 'FileController@question');
-
 
     Route::group(['middleware' => 'studentAuth', 'prefix' => 'student'], function (){
 
