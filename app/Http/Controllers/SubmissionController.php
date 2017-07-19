@@ -278,8 +278,8 @@ class SubmissionController extends Controller
             $problemOutputNum = ProblemInput::where('problem_file_id', '=', $problemFile->id)->count();
 
             if($problemOutputNum > 0){
-                foreach ($scores as $score){
-                    Log::info(gettype($score));
+                foreach ($scores['score'] as $score){
+                    /*Log::info(gettype($score));*/
                     if($score != '100.000000'){
                         $isAccept = false;
                         $output = [
@@ -332,7 +332,7 @@ class SubmissionController extends Controller
 
                 foreach ($scores as $score){
                     if($score['name'] == $fileName){
-                        Log::info(gettype($score['score']));
+                        /*Log::info(gettype($score['score']));*/
                         if($score['score'] != '100.000000'){
                             // this is wrong
                             $isAccept = false;
