@@ -424,7 +424,7 @@ class SubmissionController extends Controller
         }
         $data['submission'] = $submission;
 
-        $problem = [];
+        /*$problem = [];
         if(sizeof($submission->problem) > 0){
             $problem = $submission->problem;
             $problemFiles = $problem->problemFiles;
@@ -439,7 +439,7 @@ class SubmissionController extends Controller
             }
         }
 
-        $data['problem'] = $problem;
+        $data['problem'] = $problem;*/
 
         return $submission;
     }

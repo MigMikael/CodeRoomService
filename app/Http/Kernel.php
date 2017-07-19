@@ -15,6 +15,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
+        \App\Http\Middleware\CheckServiceMode::class,
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
@@ -61,5 +62,6 @@ class Kernel extends HttpKernel
         'studentAuth' => \App\Http\Middleware\StudentAuthenticate::class,
         'teacherAuth' => \App\Http\Middleware\TeacherAuthenticate::class,
         'adminAuth' => \App\Http\Middleware\AdminAuthenticate::class,
+        'checkMode' => \App\Http\Middleware\CheckServiceMode::class,
     ];
 }

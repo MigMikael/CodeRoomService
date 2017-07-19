@@ -25,166 +25,168 @@ Route::get('/', function () {
 #                               General API
 #--------------------------------------------------------------------------------------------------------
 
+# 1
 Route::post('login', 'UserAuthController@login');
-
+# 2
 Route::get('logout', 'UserAuthController@logout');
 
 
-
+# 3
 Route::post('register', 'UserAuthController@registerUser');
-
+# 4
 Route::get('register', 'UserAuthController@register');
-
-Route::get('image/show/{id}', 'ImageController@show');
-
-Route::get('file/show/{id}', 'FileController@show');
 
 #--------------------------------------------------------------------------------------------------------
 
 Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
+    # 5
+    Route::get('image/show/{id}', 'ImageController@show');
+    # 6
+    Route::get('file/show/{id}', 'FileController@show');
+    # 7
     Route::get('user/home', 'CourseController@index');
-
+    # 8
     Route::get('problem/{id}/question', 'FileController@question');
 
 
     Route::group(['middleware' => 'studentAuth', 'prefix' => 'student'], function (){
 
-
+        # 9
         Route::get('dashboard', 'StudentController@dashboard');
-        # 2
+        # 10
         Route::get('profile/{id}', 'StudentController@profile');
-        # 3
+        # 11 Todo Student can change Avatar Image
         Route::post('profile/edit', 'StudentController@updateProfile');
-        # 4
+        # 12
         Route::post('change_password', 'StudentController@changePassword');
 
 
-        # 5
+        # 13
         Route::get('course/{id}/member', 'CourseController@member');
-        # 6
+        # 14
         Route::post('course/join', 'CourseController@join');
-        # 7
+        # 15 Todo Test This API
         Route::get('course/{student_id}/{course_id}', 'CourseController@showStudent');
 
 
-        # 8
+        # 16
         Route::get('lesson/{id}', 'LessonController@show');
-        # 9
+        # 17
         Route::get('announcement/{id}', 'AnnouncementController@show');
 
 
-        # 10
+        # 18
         Route::get('submission/{problem_id}/{student_id}', 'SubmissionController@result');
-        # 11
+        # 19
         Route::post('submission', 'SubmissionController@store2');
 
     });
 
     Route::group(['middleware' => 'teacherAuth', 'prefix' => 'teacher'], function (){
 
-        # 12
+        # 20
         Route::get('dashboard', 'TeacherController@dashboard');
-        # 13
+        # 21
         Route::get('profile/{id}', 'TeacherController@profile');
-        # 14
+        # 22
         Route::post('profile/edit', 'TeacherController@updateProfile');
-        # 15
+        # 23
         Route::post('change_password', 'TeacherController@changePassword');
 
 
-        # 16
+        # 24
         Route::get('course/{course_id}', 'CourseController@showTeacher');
-        # New API
+        # 25
         Route::get('course/mode/{course_id}', 'CourseController@changeMode');
-        # 17
+        # 26
         Route::get('course/{id}/member', 'CourseController@member');
 
 
-        # 18
+        # 27
         Route::get('lesson/{id}', 'LessonController@show');
-        # 19
+        # 28 Todo Lesson Status
         Route::post('lesson/edit', 'LessonController@update');
-        # 20
+        # 29 Todo Lesson Status
         Route::post('lesson/store', 'LessonController@store');
-        # 21
+        # 30
         Route::delete('lesson/delete/{id}', 'LessonController@delete');
-        # 22
+        # 31
         Route::post('lesson/change_order', 'LessonController@changeOrder');
-        # New API
+        # 32
         Route::get('lesson/export/score/{id}', 'LessonController@exportScore');
 
 
-        # 23
+        # 33
         Route::get('problem/{id}', 'ProblemController@show');
-        # 24 Todo Edit Problem File
+        # 34 Todo Edit Problem File
         Route::post('problem/edit', 'ProblemController@update');
-        # 25
+        # 35
         Route::post('problem/store', 'ProblemController@store');
-        # 26
+        # 36
         Route::post('problem/store_score', 'ProblemController@storeScore');
-        # 27
+        # 37
         Route::delete('problem/delete/{id}', 'ProblemController@delete');
-        # 28
+        # 38
         Route::post('problem/change_order', 'ProblemController@changeOrder');
-        # 29
+        # 39
         Route::get('problem/{id}/submission', 'ProblemController@submission');
 
 
-        # 30
+        # 40
         Route::get('submission/{id}/code', 'SubmissionController@code');
 
 
-        # 31
+        # 41
         Route::get('announcement/{id}', 'AnnouncementController@show');
-        # 32
-        Route::post('announcement/edit', 'AnnouncementController@update');
-        # 33 Todo Priority
+        # 42 Todo Can support priority
         Route::post('announcement/store', 'AnnouncementController@store');
-        # 34
+        # 43 Todo Can support priority
+        Route::post('announcement/edit', 'AnnouncementController@update');
+        # 44
         Route::delete('announcement/delete/{id}', 'AnnouncementController@delete');
 
 
-        # 35
+        # 45
         Route::get('student/{id}', 'StudentController@profile');
-        # 36
+        # 46
         Route::post('student/store', 'StudentController@addMember');
-        # 37
+        # 47
         Route::post('students/store', 'StudentController@addMembers');
-        # 38
+        # 48
         Route::get('student/disable/{student_id}/{course_id}', 'StudentController@disable');
-        # 39 Todo Change this stupid name
+        # 49 Todo Change this stupid name
         Route::get('student/all/{course_id}', 'StudentController@getAll');
 
 
-        # 40
+        # 50
         Route::get('remove/ip/{id}', 'StudentController@removeIP');
-        # New API
+        # 51
         Route::get('remove/ip_all/{course_id}', 'StudentController@removeAllIP');
 
     });
 
     Route::group(['middleware' => 'adminAuth', 'prefix' => 'admin'], function (){
 
-        # 41
+        # 52
         Route::get('dashboard', 'AdminController@dashboard');
 
 
-        # 42
+        # 53
         Route::post('course', 'CourseController@store');
-        # 43
+        # 54
         Route::get('course/status/{course_id}', 'CourseController@changeStatus');
-        # 44
+        # 55
         Route::post('course/add/teacher', 'CourseController@addTeacher');
 
 
-        # 45
+        # 56
         Route::get('teacher', 'TeacherController@getAll');
-        # 46 New Api
+        # 57 New Api
         Route::post('teacher', 'TeacherController@store');
-        # 47
+        # 58
         Route::get('teacher/status/{teacher_id}', 'TeacherController@changeStatus');
-        # 48
+        # 59
         Route::get('teacher/course/{course_id}', 'CourseController@teacherMember');
 
     });
@@ -196,5 +198,5 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 //Route::get('test2', 'TestController@test2');
 
 //Deprecated api
-/*Route::post('api/submission/code', 'SubmissionController@store');
-Route::get('problem/getQuestion/{id}', 'FileController@question');*/
+//Route::post('api/submission/code', 'SubmissionController@store');
+//Route::get('problem/getQuestion/{id}', 'FileController@question');

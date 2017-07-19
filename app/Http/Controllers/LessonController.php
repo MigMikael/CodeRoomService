@@ -14,7 +14,9 @@ class LessonController extends Controller
     {
         $lesson = Lesson::withCount(['problems'])->findOrFail($id);
 
-        $problems = Problem::where('lesson_id', '=', $lesson->id)->ordered()->get();
+        $problems = Problem::where('lesson_id', '=', $lesson->id)
+            ->ordered()
+            ->get();
         $lesson['problems'] = $problems;
 
         foreach ($lesson['problems'] as $problem){
@@ -30,7 +32,7 @@ class LessonController extends Controller
         $input = [
             'name' => $request->get('name'),
             'course_id' => $course_id,
-            'status' => 'normal',               // lesson status 'normal' or 'test'
+            'status' => $request->get('status'),// lesson status 'normal' or 'test'
             'order' => Lesson::where('course_id', $course_id)->max('order') + 1
         ];
         Lesson::create($input);
@@ -45,17 +47,10 @@ class LessonController extends Controller
     public function update(Request $request)
     {
         $lesson_id = $request->get('id');
-        $new_name = $request->get('name');
-        if($request->has('status')){
-            $new_status = $request->get('status');
-        }
-        else{
-            $new_status = 'normal';
-        }
 
         $lesson = Lesson::findOrFail($lesson_id);
-        $lesson->name = $new_name;
-        $lesson->status = $new_status;
+        $lesson->name = $request->get('name');;
+        $lesson->status = $request->get('status');;
         $lesson->save();
 
         return response()->json(['msg' => 'update lesson success']);

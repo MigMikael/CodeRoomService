@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\File;
 use App\Helper\TokenGenerate;
 use App\Student;
 use App\Course;
@@ -19,6 +20,9 @@ class StudentController extends Controller
 
     public function dashboard()
     {
+        if (!isset($_SESSION['userID'])){
+            return response()->json(['msg' => 'please login']);
+        }
         $userID = $_SESSION['userID'];
 
         $student = Student::findOrFail($userID);
@@ -65,6 +69,14 @@ class StudentController extends Controller
         $name = $request->get('name');
         $email = $request->get('email');
         $username = $request->get('username');
+
+        if ($request->has('image')){
+            $image = File::findOrFail($student->image);
+            self::deleteFile($image);
+
+            $image = self::storeImage($request->file('image'));
+            $student->image = $image->id;
+        }
 
         $student->name = $name;
         $student->email = $email;

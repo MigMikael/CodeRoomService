@@ -19,11 +19,17 @@ class AnnouncementController extends Controller
         $title = $request->get('title');
         $content = $request->get('content');
 
+        if ($request->has('priority')){
+            $priority = $request->get('priority');
+        }else{
+            $priority = 2;
+        }
+
         $announce = [
             'course_id' => $course_id,
             'title' => $title,
             'content' => $content,
-            'priority' => 2
+            'priority' => $priority
         ];
 
         Announcement::create($announce);
@@ -34,12 +40,14 @@ class AnnouncementController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $title = $request->get('title');
-        $content = $request->get('content');
-
         $announce = Announcement::findOrFail($id);
-        $announce->title = $title;
-        $announce->content = $content;
+
+        $announce->title = $request->get('title');
+        $announce->content = $request->get('content');
+
+        if ($request->has('priority')){
+            $announce->priority = $request->get('priority');
+        }
         $announce->save();
 
         return response()->json(['msg' => 'update announcement success']);

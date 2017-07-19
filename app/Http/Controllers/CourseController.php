@@ -79,8 +79,10 @@ class CourseController extends Controller
 
             StudentCourse::create($student_course);
             return response()->json(['msg' => 'join course success']);
+
         }else{
             return response()->json(['msg' => 'token mismatch']);
+
         }
     }
 

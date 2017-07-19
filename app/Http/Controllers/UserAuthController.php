@@ -75,4 +75,14 @@ class UserAuthController extends Controller
         session_destroy();
         return response()->json(['msg' => 'logout complete']);
     }
+
+    public function register()
+    {
+        return response()->json(['msg' => 'not available right now']);
+    }
+
+    public function registerUser()
+    {
+        return response()->json(['msg' => 'not available right now']);
+    }
 }
