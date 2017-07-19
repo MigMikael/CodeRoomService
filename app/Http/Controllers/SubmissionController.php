@@ -331,6 +331,7 @@ class SubmissionController extends Controller
 
                 foreach ($scores as $score){
                     if($score['name'] == $fileName){
+                        Log::info(gettype($score['score']));
                         if($score['score'] != '100.000000'){
                             // this is wrong
                             $isAccept = false;
