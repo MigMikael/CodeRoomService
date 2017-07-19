@@ -279,7 +279,8 @@ class SubmissionController extends Controller
 
             if($problemOutputNum > 0){
                 foreach ($scores as $score){
-                    if($score != 100){
+                    Log::info(gettype($score));
+                    if($score != '100.000000'){
                         $isAccept = false;
                         $output = [
                             'submission_file_id' => $submissionFile->id,
