@@ -93,7 +93,7 @@ class CourseController extends Controller
             'students', 'teachers', 'lessons', 'badges', 'announcements'
         ])->findOrFail($course_id);
 
-        $student = Student::findOrFail($student_id);
+        $student = Student::where('student_id',$student_id)->firstOrFail();
         if($course->mode == 'normal'){                  // normal mode
             $course['lessons'] = Lesson::where('course_id', $course_id)
                 ->normal()
