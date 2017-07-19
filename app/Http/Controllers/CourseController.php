@@ -93,14 +93,13 @@ class CourseController extends Controller
             'students', 'teachers', 'lessons', 'badges', 'announcements'
         ])->findOrFail($course_id);
 
-
+        $student = Student::findOrFail($student_id);
         if($course->mode == 'normal'){                  // normal mode
             $course['lessons'] = Lesson::where('course_id', $course_id)
                 ->normal()
                 ->ordered()
                 ->get();
         }else{                                          // test mode
-            $student = Student::findOrFail($student_id);
             $current_ip = $request->getClientIp();
 
             if($current_ip != $student->ip){
@@ -114,10 +113,10 @@ class CourseController extends Controller
 
         foreach ($course->lessons as $lesson){
             $student_lesson = StudentLesson::where([
-                ['student_id', '=', $student_id],
+                ['student_id', '=', $student->id],
                 ['lesson_id', '=', $lesson->id]
             ])->first();
-            Log::info('studentID = '.$student_id.' lessonID = '.$lesson->id);
+            //Log::info('studentID = '.$student_id.' lessonID = '.$lesson->id);
             if(sizeof($student_lesson) < 1){
                 $lesson['progress'] = 0;
             }else{
@@ -137,7 +136,9 @@ class CourseController extends Controller
             'students', 'teachers', 'lessons', 'badges', 'announcements'
         ])->findOrFail($course_id);
 
-        $course['lessons'] = Lesson::where('course_id', '=', $course_id)->ordered()->get();
+        $course['lessons'] = Lesson::where('course_id', '=', $course_id)
+            ->ordered()
+            ->get();
         foreach ($course['lessons'] as $lesson){
             $lesson['problems_count'] = $lesson->problems()->count();
         }
