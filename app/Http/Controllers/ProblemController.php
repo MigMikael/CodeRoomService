@@ -330,6 +330,7 @@ class ProblemController extends Controller
     {
         $problem = Problem::findOrFail($id);
         $problem->delete();
+        DB::table('problem')->decrement('id');
 
         return response()->json(['msg' => 'delete problem success']);
     }

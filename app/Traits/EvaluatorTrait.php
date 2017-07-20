@@ -397,43 +397,45 @@ trait EvaluatorTrait
         return $json;
     }
 
-    public function analyzeSubmitFile2($submissionFile)
+    public function analyzeSubmitFile2($submission)
     {
         $evaluator_ip = env('EVALUATOR_IP');
         $data = [];
-        $code = $submissionFile->code;
-        $is_main = false;
-        $main = strpos($code, 'main');
-        if($main != false){
-            $args = strpos($code, '(', $main);
-            $args1 = strpos($code, 'String', $args);
-            $args2 = strpos($code, '[]', $args1);
+        foreach ($submission->submissionFiles as $submissionFile){
+            $code = $submissionFile->code;
+            $is_main = false;
+            $main = strpos($code, 'main');
+            if($main != false){
+                $args = strpos($code, '(', $main);
+                $args1 = strpos($code, 'String', $args);
+                $args2 = strpos($code, '[]', $args1);
 
-            if($args != false && $args1 != false && $args2 != false){
-                $is_main = true;
+                if($args != false && $args1 != false && $args2 != false){
+                    $is_main = true;
+                }
             }
+
+            $package = $submissionFile->package;
+            if($package == 'default package'){
+                $package = '';
+            }
+
+            $temps = explode('.', $submissionFile->filename);
+            $fileName = $temps[0];
+
+            $dataFile = [
+                'package' => $package,
+                'filename' => $fileName,
+                'code' => $submissionFile->code,
+                'is_main' => $is_main
+            ];
+            array_push($data, $dataFile);
         }
-
-        $package = $submissionFile->package;
-        if($package == 'default package'){
-            $package = '';
-        }
-
-        $temps = explode('.', $submissionFile->filename);
-        $fileName = $temps[0];
-
-        $dataFile = [
-            'package' => $package,
-            'filename' => $fileName,
-            'code' => $submissionFile->code,
-            'is_main' => $is_main
-        ];
-        //array_push($data, $dataFile);
 
         $client = new Client();
         $res = $client->request('POST', $evaluator_ip.'/api/student/code', [
             'json' => [
-                'files' => $dataFile,
+                'files' => $data,
             ]
         ]);
 

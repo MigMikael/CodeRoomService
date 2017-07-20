@@ -130,13 +130,14 @@ class SubmissionController extends Controller
         $wrong = [];
         $problem = $submission->problem;
         if ($problem->is_parse == 'true'){
+            $classes = self::analyzeSubmitFile2($submission);
+
             foreach ($submission->submissionFiles as $submissionFile){
-                $classes = self::analyzeSubmitFile2($submission);
                 self::saveResult($classes, $submissionFile);
                 $wrong = self::calStructureScore($submissionFile);
             }
 
-            /*$results = [];
+            $results = [];
             foreach ($submission->submissionFiles as $submissionFile){
                 $results = $submissionFile->results;
             }
@@ -149,10 +150,10 @@ class SubmissionController extends Controller
             $class_diffs = $problemAnalysis->diff($results);
             foreach ($class_diffs as $diff){
                 array_push($wrong, 'ไม่มีคลาส '.$diff->class);
-            }*/
+            }
         }
 
-        /*$hasDriver = self::checkDriver($problem);
+        $hasDriver = self::checkDriver($problem);
         $currentVer = self::getCurrentVersion($problem);
 
         if(!$hasDriver) {
@@ -206,7 +207,7 @@ class SubmissionController extends Controller
                 $result->constructors;
                 $result->methods;
             }
-        }*/
+        }
 
         $submission['wrong'] = $wrong;
         return $submission;
