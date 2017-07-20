@@ -132,7 +132,7 @@ class TestController extends Controller
             array_push($wrong, 'ไม่มีคลาส '.$diff->class);
         }*/
 
-        $lesson = Lesson::findOrFail(1);
+        /*$lesson = Lesson::findOrFail(1);
         $course = $lesson->course;
         $students = $course->students;
 
@@ -170,7 +170,10 @@ class TestController extends Controller
             $excel->sheet('sheet1', function($sheet) use ($data_score) {
                 $sheet->fromArray($data_score);
             });
-        })->download('xlsx');
+        })->download('xlsx');*/
         //return 'create excel complete';
+
+        $problem = new Problem();
+        return $problem->id;
     }
 }

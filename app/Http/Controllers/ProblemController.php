@@ -57,42 +57,24 @@ class ProblemController extends Controller
             return response()->json(['msg' => 'file not found']);
         }
 
-        $lastProb = Problem::orderBy('created_at', 'desc')->first();
-        if(sizeof($lastProb) > 0){
-            $next_id = $lastProb->id;
-        }else{
-            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-            DB::table('problem')->truncate();
-            DB::table('problem_file')->truncate();
-            DB::table('problem_analysis')->truncate();
-            DB::table('problem_input')->truncate();
-            DB::table('problem_output')->truncate();
-            DB::table('problem_attribute')->truncate();
-            DB::table('problem_constructor')->truncate();
-            DB::table('problem_method')->truncate();
-            DB::table('problem_score')->truncate();
-            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-            $next_id = 0;
-        }
-
-        $file = self::storeFile($file);
-        self::unzipProblem($file, $next_id + 1);
-
-        $name = $request->get('name');
-        $question_file = self::storeQuestion($name);
-
         $problem = [
             'lesson_id' => $lesson_id,
-            'name' => $name,
+            'name' => $request->get('name'),
             'description' => $request->get('description'),
             'evaluator' => $request->get('evaluator'),
             'order' => $order,
-            'question' => $question_file->id,
             'timelimit' => $request->get('timelimit'),
             'memorylimit' => $request->get('memorylimit'),
             'is_parse' => $request->get('is_parse'),
         ];
         $problem = Problem::create($problem);
+
+        $file = self::storeFile($file);
+        self::unzipProblem($file, $problem->id);
+
+        $question_file = self::storeQuestion($problem->name);
+        $problem->question = $question_file->id;
+        $problem->save();
 
         self::storeProblemFile($problem);
 
@@ -330,7 +312,6 @@ class ProblemController extends Controller
     {
         $problem = Problem::findOrFail($id);
         $problem->delete();
-        DB::table('problem')->decrement('id');
 
         return response()->json(['msg' => 'delete problem success']);
     }
