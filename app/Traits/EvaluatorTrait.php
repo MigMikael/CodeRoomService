@@ -397,6 +397,54 @@ trait EvaluatorTrait
         return $json;
     }
 
+    public function analyzeSubmitFile2($submissionFile)
+    {
+        $evaluator_ip = env('EVALUATOR_IP');
+        $code = $submissionFile->code;
+        $is_main = false;
+        $main = strpos($code, 'main');
+        if($main != false){
+            $args = strpos($code, '(', $main);
+            $args1 = strpos($code, 'String', $args);
+            $args2 = strpos($code, '[]', $args1);
+
+            if($args != false && $args1 != false && $args2 != false){
+                $is_main = true;
+            }
+        }
+
+        $package = $submissionFile->package;
+        if($package == 'default package'){
+            $package = '';
+        } else {
+            $package = str_replace('.','/', $package);
+            $package .= '/';
+        }
+
+        $temps = explode('.', $submissionFile->filename);
+        $fileName = $temps[0];
+
+        $dataFile = [
+            'package' => $package,
+            'filename' => $fileName,
+            'code' => $submissionFile->code,
+            'is_main' => $is_main
+        ];
+
+        $client = new Client();
+        $res = $client->request('POST', $evaluator_ip.'/api/student/code', [
+            'json' => [
+                'files' => $dataFile,
+            ]
+        ]);
+
+        $result = $res->getBody();
+        $json = json_decode($result, true);
+        Log::info('#### Data From Evaluator : '. $res->getBody());
+
+        return $json;
+    }
+
     public function analyzeProblemFile($problemFile)
     {
         $evaluator_ip = env('EVALUATOR_IP');

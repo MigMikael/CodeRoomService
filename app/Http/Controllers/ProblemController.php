@@ -38,7 +38,7 @@ class ProblemController extends Controller
             $problemFile->inputs;
             $problemFile->outputs;
         }
-        $problem['question'] = url('problem/getQuestion/'.$problem->id);
+        $problem['question'] = url('problem/'.$problem->id.'/question');
         /*$submission = Submission::where('problem_id', '=', $problem->id)->get()->last();
         $problem['lastSubmission'] = $submission;*/
 
