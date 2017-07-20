@@ -17,7 +17,7 @@ use App\Traits\FileTrait;
 use App\ProblemInput;
 use App\ProblemOutput;
 use Log;
-use Illuminate\Support\Facades\DB;
+use DB;
 
 class ProblemController extends Controller
 {
@@ -61,6 +61,17 @@ class ProblemController extends Controller
         if(sizeof($lastProb) > 0){
             $next_id = $lastProb->id;
         }else{
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            DB::table('problem')->truncate();
+            DB::table('problem_file')->truncate();
+            DB::table('problem_analysis')->truncate();
+            DB::table('problem_input')->truncate();
+            DB::table('problem_output')->truncate();
+            DB::table('problem_attribute')->truncate();
+            DB::table('problem_constructor')->truncate();
+            DB::table('problem_method')->truncate();
+            DB::table('problem_score')->truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
             $next_id = 0;
         }
 

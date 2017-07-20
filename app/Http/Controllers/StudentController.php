@@ -28,7 +28,7 @@ class StudentController extends Controller
         $student = Student::findOrFail($userID);
         $student['courses'] = $student->courses()->withCount([
             'students', 'teachers', 'lessons',
-        ])->get();
+        ])->enable()->get();
 
         $data = [];
         $data['student'] = $student;

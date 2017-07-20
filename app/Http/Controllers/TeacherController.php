@@ -15,7 +15,7 @@ class TeacherController extends Controller
         $userID = $_SESSION['userID'];
 
         $teacher = Teacher::findOrFail($userID);
-        $teacher['courses'] = $teacher->courses()->withCount([
+        $teacher['courses'] = $teacher->courses()->enable()->withCount([
             'students', 'teachers', 'lessons',
         ])->get();
 
