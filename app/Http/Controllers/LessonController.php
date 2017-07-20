@@ -32,7 +32,7 @@ class LessonController extends Controller
         $input = [
             'name' => $request->get('name'),
             'course_id' => $course_id,
-            'status' => $request->get('status'),// lesson status 'normal' or 'test'
+            'status' => 'normal',// lesson status 'normal' or 'test'
             'order' => Lesson::where('course_id', $course_id)->max('order') + 1
         ];
         Lesson::create($input);
@@ -50,7 +50,7 @@ class LessonController extends Controller
 
         $lesson = Lesson::findOrFail($lesson_id);
         $lesson->name = $request->get('name');;
-        $lesson->status = $request->get('status');;
+        $lesson->status = $request->get('status');
         $lesson->save();
 
         return response()->json(['msg' => 'update lesson success']);
