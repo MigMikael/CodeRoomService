@@ -154,7 +154,7 @@ class SubmissionController extends Controller
                 }
             }
 
-            $class_diffs = $problemAnalysis_classname->diff($results_classname);
+            $class_diffs = array_diff($problemAnalysis_classname, $results_classname);
             Log::info(print_r($class_diffs, true));
             foreach ($class_diffs as $diff){
                 array_push($wrong, 'ไม่มีคลาส '.$diff);
