@@ -72,6 +72,11 @@ class ProblemController extends Controller
         $file = self::storeFile($file);
         self::unzipProblem($file, $problem->id);
 
+        $response = self::checkFileStructure($problem);
+        if($response != true){
+            return response()->json($response);
+        }
+
         $question_file = self::storeQuestion($problem->name);
         $problem->question = $question_file->id;
         $problem->save();

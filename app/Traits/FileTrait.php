@@ -7,7 +7,7 @@
  */
 namespace App\Traits;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
+use Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\App;
 use Chumper\Zipper\Zipper;
@@ -77,6 +77,17 @@ trait FileTrait
             $path = storage_path() . '\\app\\problem\\' . $prob_id . '\\';
         }else{
             $path = storage_path() . '/app/problem/'. $prob_id . '/';
+        }
+
+        return $path;
+    }
+
+    public function question_path($problem)
+    {
+        if (App::environment('local')) {
+            $path = storage_path() . '\\app\\problem\\' . $problem->id . '\\' . $problem->name . '\\' . $problem->name . '.pdf';
+        }else{
+            $path = storage_path() . '/app/problem/'. $problem->id . '/' . $problem->name . '/' . $problem->name . '.pdf';
         }
 
         return $path;
@@ -155,6 +166,33 @@ trait FileTrait
         $zipper = new Zipper();
         $zipper->make($filePath)->extractTo($des_path);
         //Storage::delete($file->name);
+    }
+
+    public function checkFileStructure($problem)
+    {
+        $is_correct = true;
+        $wrong_msg = [];
+
+        $prob_path = self::problem_path($problem->id);
+        $prob_path = $prob_path . $problem->name;
+        if(!file_exists($prob_path)){
+            $is_correct = false;
+            array_push($wrong_msg, ['problem_path' => 'folder in zip and problem name not match']);
+            Log::info('wrong problem path');
+        }
+
+        $question_path = self::question_path($problem);
+        if(!file_exists($question_path)){
+            $is_correct = false;
+            array_push($wrong_msg, ['question_path' => 'question file name and problem name not match']);
+            Log::info('wrong question path');
+        }
+
+        if ($is_correct){
+            return $is_correct;
+        }else{
+            return $wrong_msg;
+        }
     }
 
     /**
