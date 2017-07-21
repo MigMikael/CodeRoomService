@@ -130,6 +130,7 @@ class SubmissionController extends Controller
         $wrong = [];
         $problem = $submission->problem;
         if ($problem->is_parse == 'true'){
+            Log::info('is_parse : true');
             $classes = self::analyzeSubmitFile2($submission);
 
             foreach ($submission->submissionFiles as $submissionFile){
@@ -137,19 +138,26 @@ class SubmissionController extends Controller
                 $wrong = self::calStructureScore($submissionFile);
             }
 
-            $results = [];
+            $results_classname = [];
             foreach ($submission->submissionFiles as $submissionFile){
-                $results = $submissionFile->results;
+                foreach ($submissionFile->results as $result) {
+                    array_push($results_classname, $result->class);
+                    Log::info('result : '. $result->class);
+                }
             }
 
-            $problemAnalysis = [];
+            $problemAnalysis_classname = [];
             foreach ($problem->problemFiles as $problemFile){
-                $problemAnalysis = $problemFile->problemAnalysis;
+                foreach ($problemFile->problemAnalysis as $analysis) {
+                    array_push($problemAnalysis_classname, $analysis->class);
+                    Log::info('analysis : '. $analysis->class);
+                }
             }
 
-            $class_diffs = $problemAnalysis->diff($results);
+            $class_diffs = $problemAnalysis_classname->diff($results_classname);
+            Log::info(print_r($class_diffs, true));
             foreach ($class_diffs as $diff){
-                array_push($wrong, 'ไม่มีคลาส '.$diff->class);
+                array_push($wrong, 'ไม่มีคลาส '.$diff);
             }
         }
 
@@ -471,7 +479,10 @@ class SubmissionController extends Controller
     public function saveResult($classes, $submissionFile)
     {
         foreach ($classes['class'] as $class){
-            if($class['name'] == $submissionFile->name && $class['package'] == $submissionFile->package){
+            $filename = explode('.', $submissionFile->filename);
+            $filename = $filename[0];
+
+            if($class['name'] == $filename && $class['package'] == $submissionFile->package){
                 $im = '';
                 foreach ($class['implements'] as $implement){
                     $im .= $implement['name'];
@@ -486,6 +497,14 @@ class SubmissionController extends Controller
                     'implements' => $im,
                 ];
                 $result = Result::create($result);
+                if($result->enclose == 'null'){
+                    $result->enclose = '';
+                    $result->save();
+                }
+                if($result->extends == 'null'){
+                    $result->extends = '';
+                    $result->save();
+                }
 
                 foreach ($class['attribute'] as $attribute){
                     $att = [
@@ -741,7 +760,6 @@ class SubmissionController extends Controller
                 //Log::info('Method IS CORRECT '. $is_correct);
             }
         }
-        Log::info(var_dump($wrong));
         return $wrong;
     }
 

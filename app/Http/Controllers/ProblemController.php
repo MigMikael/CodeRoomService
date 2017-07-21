@@ -249,6 +249,14 @@ class ProblemController extends Controller
                 'implements' => $im,
             ];
             $problemAnalysis = ProblemAnalysis::create($problemAnalysis);
+            if($problemAnalysis->enclose == 'null'){
+                $problemAnalysis->enclose = '';
+                $problemAnalysis->save();
+            }
+            if($problemAnalysis->extends == 'null'){
+                $problemAnalysis->extends = '';
+                $problemAnalysis->save();
+            }
 
             $problem_score = [
                 'analysis_id' => $problemAnalysis->id,
