@@ -471,64 +471,66 @@ class SubmissionController extends Controller
     public function saveResult($classes, $submissionFile)
     {
         foreach ($classes['class'] as $class){
-            $im = '';
-            foreach ($class['implements'] as $implement){
-                $im .= $implement['name'];
-            }
-
-            $result = [
-                'submission_file_id' => $submissionFile->id,
-                'class' => $class['modifier'].';'.$class['static_required'].';'.$class['name'],
-                'package' => $submissionFile->package,
-                'enclose' => $class['enclose'],
-                'extends' => $class['extends'],
-                'implements' => $im,
-            ];
-            $result = Result::create($result);
-
-            foreach ($class['attribute'] as $attribute){
-                $att = [
-                    'result_id' => $result->id,
-                    'access_modifier' => $attribute['modifier'],
-                    'non_access_modifier' => $attribute['static_required'],
-                    'data_type' => $attribute['datatype'],
-                    'name' => $attribute['name']
-                ];
-                ResultAttribute::create($att);
-            }
-
-            foreach ($class['constructure'] as $constructor){
-                $pa = '';
-                foreach ($constructor['params'] as $param){
-                    $pa .= $param['datatype'].';'.$param['name'].'|';
+            if($class['name'] == $submissionFile->name && $class['package'] == $submissionFile->package){
+                $im = '';
+                foreach ($class['implements'] as $implement){
+                    $im .= $implement['name'];
                 }
 
-                $con = [
-                    'result_id' => $result->id,
-                    'access_modifier' => $constructor['modifier'],
-                    'name' => $constructor['name'],
-                    'parameter' => $pa
+                $result = [
+                    'submission_file_id' => $submissionFile->id,
+                    'class' => $class['modifier'].';'.$class['static_required'].';'.$class['name'],
+                    'package' => $submissionFile->package,
+                    'enclose' => $class['enclose'],
+                    'extends' => $class['extends'],
+                    'implements' => $im,
                 ];
-                ResultConstructor::create($con);
-            }
+                $result = Result::create($result);
 
-            foreach ($class['method'] as $method){
-                $pa = '';
-                foreach ($method['params'] as $param){
-                    $pa .= $param['datatype'].';'.$param['name'].'|';
+                foreach ($class['attribute'] as $attribute){
+                    $att = [
+                        'result_id' => $result->id,
+                        'access_modifier' => $attribute['modifier'],
+                        'non_access_modifier' => $attribute['static_required'],
+                        'data_type' => $attribute['datatype'],
+                        'name' => $attribute['name']
+                    ];
+                    ResultAttribute::create($att);
                 }
 
-                $me = [
-                    'result_id' => $result->id,
-                    'access_modifier' => $method['modifier'],
-                    'non_access_modifier' => $method['static_required'],
-                    'return_type' => $method['return_type'],
-                    'name' => $method['name'],
-                    'parameter' => $pa,
-                    'recursive' => $method['recursive'],
-                    'loop' => $method['loop_exist']
-                ];
-                ResultMethod::create($me);
+                foreach ($class['constructure'] as $constructor){
+                    $pa = '';
+                    foreach ($constructor['params'] as $param){
+                        $pa .= $param['datatype'].';'.$param['name'].'|';
+                    }
+
+                    $con = [
+                        'result_id' => $result->id,
+                        'access_modifier' => $constructor['modifier'],
+                        'name' => $constructor['name'],
+                        'parameter' => $pa
+                    ];
+                    ResultConstructor::create($con);
+                }
+
+                foreach ($class['method'] as $method){
+                    $pa = '';
+                    foreach ($method['params'] as $param){
+                        $pa .= $param['datatype'].';'.$param['name'].'|';
+                    }
+
+                    $me = [
+                        'result_id' => $result->id,
+                        'access_modifier' => $method['modifier'],
+                        'non_access_modifier' => $method['static_required'],
+                        'return_type' => $method['return_type'],
+                        'name' => $method['name'],
+                        'parameter' => $pa,
+                        'recursive' => $method['recursive'],
+                        'loop' => $method['loop_exist']
+                    ];
+                    ResultMethod::create($me);
+                }
             }
         }
     }
@@ -540,11 +542,14 @@ class SubmissionController extends Controller
         $wrong = [];
 
         foreach ($submissionFile->results as $result){
-            $problemAnalysis = ProblemAnalysis::where('class', '=', $result->class)->first();
+            $ps = ProblemAnalysis::where('class', '=', $result->class)->get();
 
-            $this_problem = $problemAnalysis->problemFile->problem;
-            if($problem->id != $this_problem->id){
-                $problemAnalysis = null;
+            $problemAnalysis = null;
+            foreach ($ps as $p){
+                $this_problem = $p->problemFile->problem;
+                if($problem->id == $this_problem->id){
+                    $problemAnalysis = $p;
+                }
             }
 
             if($problemAnalysis != null){
