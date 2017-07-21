@@ -195,6 +195,17 @@ trait FileTrait
         }
     }
 
+    public function checkTestCase($problem)
+    {
+        $hasTestCase = false;
+        $prob_path = self::problem_path($problem->id);
+        $testCase_path = $prob_path . $problem->name . '/testCase';
+        if(file_exists($testCase_path)){
+            $hasTestCase = true;
+        }
+        return $hasTestCase;
+    }
+
     /**
      * @param $file
      */

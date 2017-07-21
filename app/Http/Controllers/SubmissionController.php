@@ -153,39 +153,42 @@ class SubmissionController extends Controller
             }
         }
 
-        $hasDriver = self::checkDriver($problem);
-        $currentVer = self::getCurrentVersion($problem);
+        $hasTestCase = self::checkTestCase($problem);
+        if ($hasTestCase){
+            $hasDriver = self::checkDriver($problem);
+            $currentVer = self::getCurrentVersion($problem);
 
-        if(!$hasDriver) {
-            // this submit in problem that not have driver
-            $data = self::checkInputVersion($problem, $hasDriver);
-            if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
-                self::sendNewInput($problem);
+            if(!$hasDriver) {
+                // this submit in problem that not have driver
+                $data = self::checkInputVersion($problem, $hasDriver);
+                if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
+                    self::sendNewInput($problem);
+                }
+
+                $data = self::checkOutputVersion($problem, $hasDriver);
+                if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
+                    self::sendNewOutput($problem);
+                }
+
+                // send Student Code to Evaluator
+                $scores = self::evaluateFile($submission);
+                self::saveScore($scores, $submission);
+
+            }else{
+                $data = self::checkInputVersion($problem, $hasDriver);
+                if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
+                    self::sendNewInput2($problem);
+                }
+
+                $data = self::checkOutputVersion($problem, $hasDriver);
+                if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
+                    self::sendNewOutput2($problem);
+                }
+
+                self::sendDriver($problem);
+                $scores = self::evaluateFile2($submission);
+                self::saveScore2($scores, $submission);
             }
-
-            $data = self::checkOutputVersion($problem, $hasDriver);
-            if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
-                self::sendNewOutput($problem);
-            }
-
-            // send Student Code to Evaluator
-            $scores = self::evaluateFile($submission);
-            self::saveScore($scores, $submission);
-
-        }else{
-            $data = self::checkInputVersion($problem, $hasDriver);
-            if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
-                self::sendNewInput2($problem);
-            }
-
-            $data = self::checkOutputVersion($problem, $hasDriver);
-            if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
-                self::sendNewOutput2($problem);
-            }
-
-            self::sendDriver($problem);
-            $scores = self::evaluateFile2($submission);
-            self::saveScore2($scores, $submission);
         }
 
         foreach ($submission->submissionFiles as $submissionFile){
@@ -376,6 +379,19 @@ class SubmissionController extends Controller
 
         return $hasDriver;
     }
+
+    /*public function checkTestCase($problem)
+    {
+        $hasTestCase = false;
+        foreach ($problem->problemFiles as $problemFile){
+            $size = $problemFile->inputs()->count();
+            if($size > 0){
+                $hasTestCase = true;
+            }
+        }
+
+        return $hasTestCase;
+    }*/
 
     public function getCurrentVersion($problem)
     {

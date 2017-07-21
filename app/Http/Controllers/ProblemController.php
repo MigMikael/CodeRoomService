@@ -74,6 +74,7 @@ class ProblemController extends Controller
 
         $response = self::checkFileStructure($problem);
         if($response != true){
+            $problem->delete();
             return response()->json($response);
         }
 
