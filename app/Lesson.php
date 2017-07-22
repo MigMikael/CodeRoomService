@@ -13,7 +13,8 @@ class Lesson extends Model
         'name',
         'course_id',
         'status',
-        'order'
+        'order',
+        'open_submit'
     ];
 
     public function course()

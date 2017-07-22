@@ -32,9 +32,20 @@ class LessonController extends Controller
         $input = [
             'name' => $request->get('name'),
             'course_id' => $course_id,
-            'status' => 'normal',// lesson status 'normal' or 'test'
             'order' => Lesson::where('course_id', $course_id)->max('order') + 1
         ];
+
+        if($request->has('status')){ // lesson status 'normal' or 'test'
+            $input['status'] = $request->get('status');
+        }else{
+            $input['status'] = 'normal';
+        }
+
+        if($request->has('open_submit')){ // open_submit 'true' or 'false'
+            $input['open_submit'] = $request->get('open_submit');
+        }else{
+            $input['open_submit'] = 'true';
+        }
         Lesson::create($input);
 
         // Todo fix it
@@ -49,8 +60,14 @@ class LessonController extends Controller
         $lesson_id = $request->get('id');
 
         $lesson = Lesson::findOrFail($lesson_id);
-        $lesson->name = $request->get('name');;
-        $lesson->status = $request->get('status');
+        $lesson->name = $request->get('name');
+
+        if($request->has('status')){
+            $lesson->status = $request->get('status');
+        }
+        if($request->has('open_submit')){
+            $lesson->open_submit = $request->get('open_submit');
+        }
         $lesson->save();
 
         return response()->json(['msg' => 'update lesson success']);
@@ -76,6 +93,21 @@ class LessonController extends Controller
         }
 
         return response()->json(['msg' => 'change order success']);
+    }
+
+    public function changeSubmit($id)
+    {
+        $lesson = Lesson::findOrFail($id);
+        if($lesson->open_submit == 'true'){
+            $lesson->open_submit = 'false';
+            $msg = 'close submit success';
+        }else{
+            $lesson->open_submit = 'true';
+            $msg = 'open submit success';
+        }
+        $lesson->save();
+
+        return response()->json(['msg' => $msg]);
     }
 
     public function exportScore($id)

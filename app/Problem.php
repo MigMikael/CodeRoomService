@@ -36,6 +36,12 @@ class Problem extends Model
         return $this->hasMany('App\ProblemFile');
     }
 
+    public function resources()
+    {
+        return $this->belongsToMany('App\File', 'resource', 'problem_id', 'file_id')
+            ->withPivot('visible');
+    }
+
     public function scopeOrdered($query)
     {
         return $query->orderBy('order');

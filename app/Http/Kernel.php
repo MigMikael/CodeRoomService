@@ -63,5 +63,6 @@ class Kernel extends HttpKernel
         'teacherAuth' => \App\Http\Middleware\TeacherAuthenticate::class,
         'adminAuth' => \App\Http\Middleware\AdminAuthenticate::class,
         'checkMode' => \App\Http\Middleware\CheckServiceMode::class,
+        'checkSubmit' => \App\Http\Middleware\CheckSubmitStatus::class,
     ];
 }

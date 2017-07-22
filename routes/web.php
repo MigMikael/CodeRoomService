@@ -78,9 +78,11 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         # 18
         Route::get('submission/{problem_id}/{student_id}', 'SubmissionController@result');
-        # 19
-        Route::post('submission', 'SubmissionController@store2');
 
+        Route::group(['middleware' => 'checkSubmit'], function (){
+            # 19
+            Route::post('submission', 'SubmissionController@store2');
+        });
     });
 
     Route::group(['middleware' => 'teacherAuth', 'prefix' => 'teacher'], function (){
@@ -115,6 +117,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::post('lesson/change_order', 'LessonController@changeOrder');
         # 32
         Route::get('lesson/export/score/{id}', 'LessonController@exportScore');
+        # [New API]
+        Route::get('lesson/change_submit/{id}', 'LessonController@changeSubmit');
 
 
         # 33
