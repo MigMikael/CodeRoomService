@@ -95,6 +95,21 @@ class LessonController extends Controller
         return response()->json(['msg' => 'change order success']);
     }
 
+    public function changeStatus($id)
+    {
+        $lesson = Lesson::findOrFail($id);
+        if($lesson->status == 'normal'){
+            $lesson->status = 'test';
+            $msg = 'change status to test success';
+        }else{
+            $lesson->status = 'normal';
+            $msg = 'open submit success';
+        }
+        $lesson->save();
+
+        return response()->json(['msg' => $msg]);
+    }
+
     public function changeSubmit($id)
     {
         $lesson = Lesson::findOrFail($id);

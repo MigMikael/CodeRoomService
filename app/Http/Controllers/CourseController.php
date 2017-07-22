@@ -93,13 +93,20 @@ class CourseController extends Controller
             'students', 'teachers', 'lessons', 'badges', 'announcements'
         ])->findOrFail($course_id);
 
-        $student = Student::where('student_id',$student_id)->firstOrFail();
+        $student = Student::where('student_id', $student_id)->firstOrFail();
+
         if($course->mode == 'normal'){                  // normal mode
             $course['lessons'] = Lesson::where('course_id', $course_id)
                 ->normal()
                 ->ordered()
                 ->get();
         }else{                                          // test mode
+            if ($student->ip == ''){
+                $current_ip = $request->getClientIp();
+                $student->ip = $current_ip;
+                $student->save();
+            }
+
             $current_ip = $request->getClientIp();
 
             if($current_ip != $student->ip){
@@ -168,6 +175,11 @@ class CourseController extends Controller
         $course = Course::findOrFail($course_id);
         if($course->mode == 'normal'){
             $course->mode = 'test';
+            $students = $course->students;
+            foreach ($students as $student){
+                $student->ip = '';
+                $student->save();
+            }
         }else{
             $course->mode = 'normal';
         }

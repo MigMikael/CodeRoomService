@@ -37,10 +37,6 @@ class UserAuthController extends Controller
                 /*Log::info('userID : '.$_SESSION['userID']);
                 Log::info('userRole : '.$_SESSION['userRole']);*/
 
-                $current_ip = $request->getClientIp();
-                $student->ip = $current_ip;
-                $student->save();
-
                 $student['role'] = 'student';
                 $student->makeVisible('token');
                 return $student;

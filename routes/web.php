@@ -115,10 +115,12 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::delete('lesson/delete/{id}', 'LessonController@delete');
         # 31
         Route::post('lesson/change_order', 'LessonController@changeOrder');
-        # 32
-        Route::get('lesson/export/score/{id}', 'LessonController@exportScore');
         # [New API]
         Route::get('lesson/change_submit/{id}', 'LessonController@changeSubmit');
+        # [New API]
+        Route::get('lesson/change_status/{id}', 'LessonController@changeStatus');
+        # 32
+        Route::get('lesson/export/score/{id}', 'LessonController@exportScore');
 
 
         # 33
