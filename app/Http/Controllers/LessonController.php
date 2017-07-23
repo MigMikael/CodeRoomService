@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\File;
+use App\Resource;
 use Carbon\Carbon;
 use App\Lesson;
 use App\Problem;
@@ -17,6 +19,21 @@ class LessonController extends Controller
         $problems = Problem::where('lesson_id', '=', $lesson->id)
             ->ordered()
             ->get();
+
+        foreach ($problems as $problem){
+            $resources = Resource::where([
+                ['problem_id', $problem->id],
+                ['visible', 'true']
+            ])->get();
+
+            $resources_file = [];
+            foreach ($resources as $resource){
+                $file = File::find($resource->id);
+                array_push($resources_file, $file);
+            }
+
+            $problem['resources_file'] = $resources_file;
+        }
         $lesson['problems'] = $problems;
 
         foreach ($lesson['problems'] as $problem){

@@ -10,6 +10,7 @@ use App\ProblemScore;
 use App\ProblemAttribute;
 use App\ProblemConstructor;
 use App\ProblemMethod;
+use App\Resource;
 use App\Student;
 use App\Traits\EvaluatorTrait;
 use Illuminate\Http\Request;
@@ -38,6 +39,7 @@ class ProblemController extends Controller
             $problemFile->inputs;
             $problemFile->outputs;
         }
+        $problem->resoruces;
         $problem['question'] = url('problem/'.$problem->id.'/question');
         /*$submission = Submission::where('problem_id', '=', $problem->id)->get()->last();
         $problem['lastSubmission'] = $submission;*/
@@ -83,6 +85,7 @@ class ProblemController extends Controller
         $problem->save();
 
         self::storeProblemFile($problem);
+        self::storeResource($problem);
 
         if($problem->is_parse == 'true'){
             foreach ($problem->problemFiles as $problemFile){
@@ -165,6 +168,24 @@ class ProblemController extends Controller
                     ProblemOutput::create($problemOutput);
                 }
             }
+        }
+    }
+
+    public function storeResource($problem)
+    {
+        $resource_path = 'problem/'.$problem->id.'/'. $problem->name. '/resource';
+        $files = self::getFiles($resource_path);
+        if(sizeof($files) > 0){
+            foreach ($files as $file){
+                $file = self::storeFile($file);
+                $resource = [
+                    'problem_id' => $problem->id,
+                    'file_id' => $file->id,
+                    'visible' => 'true',
+                ];
+                Resource::create($resource);
+            }
+            Log::info('Store Resource Success');
         }
     }
 

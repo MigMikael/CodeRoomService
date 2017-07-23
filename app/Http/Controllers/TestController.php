@@ -173,7 +173,38 @@ class TestController extends Controller
         })->download('xlsx');*/
         //return 'create excel complete';
 
-        $problem = new Problem();
-        return $problem->id;
+        /*$problem = new Problem();
+        return $problem->id;*/
+    }
+
+    public function test3()
+    {
+        $lesson = Lesson::withCount(['problems'])->findOrFail(1);
+
+        $problems = Problem::where('lesson_id', '=', $lesson->id)
+            ->ordered()
+            ->get();
+
+        foreach ($problems as $problem){
+            $resources = Resource::where([
+                ['problem_id', $problem->id],
+                ['visible', 'true']
+            ])->get();
+
+            $resources_file = [];
+            foreach ($resources as $resource){
+                $file = File::find($resource->id);
+                array_push($resources_file, $file);
+            }
+
+            $problem['resources_file'] = $resources_file;
+        }
+        $lesson['problems'] = $problems;
+
+        foreach ($lesson['problems'] as $problem){
+            $problem['question'] = url('problem/'.$problem->id.'/question');
+        }
+
+        return $lesson;
     }
 }

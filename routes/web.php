@@ -79,10 +79,12 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         # 18
         Route::get('submission/{problem_id}/{student_id}', 'SubmissionController@result');
 
+
         Route::group(['middleware' => 'checkSubmit'], function (){
             # 19
             Route::post('submission', 'SubmissionController@store2');
         });
+
     });
 
     Route::group(['middleware' => 'teacherAuth', 'prefix' => 'teacher'], function (){
@@ -137,6 +139,14 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::post('problem/change_order', 'ProblemController@changeOrder');
         # 39
         Route::get('problem/{id}/submission', 'ProblemController@submission');
+
+
+        # [New API]
+        Route::post('problem/resource/create', 'ResourceController@store');
+        # [New API]
+        Route::get('problem/resource/{id}/delete', 'ResourceController@destroy');
+        # [New API]
+        Route::get('problem/resource/{id}/visible', 'ResourceController@changeStatus');
 
 
         # 40
@@ -201,7 +211,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 //Route::get('test/student', 'TestController@testStudent');
 //Route::post('test', 'TestController@test');
-Route::get('test2', 'TestController@test2');
+//Route::get('test2', 'TestController@test2');
+Route::get('test3', 'TestController@test3');
 
 //Deprecated api
 //Route::post('api/submission/code', 'SubmissionController@store');
