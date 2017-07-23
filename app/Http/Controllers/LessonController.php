@@ -28,7 +28,7 @@ class LessonController extends Controller
 
             $resources_file = [];
             foreach ($resources as $resource){
-                $file = File::find($resource->id);
+                $file = File::find($resource->file_id);
                 array_push($resources_file, $file);
             }
 

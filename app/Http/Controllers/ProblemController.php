@@ -177,12 +177,14 @@ class ProblemController extends Controller
         $files = self::getFiles($resource_path);
         if(sizeof($files) > 0){
             foreach ($files as $file){
-                Log::info($file);
+                $name = explode('/', $file);
+                $name = $name[sizeof($name) - 1];
+                Log::info($name);
                 $mime = self::getMime($file);
                 $fileRecord = [
-                    'name' => $file,
+                    'name' => $name,
                     'mime' => $mime,
-                    'original_name' => $file,
+                    'original_name' => $name,
                 ];
                 $file = File::create($fileRecord);
                 $resource = [
