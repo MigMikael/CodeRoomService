@@ -73,6 +73,7 @@ class ProblemController extends Controller
 
         $file = self::storeFile($file);
         self::unzipProblem($file, $problem->id);
+        self::deleteFile($file);
 
         $response = self::checkFileStructure($problem);
         if($response != true){
@@ -355,6 +356,10 @@ class ProblemController extends Controller
     public function delete($id)
     {
         $problem = Problem::findOrFail($id);
+        foreach ($problem->resources as $resource){
+            $file = File::find($resource->file_id);
+            $file->delete();
+        }
         $problem->delete();
 
         return response()->json(['msg' => 'delete problem success']);

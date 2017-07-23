@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\File;
-use App\Problem;
 use App\Resource;
 use Illuminate\Http\Request;
 use App\Traits\FileTrait;
@@ -56,6 +55,7 @@ class ResourceController extends Controller
         $file = File::findOrFail($resource->file_id);
 
         self::deleteFile($file);
+        $file->delete();
         $resource->delete();
 
         return response()->json(['msg' => 'delete resource success']);
