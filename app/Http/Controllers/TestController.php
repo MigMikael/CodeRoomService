@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Course;
+use App\Resource;
 use App\File;
 use App\Problem;
 use App\Student;
