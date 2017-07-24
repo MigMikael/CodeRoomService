@@ -34,6 +34,26 @@ class ResourceController extends Controller
         return response()->json(['msg' => 'add resource file success']);
     }
 
+    public function update(Request $request, $id)
+    {
+        $resource = Resource::findOrFail($id);
+        $file = File::findOrFail($resource->file_id);
+
+        if($request->has('file')){
+            $newFile = $request->file('file');
+            $newFile = self::storeFile($newFile);
+            $resource->file_id = $newFile->id;
+            $resource->save();
+
+            self::deleteFile($file);
+            $file->delete();
+        }else{
+            return response()->json(['msg' => 'resource file not found']);
+        }
+
+        return response()->json(['msg' => 'edit resource file success']);
+    }
+
     public function changeStatus($id)
     {
         $resource = Resource::findOrFail($id);

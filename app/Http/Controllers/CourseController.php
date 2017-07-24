@@ -47,6 +47,7 @@ class CourseController extends Controller
             $student->lessons;
         }
         foreach ($course->teachers as $teacher){
+            $teacher->courses;
             $teacher->pivot;
         }
 

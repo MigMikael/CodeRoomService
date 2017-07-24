@@ -144,6 +144,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         # [New API]
         Route::post('problem/resource/create', 'ResourceController@store');
         # [New API]
+        Route::post('problem/resource/{id}/edit', 'ResourceController@update');
+        # [New API]
         Route::get('problem/resource/{id}/delete', 'ResourceController@destroy');
         # [New API]
         Route::get('problem/resource/{id}/visible', 'ResourceController@changeStatus');
