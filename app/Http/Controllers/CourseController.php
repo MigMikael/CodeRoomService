@@ -116,7 +116,8 @@ class CourseController extends Controller
             $course['lessons'] = Lesson::where('course_id', $course_id)
                 ->test()
                 ->orderBy('order', 'desc')
-                ->first();
+                ->take(1)
+                ->get();
         }
 
         foreach ($course->lessons as $lesson){
@@ -124,7 +125,6 @@ class CourseController extends Controller
                 ['student_id', '=', $student->id],
                 ['lesson_id', '=', $lesson->id]
             ])->first();
-            //Log::info('studentID = '.$student_id.' lessonID = '.$lesson->id);
             if(sizeof($student_lesson) < 1){
                 $lesson['progress'] = 0;
             }else{
