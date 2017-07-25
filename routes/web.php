@@ -34,7 +34,7 @@ Route::get('logout', 'UserAuthController@logout');
 # 3
 Route::post('register', 'UserAuthController@registerUser');
 # 4
-Route::get('register', 'UserAuthController@register');
+//Route::get('register', 'UserAuthController@register');
 
 #--------------------------------------------------------------------------------------------------------
 

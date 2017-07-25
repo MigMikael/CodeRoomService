@@ -5,10 +5,13 @@ use App\Student;
 use App\Teacher;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Traits\ImageTrait;
+use App\Helper\TokenGenerate;
 use Log;
 
 class UserAuthController extends Controller
 {
+    use ImageTrait;
     public function __construct()
     {
         $this->middleware('web');
@@ -77,8 +80,32 @@ class UserAuthController extends Controller
         return response()->json(['msg' => 'not available right now']);
     }
 
-    public function registerUser()
+    public function registerUser(Request $request)
     {
-        return response()->json(['msg' => 'not available right now']);
+        $email = $request->get('email');
+        $student_id = $request->get('student_id');
+        $name = $request->get('name');
+        $username = $request->get('username');
+        $password = $request->get('password');
+
+        $p = explode('@', $email);
+        if($p[1] != 'silpakorn.edu'){
+            return response()->json(['msg' => 'please use university email']);
+        }
+
+        $image = self::genImage($student_id);
+
+        $student = [
+            'student_id' => $student_id,
+            'name' => $name,
+            'email' => $email,
+            'image' => $image->id,
+            'token' => (new TokenGenerate())->generate(32),
+            'status' => 'enable',
+            'username' => $username,
+            'password' => password_hash($password, PASSWORD_DEFAULT)
+        ];
+        $student = Student::firstOrCreate($student);
+        return $student;
     }
 }
