@@ -21,11 +21,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Traits\FileTrait;
 use App\Traits\EvaluatorTrait;
+use App\Traits\DatabaseTrait;
 use Log;
 
 class SubmissionController extends Controller
 {
-    use FileTrait, EvaluatorTrait;
+    use FileTrait, EvaluatorTrait, DatabaseTrait;
     public function store(Request $request)
     {
         $student_id = $request->get('student_id');
@@ -202,7 +203,7 @@ class SubmissionController extends Controller
             $submission->is_accept = 'false';
             $submission->save();
         }
-        self::updateProgress($submission);
+        self::updateStudentProgress($submission);
 
         foreach ($submission->submissionFiles as $submissionFile){
             $submissionFile->outputs;
@@ -763,47 +764,5 @@ class SubmissionController extends Controller
             }
         }
         return $wrong;
-    }
-
-    public function updateProgress($submission)
-    {
-        $problem = $submission->problem;
-        $student = $submission->student;
-
-        $lesson = $problem->lesson;
-        $student_lesson = StudentLesson::where([
-            ['student_id', $student->id],
-            ['lesson_id', $lesson->id]
-        ])->first();
-
-        if(sizeof($student_lesson) == 0){
-            $student_lesson = [
-                'student_id' => $student->id,
-                'lesson_id' => $lesson->id,
-                'progress' => 0
-            ];
-            $student_lesson = StudentLesson::create($student_lesson);
-        }
-        $prob_count = $lesson->problems->count();
-
-        $accept_count = 0;
-        foreach ($lesson->problems as $problem){
-            $accept_submission = Submission::where([
-                ['student_id', $student->id],
-                ['problem_id', $problem->id],
-                ['is_accept', 'true']
-            ])->first();
-
-            if(sizeof($accept_submission) > 0){
-                $accept_count++;
-            }
-        }
-
-        Log::info('Accept Count : '.$accept_count);
-        Log::info('Prob Count : '.$prob_count);
-        $progress = ($accept_count/$prob_count)*100;
-
-        $student_lesson->progress = $progress;
-        $student_lesson->save();
     }
 }

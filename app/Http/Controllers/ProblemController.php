@@ -15,6 +15,7 @@ use App\Student;
 use App\Traits\EvaluatorTrait;
 use Illuminate\Http\Request;
 use App\Traits\FileTrait;
+use App\Traits\DatabaseTrait;
 use App\ProblemInput;
 use App\ProblemOutput;
 use Log;
@@ -22,7 +23,7 @@ use DB;
 
 class ProblemController extends Controller
 {
-    use FileTrait, EvaluatorTrait;
+    use FileTrait, EvaluatorTrait, DatabaseTrait;
 
     public function show($id)
     {
@@ -105,6 +106,7 @@ class ProblemController extends Controller
             }
             return $problem;
         }
+        self::updateLessonProgress($problem->lesson);
         
         return response()->json(['msg' => 'create problem success']);
     }

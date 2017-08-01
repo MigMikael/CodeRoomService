@@ -192,26 +192,6 @@ class LessonController extends Controller
 
     public function scoreboard($id)
     {
-        $lesson = Lesson::findOrFail($id);
-        $course = $lesson->course;
-        $students = $course->students;
-
-        foreach ($lesson->problems as $problem) {
-            foreach ($problem->submissions as $submission) {
-                if($submission->is_accept == 'true'){
-                    $score = 0;
-                    foreach ($submission->submissionFiles as $submissionFile){
-                        foreach ($submissionFile->outputs as $output){
-                            $score += $output->score;
-                        }
-                        $curr_std = $submission->student;
-                        $student = $students->where('id', $curr_std->id)->first();
-                        $student['score'] = $score;
-                    }
-                    $student['sub_num'] = $submission->sub_num;
-                }
-            }
-        }
-        return $student;
+        
     }
 }
