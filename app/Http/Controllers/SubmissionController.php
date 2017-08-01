@@ -198,6 +198,11 @@ class SubmissionController extends Controller
                 self::saveScore2($scores, $submission);
             }
         }
+        if(sizeof($wrong) > 0){
+            $submission->is_accept = 'false';
+            $submission->save();
+        }
+        self::updateProgress($submission);
 
         foreach ($submission->submissionFiles as $submissionFile){
             $submissionFile->outputs;
@@ -313,13 +318,10 @@ class SubmissionController extends Controller
         }
         if ($isAccept == true){
             $submission->is_accept = 'true';
-            $submission->save();
-            self::updateProgress($submission);
         }else{
             $submission->is_accept = 'false';
-            $submission->save();
         }
-
+        $submission->save();
     }
 
     public function saveScore2($scores, $submission)

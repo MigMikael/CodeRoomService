@@ -121,6 +121,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('lesson/change_submit/{id}', 'LessonController@changeSubmit');
         # [New API]
         Route::get('lesson/change_status/{id}', 'LessonController@changeStatus');
+        #
+        Route::get('lesson/scoreboard/{id}', 'LessonController@scoreboard');
         # 32
         Route::get('lesson/export/score/{id}', 'LessonController@exportScore');
 
