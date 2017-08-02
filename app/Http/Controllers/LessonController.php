@@ -201,6 +201,7 @@ class LessonController extends Controller
             foreach ($lesson->problems as $problem){
                 $score[$student->id][$problem->name] = 0;
             }
+            $score[$student->id]['total'] = 0;
         }
         foreach ($lesson->problems as $problem){
             foreach ($problem->submissions as $submission){
@@ -208,6 +209,7 @@ class LessonController extends Controller
                     $curr_std = $submission->student;
                     $student = $students->where('id', $curr_std->id)->first();
                     $score[$student->id][$problem->name] = $submission->score;
+                    $score[$student->id]['total'] += $submission->score;
                 }
             }
         }

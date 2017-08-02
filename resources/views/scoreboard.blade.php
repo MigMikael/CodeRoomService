@@ -7,7 +7,7 @@
 
 @section('content')
     <h1>{{ $lesson->name }}</h1>
-    <table class="table table-hover" id="score-table">
+    <table class="table table-hover table-responsive table-bordered" id="score-table">
         <thead>
         <tr>
             <th>ID</th>
@@ -15,6 +15,7 @@
             @foreach($lesson->problems as $problem)
                 <th>{{ $problem->name }}</th>
             @endforeach
+            <th>Total</th>
         </tr>
         </thead>
         <tbody>
@@ -25,6 +26,7 @@
             @foreach($lesson->problems as $problem)
                 <td>{{ $student['score'][$problem->name] }}</td>
             @endforeach
+            <td>{{ $student['score']['total'] }}</td>
         </tr>
         @endforeach
         </tbody>
@@ -33,7 +35,10 @@
     <script>
         $(document).ready(function()
             {
-                $("#score-table").tablesorter();
+                $("score-table").tablesorter({
+                    // sort on the first column and third column, order asc
+                    sortList: [[0,0]]
+                });
             }
         );
     </script>
