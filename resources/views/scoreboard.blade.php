@@ -1,8 +1,13 @@
 @extends('app')
 
+@section('header')
+    <script type="text/javascript" src="{{ URL::asset('js/jquery-latest.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/jquery.tablesorter.js') }}"></script>
+@endsection
+
 @section('content')
     <h1>{{ $lesson->name }}</h1>
-    <table class="table table-hover">
+    <table class="table table-hover" id="score-table">
         <thead>
         <tr>
             <th>ID</th>
@@ -24,4 +29,12 @@
         @endforeach
         </tbody>
     </table>
+
+    <script>
+        $(document).ready(function()
+            {
+                $("#score-table").tablesorter();
+            }
+        );
+    </script>
 @endsection
