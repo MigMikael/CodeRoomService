@@ -218,6 +218,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 //Route::get('test2', 'TestController@test2');
 Route::get('test3', 'TestController@test3');
 Route::get('test4/{id}', 'LessonController@scoreboard');
+Route::get('test5/{id}', 'LessonController@exportScore2');
 
 //Deprecated api
 //Route::post('api/submission/code', 'SubmissionController@store');

@@ -11,6 +11,7 @@
         <thead>
         <tr>
             <th>ID</th>
+            <th>StudentID</th>
             <th>Name</th>
             @foreach($lesson->problems as $problem)
                 <th>{{ $problem->name }}</th>
@@ -21,6 +22,7 @@
         <tbody>
         @foreach($students as $student)
         <tr>
+            <td>{{ $student->id }}</td>
             <td>{{ $student->student_id }}</td>
             <td>{{ $student->name }}</td>
             @foreach($lesson->problems as $problem)
@@ -35,7 +37,7 @@
     <script>
         $(document).ready(function()
             {
-                $("score-table").tablesorter({
+                $("#score-table").tablesorter({
                     // sort on the first column and third column, order asc
                     sortList: [[0,0]]
                 });

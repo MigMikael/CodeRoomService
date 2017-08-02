@@ -190,6 +190,55 @@ class LessonController extends Controller
         })->download('xlsx');
     }
 
+    public function exportScore2($id)
+    {
+        $lesson = Lesson::findOrFail($id);
+        $course = $lesson->course;
+        $students = $course->students;
+        $score = [];
+        foreach ($students as $student){
+            $score[$student->id] = [];
+            foreach ($lesson->problems as $problem){
+                $score[$student->id][$problem->name] = 0;
+            }
+            $score[$student->id]['total'] = 0;
+        }
+        foreach ($lesson->problems as $problem){
+            foreach ($problem->submissions as $submission){
+                if($submission->score > 0){
+                    $curr_std = $submission->student;
+                    $student = $students->where('id', $curr_std->id)->first();
+                    $score[$student->id][$problem->name] = $submission->score;
+                    $score[$student->id]['total'] += $submission->score;
+                }
+            }
+        }
+
+        foreach ($students as $student){
+            $student['score'] = $score[$student->id];
+        }
+
+        $data_score = [];
+        foreach ($students as $student){
+            $row = [];
+            $row['id'] = $student->student_id;
+            $row['name'] = $student->name;
+            foreach ($lesson->problems as $problem){
+                $row[$problem->name] = $student['score'][$problem->name];
+            }
+            $row['total'] = $student['score']['total'];
+            array_push($data_score, $row);
+        }
+
+        $filename = 'score-'.Carbon::now();
+        $filename = str_replace(' ', '-', $filename);
+        Excel::create($filename, function($excel) use ($data_score) {
+            $excel->sheet('sheet1', function($sheet) use ($data_score) {
+                $sheet->fromArray($data_score);
+            });
+        })->download('xlsx');
+    }
+
     public function scoreboard($id)
     {
         $lesson = Lesson::findOrFail($id);
