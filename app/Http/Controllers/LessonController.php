@@ -192,6 +192,31 @@ class LessonController extends Controller
 
     public function scoreboard($id)
     {
+        $lesson = Lesson::findOrFail($id);
+        $course = $lesson->course;
+        $students = $course->students;
+        $score = [];
+        foreach ($students as $student){
+            $score[$student->id] = [];
+            foreach ($lesson->problems as $problem){
+                $score[$student->id][$problem->name] = 0;
+            }
+        }
+        foreach ($lesson->problems as $problem){
+            foreach ($problem->submissions as $submission){
+                if($submission->score > 0){
+                    $curr_std = $submission->student;
+                    $student = $students->where('id', $curr_std->id)->first();
+                    $score[$student->id][$problem->name] = $submission->score;
+                }
+            }
+        }
 
+        foreach ($students as $student){
+            $student['score'] = $score[$student->id];
+        }
+
+        //return $students;
+        return view('scoreboard', ['lesson' => $lesson, 'students' => $students]);
     }
 }

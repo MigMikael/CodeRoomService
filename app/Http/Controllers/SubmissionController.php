@@ -314,7 +314,7 @@ class SubmissionController extends Controller
                         ];
                     }
                     $o = SubmissionOutput::create($output);
-                    $submission->score = $o->score;
+                    $submission->score += $o->score;
                 }
             }
         }
@@ -367,7 +367,7 @@ class SubmissionController extends Controller
                             ];
                         }
                         $o = SubmissionOutput::create($output);
-                        $submission->score = $o->score;
+                        $submission->score += $o->score;
                     }
                 }
             }
