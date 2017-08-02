@@ -147,61 +147,13 @@ class LessonController extends Controller
         $lesson = Lesson::findOrFail($id);
         $course = $lesson->course;
         $students = $course->students;
-
-        foreach ($lesson->problems as $problem){
-            foreach ($problem->submissions as $submission){
-                if($submission->is_accept == 'true'){
-                    $score = 0;
-                    foreach ($submission->submissionFiles as $submissionFile){
-                        foreach ($submissionFile->outputs as $output){
-                            $score += $output->score;
-                        }
-                        $curr_std = $submission->student;
-                        $student = $students->where('id', $curr_std->id)->first();
-                        $student['score'] = $score;
-                    }
-                    $student['sub_num'] = $submission->sub_num;
-                }
-            }
-        }
-        $data_score = [];
-        foreach ($students as $student){
-            if(!isset($student->score)){
-                $student->score = '0';
-            }
-
-            if(!isset($student->sub_num)){
-                $student->sub_num = '-';
-            }
-            array_push($data_score, [
-                'id' => $student->student_id,
-                'name' => $student->name,
-                'score' => $student->score,
-                'submit count' => $student->sub_num
-            ]);
-        }
-
-        $filename = 'score-'.Carbon::now();
-        $filename = str_replace(' ', '-', $filename);
-        Excel::create($filename, function($excel) use ($data_score) {
-            $excel->sheet('sheet1', function($sheet) use ($data_score) {
-                $sheet->fromArray($data_score);
-            });
-        })->download('xlsx');
-    }
-
-    public function exportScore2($id)
-    {
-        $lesson = Lesson::findOrFail($id);
-        $course = $lesson->course;
-        $students = $course->students;
         $score = [];
         foreach ($students as $student){
             $score[$student->id] = [];
             foreach ($lesson->problems as $problem){
-                $score[$student->id][$problem->name] = 0;
+                $score[$student->id][$problem->name] = '0';
             }
-            $score[$student->id]['total'] = 0;
+            $score[$student->id]['total'] = '0';
         }
         foreach ($lesson->problems as $problem){
             foreach ($problem->submissions as $submission){
