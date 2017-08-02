@@ -13,7 +13,8 @@ class Submission extends Model
         'student_id',
         'problem_id',
         'sub_num',
-        'is_accept'
+        'is_accept',
+        'score'
     ];
 
     public function student()

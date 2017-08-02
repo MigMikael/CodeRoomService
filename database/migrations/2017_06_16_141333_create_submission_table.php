@@ -19,6 +19,7 @@ class CreateSubmissionTable extends Migration
             $table->integer('problem_id')->unsigned();
             $table->integer('sub_num')->default(0);
             $table->string('is_accept')->default('false');
+            $table->float('score')->default(0);
             $table->timestamps();
 
             $table->foreign('student_id')

@@ -313,7 +313,8 @@ class SubmissionController extends Controller
                             'error' => '',
                         ];
                     }
-                    SubmissionOutput::create($output);
+                    $o = SubmissionOutput::create($output);
+                    $submission->score = $o->score;
                 }
             }
         }
@@ -365,7 +366,8 @@ class SubmissionController extends Controller
                                 'error' => '',
                             ];
                         }
-                        SubmissionOutput::create($output);
+                        $o = SubmissionOutput::create($output);
+                        $submission->score = $o->score;
                     }
                 }
             }
@@ -627,7 +629,8 @@ class SubmissionController extends Controller
             Log::info('##### EXTENDS SCORE '. $extends_score);
             Log::info('##### IMPLEMENTS SCORE '. $implements_score);
             Log::info('-------------------------------------------------------------');*/
-            ResultScore::create($result_score);
+            $rs = ResultScore::create($result_score);
+            $submission->score += $rs->class + $rs->package + $rs->enclose + $rs->extends + $rs->implements;
 
             foreach ($result->attributes as $attribute){
                 $problem_attributes = ProblemAttribute::where('name', '=', $attribute->name)
@@ -664,6 +667,7 @@ class SubmissionController extends Controller
                     array_push($wrong, $result->class.' มี attribute '.$attribute->name . ' ไม่ตรง');
                 }
                 $attribute->save();
+                $submission->score += $attribute->score;
                 /*Log::info('Attribute IS CORRECT '. $correct);
 
                 Log::info('-------------------------------------------------------------');
@@ -716,6 +720,7 @@ class SubmissionController extends Controller
 
                 }
                 $constructor->save();
+                $submission->score += $constructor->score;
                 //Log::info('Constructor IS CORRECT '. $is_correct);
             }
 
@@ -760,6 +765,7 @@ class SubmissionController extends Controller
                     array_push($wrong, $result->class.' มี method '.$method->name . ' ไม่ตรง');
                 }
                 $method->save();
+                $submission->score += $method->score;
                 //Log::info('Method IS CORRECT '. $is_correct);
             }
         }

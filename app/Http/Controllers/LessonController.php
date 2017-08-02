@@ -192,6 +192,6 @@ class LessonController extends Controller
 
     public function scoreboard($id)
     {
-        
+
     }
 }
