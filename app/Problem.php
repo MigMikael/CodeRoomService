@@ -18,7 +18,8 @@ class Problem extends Model
         'timelimit',
         'memorylimit',
         'is_parse',
-        'question'
+        'question',
+        'score'
     ];
 
     public function lesson()

@@ -166,9 +166,10 @@ class ProblemController extends Controller
                         'version' => $version,
                         'filename' => $fileName,
                         'content' => self::getFile($inputFile),
-                        'score' => 10
+                        'score' => 100
                     ];
-                    ProblemOutput::create($problemOutput);
+                    $output = ProblemOutput::create($problemOutput);
+                    $problem->score += $output->score;
                 }
             }
         }
@@ -226,6 +227,9 @@ class ProblemController extends Controller
     {
         $pFiles = $request->get('problem_files');
         foreach ($pFiles as $pFile){
+            $prob_file = ProblemFile::findOrFail($pFile);
+            $problem = $prob_file->problem;
+
             $pAs = $pFile['problem_analysis'];
             foreach ($pAs as $pA){
                 $score = $pA['score'];
@@ -236,12 +240,16 @@ class ProblemController extends Controller
                 $problem_score->extends = $score['extends'];
                 $problem_score->implements = $score['implements'];
                 $problem_score->save();
+                $problem->score += $problem_score->class + $problem_score->package +
+                    $problem_score->enclose + $problem_score->extends +
+                    $problem_score->implements;
 
                 $atts = $pA['attributes'];
                 foreach ($atts as $att){
                     $attribute = ProblemAttribute::findOrFail($att['id']);
                     $attribute->score = $att['score'];
                     $attribute->save();
+                    $problem->score += $attribute->score;
                 }
 
                 $cons = $pA['constructors'];
@@ -249,6 +257,7 @@ class ProblemController extends Controller
                     $constructor = ProblemConstructor::findOrFail($con['id']);
                     $constructor->score = $con['score'];
                     $constructor->save();
+                    $problem->score += $constructor->score;
                 }
 
                 $mets = $pA['methods'];
@@ -258,8 +267,10 @@ class ProblemController extends Controller
                     $method->loop = $met['loop'];
                     $method->score = $met['score'];
                     $method->save();
+                    $problem->score += $method->score;
                 }
             }
+            $problem->save();
         }
 
         return response()->json(['msg' => 'store score success']);

@@ -51,6 +51,12 @@ trait DatabaseTrait
                 Log::info('Prob Count : '.$prob_count);*/
                 $progress = ($accept_count/$prob_count)*100;
 
+                if($progress < 10){
+                    $progress = round($progress, 1);
+                }else{
+                    $progress = round($progress);
+                }
+
                 $student_lesson->progress = $progress;
                 $student_lesson->save();
             }
@@ -94,6 +100,12 @@ trait DatabaseTrait
         Log::info('Accept Count : '.$accept_count);
         Log::info('Prob Count : '.$prob_count);
         $progress = ($accept_count/$prob_count)*100;
+
+        if($progress < 10){
+            $progress = round($progress, 1);
+        }else{
+            $progress = round($progress);
+        }
 
         $student_lesson->progress = $progress;
         $student_lesson->save();

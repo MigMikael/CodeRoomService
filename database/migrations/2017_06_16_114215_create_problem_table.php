@@ -24,6 +24,7 @@ class CreateProblemTable extends Migration
             $table->float('timelimit')->default('1');
             $table->float('memorylimit')->default('32');
             $table->string('is_parse')->default('false');
+            $table->float('score')->default(0);
             $table->timestamps();
 
             $table->foreign('lesson_id')

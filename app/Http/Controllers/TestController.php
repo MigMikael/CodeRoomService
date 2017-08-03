@@ -180,7 +180,7 @@ class TestController extends Controller
 
     public function test3()
     {
-        $lesson = Lesson::withCount(['problems'])->findOrFail(1);
+        /*$lesson = Lesson::withCount(['problems'])->findOrFail(1);
 
         $problems = Problem::where('lesson_id', '=', $lesson->id)
             ->ordered()
@@ -206,6 +206,11 @@ class TestController extends Controller
             $problem['question'] = url('problem/'.$problem->id.'/question');
         }
 
-        return $lesson;
+        return $lesson;*/
+
+        $course = Course::find(1);
+        $dt = Carbon::parse($course->created_at);
+        return $dt->timestamp;
     }
+
 }

@@ -7,6 +7,7 @@
 
 @section('content')
     <h1>{{ $lesson->name }}</h1>
+    <a class="btn btn-primary" href="{{ url('export_score/'.$lesson->id) }}">Export Score</a>
     <table class="table table-hover table-responsive table-bordered" id="score-table">
         <thead>
         <tr>
@@ -17,11 +18,12 @@
                 <th>{{ $problem->name }}</th>
             @endforeach
             <th>Total</th>
+            <th>Time</th>
         </tr>
         </thead>
         <tbody>
         @foreach($students as $student)
-        <tr>
+        <tr @if($student['score']['complete'] == 'true') class="success" @endif>
             <td>{{ $student->id }}</td>
             <td>{{ $student->student_id }}</td>
             <td>{{ $student->name }}</td>
@@ -29,6 +31,7 @@
                 <td>{{ $student['score'][$problem->name] }}</td>
             @endforeach
             <td>{{ $student['score']['total'] }}</td>
+            <td>{{ $student['score']['time'] }}</td>
         </tr>
         @endforeach
         </tbody>
