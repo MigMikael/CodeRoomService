@@ -5,6 +5,15 @@ namespace App\Http\Controllers;
 use App\Course;
 use App\Helper\TokenGenerate;
 use App\Lesson;
+use App\Problem;
+use App\ProblemAnalysis;
+use App\ProblemAttribute;
+use App\ProblemConstructor;
+use App\ProblemFile;
+use App\ProblemInput;
+use App\ProblemMethod;
+use App\ProblemOutput;
+use App\ProblemScore;
 use App\Student;
 use App\StudentCourse;
 use App\StudentLesson;
@@ -215,5 +224,143 @@ class CourseController extends Controller
             $teacher->makeHidden('role');
         }
         return $teachers;
+    }
+
+    public function cloneCourse(Request $request)
+    {
+        $id = $request->get('course_id');
+        $course = Course::findOrFail($id);
+
+        $new_name = $request->get('name');
+        $new_token = (new TokenGenerate())->generate(6);
+        $new_course = [
+            'name' => $new_name,
+            'image' => $course->image,
+            'color' => $course->color,
+            'status' => $course->status,
+            'token' => $new_token,
+            'mode' => 'normal'
+        ];
+        $new_course = Course::create($new_course);
+
+        foreach ($course->lessons as $lesson){
+            $new_lesson = [
+                'name' => $lesson->name,
+                'course_id' => $new_course->id,
+                'status' => $lesson->status,
+                'order' => $lesson->order,
+                'open_submit' => $lesson->open_submit,
+            ];
+            $new_lesson = Lesson::create($new_lesson);
+            foreach ($lesson->problems as $problem){
+                $new_problem = [
+                    'lesson_id' => $new_lesson->id,
+                    'name' => $problem->name,
+                    'description' => $problem->description,
+                    'evaluator' => $problem->evaluator,
+                    'order' => $problem->order,
+                    'question' => $problem->question,
+                    'timelimit' => $problem->tiemlimit,
+                    'memorylimit' => $problem->memorylimit,
+                    'is_parse' => $problem->is_parse,
+                    'score' => $problem->score,
+                ];
+                $new_problem = Problem::create($new_problem);
+                foreach ($problem->problemFiles as $problemFile){
+                    $new_prob_file = [
+                        'problem_id' => $new_problem->id,
+                        'package' => $problemFile->package,
+                        'filename' => $problemFile->filename,
+                        'mime' => $problemFile->mime,
+                        'code' => $problemFile->code
+                    ];
+                    $new_prob_file = ProblemFile::create($new_prob_file);
+
+                    foreach ($problemFile->inputs as $input){
+                        $new_input = [
+                            'problem_file_id' => $new_prob_file->id,
+                            'version' => $input->version,
+                            'filename' => $input->filename,
+                            'content' => $input->content
+                        ];
+                        ProblemInput::create($new_input);
+                    }
+
+                    foreach ($problemFile->inputs as $output){
+                        $new_output = [
+                            'problem_file_id' => $new_prob_file->id,
+                            'version' => $output->version,
+                            'filename' => $output->filename,
+                            'content' => $output->content,
+                            'score' => $output->score
+                        ];
+                        ProblemOutput::create($new_output);
+                    }
+
+                    foreach ($problemFile->problemAnalysis as $analysis){
+                        $new_analysis = [
+                            'problem_file_id' => $new_prob_file->id,
+                            'class' => $analysis->class,
+                            'package' => $analysis->package,
+                            'enclose' => $analysis->enclose,
+                            'extends' => $analysis->extends,
+                            'implements' => $analysis->implements
+                        ];
+                        $new_analysis = ProblemAnalysis::create($new_analysis);
+                        $problem_score = $analysis->score;
+
+                        $new_score = [
+                            'analysis_id' => $new_analysis->id,
+                            'class' => $problem_score->class,
+                            'package' => $problem_score->package,
+                            'enclose' => $problem_score->enclose,
+                            'extends' => $problem_score->extends,
+                            'implements' => $problem_score->implements
+                        ];
+                        ProblemScore::create($new_score);
+
+                        foreach ($analysis->attributes as $attribute){
+                            $new_attribute = [
+                                'analysis_id' => $new_analysis->id,
+                                'access_modifier' => $attribute->access_modifier,
+                                'non_access_modifier' => $attribute->non_access_modifier,
+                                'data_type' => $attribute->data_type,
+                                'name' => $attribute->name,
+                                'score' => $attribute->score
+                            ];
+                            ProblemAttribute::create($new_attribute);
+                        }
+
+                        foreach ($analysis->constructors as $constructor){
+                            $new_constructor = [
+                                'analysis_id' => $new_analysis->id,
+                                'access_modifier' => $constructor->access_modifier,
+                                'name' => $constructor->name,
+                                'parameter' => $constructor->parameter,
+                                'score' => $constructor->score
+                            ];
+                            ProblemConstructor::create($new_constructor);
+                        }
+
+                        foreach ($analysis->methods as $method){
+                            $new_method = [
+                                'analysis_id' => $new_analysis->id,
+                                'access_modifier' => $method->access_modifier,
+                                'non_access_modifier' => $method->non_access_midifier,
+                                'return_type' => $method->return_type,
+                                'name' => $method->name,
+                                'parameter' => $method->parameter,
+                                'recursive' => $method->recursive,
+                                'loop' => $method->loop,
+                                'score' => $method->score,
+                            ];
+                            ProblemMethod::create($new_method);
+                        }
+                    }
+                }
+            }
+        }
+
+        return response()->json(['msg' => 'clone course complete']);
     }
 }

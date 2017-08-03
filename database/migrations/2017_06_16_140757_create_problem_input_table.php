@@ -19,7 +19,7 @@ class CreateProblemInputTable extends Migration
             $table->integer('problem_file_id')->unsigned();
             $table->integer('version');
             $table->string('filename');
-            $table->text('content');
+            $table->longText('content');
 
             $table->foreign('problem_file_id')
                 ->references('id')
