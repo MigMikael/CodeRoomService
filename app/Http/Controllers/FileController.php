@@ -21,12 +21,15 @@ class FileController extends Controller
     {
         $problem = Problem::findOrFail($id);
         $question = File::findOrFail($problem->question);
+        $course = $problem->lesson->course;
+        $course_name = $course->id.'_'.$course->name;
+        $course_name = str_replace(' ', '_', $course_name);
 
         if (App::environment('local')) {
-            $file = Storage::get('problem\\'.$problem->id.'\\'.$problem->name.'\\'.$question->name);
+            $file = Storage::get($course_name.'\\'.$problem->id.'\\'.$problem->name.'\\'.$question->name);
 
         }else{
-            $file = Storage::get('problem/'.$problem->id.'/'.$problem->name.'/'.$question->name);
+            $file = Storage::get($course_name.'/'.$problem->id.'/'.$problem->name.'/'.$question->name);
         }
 
         return response($file, 200)

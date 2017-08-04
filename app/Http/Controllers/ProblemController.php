@@ -113,7 +113,7 @@ class ProblemController extends Controller
 
     public function storeProblemFile($problem)
     {
-        $course = $problem->course;
+        $course = $problem->lesson->course;
         $course_name = $course->id.'_'.$course->name;
         $course_name = str_replace(' ', '_', $course_name);
         $src_path = $course_name.'/'.$problem->id.'/'. $problem->name. '/src';
@@ -181,7 +181,7 @@ class ProblemController extends Controller
 
     public function storeResource($problem)
     {
-        $course = $problem->course;
+        $course = $problem->lesson->course;
         $resource_path = $course->id.'_'.$course->name.'/'.$problem->id.'/'. $problem->name. '/resource';
         $files = self::getFiles($resource_path);
         if(sizeof($files) > 0){
