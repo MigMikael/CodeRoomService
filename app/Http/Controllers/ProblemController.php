@@ -114,7 +114,9 @@ class ProblemController extends Controller
     public function storeProblemFile($problem)
     {
         $course = $problem->course;
-        $src_path = $course->id.'_'.$course->name.'/'.$problem->id.'/'. $problem->name. '/src';
+        $course_name = $course->id.'_'.$course->name;
+        $course_name = str_replace(' ', '_', $course_name);
+        $src_path = $course_name.'/'.$problem->id.'/'. $problem->name. '/src';
         $files = self::getFiles($src_path);
         foreach ($files as $file){
             //Log::info('#### '. $file); # LastDigit/src/LastDigit.java
@@ -145,7 +147,7 @@ class ProblemController extends Controller
 
             $problem_file = ProblemFile::create($problem_file);
 
-            $inputPath = $course->id.'_'.$course->name.'/'.$problem->id.'/'. $problem->name. '/testCase/';
+            $inputPath = $course_name.'/'.$problem->id.'/'. $problem->name. '/testCase/';
             $inputFiles = self::getFiles($inputPath);
             foreach ($inputFiles as $inputFile){
                 $temps = explode('/', $inputFile);

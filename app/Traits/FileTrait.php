@@ -75,10 +75,12 @@ trait FileTrait
     public function problem_path($problem)
     {
         $course = $problem->lesson->course;
+        $course_name = $course->id.'_'.$course->name;
+        $course_name = str_replace(' ', '_', $course_name);
         if (App::environment('local')) {
-            $path = storage_path() . '\\app\\'.$course->id.'_'.$course->name.'\\' . $problem->id . '\\';
+            $path = storage_path() . '\\app\\'.$course_name.'\\' . $problem->id . '\\';
         }else{
-            $path = storage_path() . '/app/'.$course->id.'_'.$course->name.'/'. $problem->id . '/';
+            $path = storage_path() . '/app/'.$course_name.'/'. $problem->id . '/';
         }
 
         return $path;
@@ -87,10 +89,12 @@ trait FileTrait
     public function question_path($problem)
     {
         $course = $problem->lesson->course;
+        $course_name = $course->id.'_'.$course->name;
+        $course_name = str_replace(' ', '_', $course_name);
         if (App::environment('local')) {
-            $path = storage_path() . '\\app\\'.$course->id.'_'.$course->name.'\\' . $problem->id . '\\' . $problem->name . '\\' . $problem->name . '.pdf';
+            $path = storage_path() . '\\app\\'.$course_name.'\\' . $problem->id . '\\' . $problem->name . '\\' . $problem->name . '.pdf';
         }else{
-            $path = storage_path() . '/app/'.$course->id.'_'.$course->name.'/'. $problem->id . '/' . $problem->name . '/' . $problem->name . '.pdf';
+            $path = storage_path() . '/app/'.$course_name.'/'. $problem->id . '/' . $problem->name . '/' . $problem->name . '.pdf';
         }
 
         return $path;
