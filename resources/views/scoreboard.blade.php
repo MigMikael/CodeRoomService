@@ -6,8 +6,11 @@
 @endsection
 
 @section('content')
-    <h1>{{ $lesson->name }}</h1>
-    <a class="btn btn-primary" href="{{ url('export_score/'.$lesson->id) }}">Export Score</a>
+    <h1>
+        {{ $lesson->name }}
+        <a class="btn btn-primary" href="{{ url('export_score/'.$lesson->id) }}">Export Score</a>
+    </h1>
+    
     <table class="table table-hover table-responsive table-bordered" id="score-table">
         <thead>
         <tr>

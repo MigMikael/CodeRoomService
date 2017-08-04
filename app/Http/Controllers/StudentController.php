@@ -176,7 +176,7 @@ class StudentController extends Controller
 
             // check if student already exist in DB
             $curr_student = Student::where('student_id', $student['student_id'])->first();
-            if(sizeof($curr_student) > 0){
+            if(sizeof($curr_student) < 1){
                 $student['email'] = '';
                 $student['image'] = $image->id;
                 $student['token'] = $token->generate(32);

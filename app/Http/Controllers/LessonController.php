@@ -204,9 +204,11 @@ class LessonController extends Controller
             }
             $score[$student->id]['total'] = 0;
             $score[$student->id]['time'] = 0;
-            $score[$student->id]['complete'] = 'true';
+            $score[$student->id]['complete'] = 'false';
         }
+        $total_prob_score = 0;
         foreach ($lesson->problems as $problem){
+            $total_prob_score += $problem->score;
             foreach ($problem->submissions as $submission){
                 if($submission->score > 0){
                     $curr_std = $submission->student;
@@ -218,15 +220,14 @@ class LessonController extends Controller
                         $t = Carbon::parse($submission->created_at);
                         $score[$student->id]['time'] += $t->timestamp;
                     }
-
-                    if($problem->score != $submission->score){
-                        $score[$student->id]['complete'] = 'false';
-                    }
                 }
             }
         }
 
         foreach ($students as $student){
+            if ($total_prob_score == $score[$student->id]['total']) {
+                $score[$student->id]['complete'] = 'true';
+            }
             $student['score'] = $score[$student->id];
         }
 
