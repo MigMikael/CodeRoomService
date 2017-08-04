@@ -74,7 +74,7 @@ trait FileTrait
      */
     public function problem_path($problem)
     {
-        $course = $problem->course;
+        $course = $problem->lesson->course;
         if (App::environment('local')) {
             $path = storage_path() . '\\app\\'.$course->id.'_'.$course->name.'\\' . $problem->id . '\\';
         }else{
@@ -86,7 +86,7 @@ trait FileTrait
 
     public function question_path($problem)
     {
-        $course = $problem->course;
+        $course = $problem->lesson->course;
         if (App::environment('local')) {
             $path = storage_path() . '\\app\\'.$course->id.'_'.$course->name.'\\' . $problem->id . '\\' . $problem->name . '\\' . $problem->name . '.pdf';
         }else{
@@ -177,7 +177,7 @@ trait FileTrait
         $is_correct = true;
         $wrong_msg = [];
 
-        $prob_path = self::problem_path($problem->id);
+        $prob_path = self::problem_path($problem);
         $prob_path = $prob_path . $problem->name;
         if(!file_exists($prob_path)){
             $is_correct = false;
@@ -202,7 +202,7 @@ trait FileTrait
     public function checkTestCase($problem)
     {
         $hasTestCase = false;
-        $prob_path = self::problem_path($problem->id);
+        $prob_path = self::problem_path($problem);
         $testCase_path = $prob_path . $problem->name . '/testCase';
         if(file_exists($testCase_path)){
             $hasTestCase = true;
