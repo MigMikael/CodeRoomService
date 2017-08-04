@@ -8,9 +8,13 @@
 @section('content')
     <h1>
         {{ $lesson->name }}
-        <a class="btn btn-primary" href="{{ url('export_score/'.$lesson->id) }}">Export Score</a>
+        @if(isset($_SESSION['userRole']))
+            @if($_SESSION['userRole'] == 'teacher' || $_SESSION['userRole'] == 'admin' || Request::is('test4/*'))
+                <a class="btn btn-primary" href="{{ url('export_score/'.$lesson->id) }}">Export Score</a>
+            @endif
+        @endif
     </h1>
-    
+
     <table class="table table-hover table-responsive table-bordered" id="score-table">
         <thead>
         <tr>

@@ -242,6 +242,15 @@ class CourseController extends Controller
             'mode' => 'normal'
         ];
         $new_course = Course::create($new_course);
+        $teachers_course = TeacherCourse::where('course_id', $course->id)->get();
+        foreach ($teachers_course as $teacher_course){
+            $new_teacher_course = [
+                'teacher_id' => $teacher_course->teacher_id,
+                'course_id' => $new_course->id,
+                'status' => $teacher_course->status
+            ];
+            TeacherCourse::create($new_teacher_course);
+        }
 
         foreach ($course->lessons as $lesson){
             $new_lesson = [
