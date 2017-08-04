@@ -68,15 +68,17 @@ trait FileTrait
      * get path to specific problem file
      * determine by environment thai currently operate.
      *
-     * @param $prob_id
+     * @param $problem
      * @return string
+     * @internal param $prob_id
      */
-    public function problem_path($prob_id)
+    public function problem_path($problem)
     {
+        $course = $problem->course;
         if (App::environment('local')) {
-            $path = storage_path() . '\\app\\problem\\' . $prob_id . '\\';
+            $path = storage_path() . '\\app\\'.$course->id.'_'.$course->name.'\\' . $problem->id . '\\';
         }else{
-            $path = storage_path() . '/app/problem/'. $prob_id . '/';
+            $path = storage_path() . '/app/'.$course->id.'_'.$course->name.'/'. $problem->id . '/';
         }
 
         return $path;
@@ -84,10 +86,11 @@ trait FileTrait
 
     public function question_path($problem)
     {
+        $course = $problem->course;
         if (App::environment('local')) {
-            $path = storage_path() . '\\app\\problem\\' . $problem->id . '\\' . $problem->name . '\\' . $problem->name . '.pdf';
+            $path = storage_path() . '\\app\\'.$course->id.'_'.$course->name.'\\' . $problem->id . '\\' . $problem->name . '\\' . $problem->name . '.pdf';
         }else{
-            $path = storage_path() . '/app/problem/'. $problem->id . '/' . $problem->name . '/' . $problem->name . '.pdf';
+            $path = storage_path() . '/app/'.$course->id.'_'.$course->name.'/'. $problem->id . '/' . $problem->name . '/' . $problem->name . '.pdf';
         }
 
         return $path;
@@ -145,11 +148,12 @@ trait FileTrait
 
     /**
      * @param $file
-     * @param $prob_id
+     * @param $problem
+     * @internal param $prob_id
      */
-    public function unzipProblem($file, $prob_id)
+    public function unzipProblem($file, $problem)
     {
-        $des_path = self::problem_path($prob_id);
+        $des_path = self::problem_path($problem);
         $filePath = self::path($file);
         $zipper = new Zipper();
         $zipper->make($filePath)->extractTo($des_path);

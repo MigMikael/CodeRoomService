@@ -73,7 +73,7 @@ class ProblemController extends Controller
         $problem = Problem::create($problem);
 
         $file = self::storeFile($file);
-        self::unzipProblem($file, $problem->id);
+        self::unzipProblem($file, $problem);
         self::deleteFile($file);
 
         $response = self::checkFileStructure($problem);
@@ -113,7 +113,8 @@ class ProblemController extends Controller
 
     public function storeProblemFile($problem)
     {
-        $src_path = 'problem/'.$problem->id.'/'. $problem->name. '/src';
+        $course = $problem->course;
+        $src_path = $course->id.'_'.$course->name.'/'.$problem->id.'/'. $problem->name. '/src';
         $files = self::getFiles($src_path);
         foreach ($files as $file){
             //Log::info('#### '. $file); # LastDigit/src/LastDigit.java
@@ -144,7 +145,7 @@ class ProblemController extends Controller
 
             $problem_file = ProblemFile::create($problem_file);
 
-            $inputPath = 'problem/'.$problem->id.'/'. $problem->name. '/testCase/';
+            $inputPath = $course->id.'_'.$course->name.'/'.$problem->id.'/'. $problem->name. '/testCase/';
             $inputFiles = self::getFiles($inputPath);
             foreach ($inputFiles as $inputFile){
                 $temps = explode('/', $inputFile);
@@ -178,7 +179,8 @@ class ProblemController extends Controller
 
     public function storeResource($problem)
     {
-        $resource_path = 'problem/'.$problem->id.'/'. $problem->name. '/resource';
+        $course = $problem->course;
+        $resource_path = $course->id.'_'.$course->name.'/'.$problem->id.'/'. $problem->name. '/resource';
         $files = self::getFiles($resource_path);
         if(sizeof($files) > 0){
             foreach ($files as $file){
