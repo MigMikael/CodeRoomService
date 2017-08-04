@@ -173,6 +173,7 @@ class ProblemController extends Controller
                 }
             }
         }
+        $problem->save();
     }
 
     public function storeResource($problem)

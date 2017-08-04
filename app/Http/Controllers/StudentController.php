@@ -174,14 +174,20 @@ class StudentController extends Controller
             $id = Student::count() + 1;
             $image = self::genImage($id);
 
-            $student['email'] = '';
-            $student['image'] = $image->id;
-            $student['token'] = $token->generate(32);
-            $student['ip'] = '';
-            $student['status'] = 'enable';
-            $student['username'] = $student['student_id'];
-            $student['password'] = password_hash($student['student_id'], PASSWORD_DEFAULT);
-            $student = Student::firstOrCreate($student);
+            // check if student already exist in DB
+            $curr_student = Student::where('student_id', $student['student_id'])->first();
+            if(sizeof($curr_student) > 0){
+                $student['email'] = '';
+                $student['image'] = $image->id;
+                $student['token'] = $token->generate(32);
+                $student['ip'] = '';
+                $student['status'] = 'enable';
+                $student['username'] = $student['student_id'];
+                $student['password'] = password_hash($student['student_id'], PASSWORD_DEFAULT);
+                $student = Student::firstOrCreate($student);
+            }else{
+                $student = $curr_student;
+            }
 
             $studentCourse = [
                 'student_id' => $student->id,
