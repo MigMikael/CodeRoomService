@@ -20,6 +20,7 @@ use App\StudentLesson;
 use App\TeacherCourse;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
+use Storage;
 use Log;
 
 class CourseController extends Controller
@@ -229,9 +230,10 @@ class CourseController extends Controller
     public function cloneCourse(Request $request)
     {
         $id = $request->get('course_id');
+        $new_name = $request->get('name');
+
         $course = Course::findOrFail($id);
 
-        $new_name = $request->get('name');
         $new_token = (new TokenGenerate())->generate(6);
         $new_course = [
             'name' => $new_name,
@@ -250,6 +252,20 @@ class CourseController extends Controller
                 'status' => $teacher_course->status
             ];
             TeacherCourse::create($new_teacher_course);
+        }
+
+        $course_path = $course->id . '_' . $course->name;
+        $course_path = str_replace(' ', '_', $course_path);
+        $new_course_path = $new_course->id . '_' . $new_course->name;
+        $new_course_path = str_replace(' ', '_', $new_course_path);
+
+        $directories = Storage::directories($course_path);
+        foreach ($directories as $directory) {
+            $files = Storage::allFiles($directory);
+            foreach ($files as $file){
+                $new_file = str_replace($course_path, $new_course_path, $file);
+                Storage::copy($file, $new_file);
+            }
         }
 
         foreach ($course->lessons as $lesson){
@@ -275,6 +291,21 @@ class CourseController extends Controller
                     'score' => $problem->score,
                 ];
                 $new_problem = Problem::create($new_problem);
+
+                $files = Storage::allFiles($new_course_path . '/' . $problem->id);
+                foreach ($files as $file){
+                    $temp = explode('/', $file);
+                    $temp[1] = (int)($temp[1]);
+                    $temp[1] = $new_problem->id;
+                    $temp[1] = (string)$temp[1];
+
+                    $new_file = '';
+                    foreach ($temp as $t){
+                        $new_file .= $t.'/';
+                    }
+                    Storage::copy($file, $new_file);
+                }
+                Storage::deleteDirectory($new_course_path . '/' . $problem->id);
                 foreach ($problem->problemFiles as $problemFile){
                     $new_prob_file = [
                         'problem_id' => $new_problem->id,
