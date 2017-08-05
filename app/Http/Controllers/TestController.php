@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\App;
 use App\Course;
 use App\Resource;
 use App\File;
@@ -13,7 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Chumper\Zipper\Zipper;
 use App\Traits\FileTrait;
-use Illuminate\Support\Facades\Storage;
+use Storage;
 use Log;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -211,6 +212,38 @@ class TestController extends Controller
         $course = Course::find(1);
         $dt = Carbon::parse($course->created_at);
         return $dt->timestamp;
+    }
+
+    public function test4()
+    {
+        /*$base_path = '2_Computer_Programming_II';
+        $des_path = '3_Computer_Programming_II';
+        $directories = Storage::directories($base_path);
+        foreach ($directories as $directory) {
+            $files = Storage::allFiles($directory);
+            foreach ($files as $file){
+                Log::info($file);
+                $new_file = str_replace($base_path, $des_path, $file);
+                Storage::move($file, $new_file);
+            }
+        }*/
+
+        /*Storage::makeDirectory('submission/4');
+        Storage::makeDirectory('submission/5');*/
+
+        /*$directories = Storage::allDirectories($des_path);
+        foreach ($directories as $directory) {
+            $files = Storage::allFiles($directory);
+            foreach ($files as $file){
+
+            }
+        }*/
+        //return $directories;
+
+        $files = Storage::files('2_Computer_Programming_II/2');
+        foreach ($files as $file){
+            Log::info($file);
+        }
     }
 
 }

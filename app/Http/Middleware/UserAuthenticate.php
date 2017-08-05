@@ -28,7 +28,7 @@ class UserAuthenticate
 
         $diff = $time_now->diffInMinutes($_SESSION['time']);
         $session_timeout = env('SESSION_TIMEOUT', 15);
-        Log::info('diff = '.$diff);
+        //Log::info('diff = '.$diff);
 
         if ($diff > $session_timeout){
             session_unset();
