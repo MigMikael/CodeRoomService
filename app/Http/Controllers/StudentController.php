@@ -15,6 +15,7 @@ use App\Traits\FileTrait;
 use Excel;
 use Log;
 use Storage;
+use Zipper;
 
 class StudentController extends Controller
 {
@@ -256,10 +257,42 @@ class StudentController extends Controller
 
     public function submissionCode($id)
     {
-        $submission = Submission::findOrFail($id);
-        $student = $submission->student;
-        foreach ($submission->submissionFiles as $submissionFile){
-            Storage::put($submissionFile->filename, $submissionFile->code);
+        $submission = Submission::find($id);
+        if(sizeof($submission) < 1){
+            return response()->json(['msg' => 'submission code not found']);
         }
+
+        $student = $submission->student;
+        $problem = $submission->problem;
+        $now = str_replace(' ', '_', Carbon::now());
+        $folderName = $problem->name.'_'.$student->student_id.'_'.$now.'/src/';
+
+        foreach ($submission->submissionFiles as $submissionFile){
+            $packageName = '';
+            if ($submissionFile->package != 'default package') {
+                $temps = explode('.', $submissionFile->package);
+                foreach ($temps as $temp) {
+                    $packageName .= $temp . '/';
+                }
+            }
+            if($submissionFile->package != 'driver'){
+                Storage::put($folderName.$packageName.$submissionFile->filename, $submissionFile->code);
+            }
+        }
+        $folderName = str_replace('/src/', '', $folderName);
+        $files = storage_path().'/app/'.$folderName;
+
+        $theName = $problem->name.'_'.$student->student_id.'_'.$now.'.zip';
+        $des_path = storage_path().'/app/'.$theName;
+
+        $zipper = new Zipper;
+        $zipper->make($des_path)->add($files)->close();
+
+        Log::info($folderName);
+        Storage::deleteDirectory($folderName);
+
+        $view_able_name = $problem->name.'_'.$student->student_id.'.zip';
+        return response()->download(storage_path().'/app/'.$theName, $view_able_name)
+            ->deleteFileAfterSend(true);
     }
 }
