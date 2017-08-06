@@ -8,11 +8,13 @@ use App\Student;
 use App\Course;
 use App\StudentCourse;
 use App\StudentLesson;
+use App\Submission;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
 use App\Traits\FileTrait;
 use Excel;
 use Log;
+use Storage;
 
 class StudentController extends Controller
 {
@@ -250,5 +252,14 @@ class StudentController extends Controller
         }
 
         return response()->json(['msg' => 'remove ip complete']);
+    }
+
+    public function submissionCode($id)
+    {
+        $submission = Submission::findOrFail($id);
+        $student = $submission->student;
+        foreach ($submission->submissionFiles as $submissionFile){
+            Storage::put($submissionFile->filename, $submissionFile->code);
+        }
     }
 }

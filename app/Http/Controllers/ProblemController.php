@@ -232,7 +232,7 @@ class ProblemController extends Controller
     {
         $pFiles = $request->get('problem_files');
         foreach ($pFiles as $pFile){
-            $prob_file = ProblemFile::findOrFail($pFile);
+            $prob_file = ProblemFile::findOrFail($pFile['id']);
             $problem = $prob_file->problem;
 
             $pAs = $pFile['problem_analysis'];

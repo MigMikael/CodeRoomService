@@ -443,4 +443,13 @@ class TestController extends Controller
         return response()->json(['msg' => 'clone course complete']);
     }
 
+    public function test6()
+    {
+        $submission = Submission::findOrFail(1);
+        $student = $submission->student;
+        foreach ($submission->submissionFiles as $submissionFile){
+            Storage::put($submissionFile->filename, $submissionFile->code);
+        }
+    }
+
 }

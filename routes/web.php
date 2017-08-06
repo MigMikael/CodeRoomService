@@ -177,6 +177,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('student/disable/{student_id}/{course_id}', 'StudentController@disable');
         #
         Route::get('student/all/{course_id}', 'StudentController@getAll');
+        #
+        Route::get('student/submission/{id}/code', 'StudentController@submissionCode');
 
 
         #
@@ -221,6 +223,7 @@ Route::get('test4', 'TestController@test4');
 Route::get('test4/{id}', 'LessonController@scoreboard');
 Route::get('export_score/{id}', 'LessonController@exportScore');
 Route::post('test5', 'TestController@test5');
+Route::get('test6{id}', 'StudentController@submissionCode');
 
 //Deprecated api
 //Route::post('api/submission/code', 'SubmissionController@store');
