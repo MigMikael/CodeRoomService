@@ -51,6 +51,8 @@ class TeacherController extends Controller
         ];
         Teacher::create($teacher);
 
+
+
         return response()->json(['msg' => 'create teacher success']);
     }
 

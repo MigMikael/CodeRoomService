@@ -234,4 +234,19 @@ class LessonController extends Controller
         //return $students;
         return view('scoreboard', ['lesson' => $lesson, 'students' => $students]);
     }
+
+    public function changeGuide($id)
+    {
+        $lesson = Lesson::findOrFail($id);
+        if($lesson->guide == 'true'){
+            $lesson->guide = 'false';
+            $msg = 'change guide to false success';
+        }else{
+            $lesson->guide = 'true';
+            $msg = 'change guide to true success';
+        }
+        $lesson->save();
+
+        return response()->json(['msg' => $msg]);
+    }
 }

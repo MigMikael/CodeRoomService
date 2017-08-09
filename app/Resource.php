@@ -14,4 +14,14 @@ class Resource extends Model
         'file_id',
         'visible'
     ];
+
+    public function scopeShow($query)
+    {
+        return $query->where('visible', '=', 'true');
+    }
+
+    public function scopeHide($query)
+    {
+        return $query->where('visible', '=', 'false');
+    }
 }

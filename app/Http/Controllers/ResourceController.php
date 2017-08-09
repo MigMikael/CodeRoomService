@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\File;
+use App\Lesson;
 use App\Resource;
 use Illuminate\Http\Request;
 use App\Traits\FileTrait;
@@ -67,6 +68,27 @@ class ResourceController extends Controller
         $resource->save();
 
         return response()->json(['msg' => $msg]);
+    }
+
+    public function changeVisible($id, $status)
+    {
+        if($status == 'on' || $status == 'off'){
+            $lesson = Lesson::findOrFail($id);
+            foreach ($lesson->problems as $problem){
+                foreach ($problem->resources as $resource){
+                    if($status == 'on'){
+                        $resource->visible = 'true';
+                    }else{
+                        $resource->visible = 'false';
+                    }
+                    $resource->save();
+                }
+            }
+            return response()->json(['msg' => 'change all resource visible to ' . $status]);
+
+        }else{
+            return response()->json(['msg' => 'wrong status on & off only']);
+        }
     }
 
     public function destroy($id)

@@ -64,7 +64,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('course/{id}/member', 'CourseController@member');
         #
         Route::post('course/join', 'CourseController@join');
-        # Todo Test This API
+        #
         Route::get('course/{student_id}/{course_id}', 'CourseController@showStudent');
 
 
@@ -103,8 +103,6 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('course/mode/{course_id}', 'CourseController@changeMode');
         #
         Route::get('course/{id}/member', 'CourseController@member');
-        # New API
-        Route::post('course/clone', 'CourseController@cloneCourse');
 
 
         #
@@ -125,7 +123,10 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('lesson/scoreboard/{id}', 'LessonController@scoreboard');
         #
         Route::get('lesson/export/score/{id}', 'LessonController@exportScore');
-
+        #
+        Route::get('lesson/{id}/guide/change_status', 'LessonController@changeGuide');
+        # New API
+        Route::get('lesson/{id}/resource/visible/{status}', 'ResourceController@changeVisible');
 
         #
         Route::get('problem/{id}', 'ProblemController@show');
@@ -200,6 +201,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('course/status/{course_id}', 'CourseController@changeStatus');
         #
         Route::post('course/add/teacher', 'CourseController@addTeacher');
+        # New API
+        Route::post('course/clone', 'CourseController@cloneCourse');
 
 
         #
