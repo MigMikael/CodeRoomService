@@ -226,7 +226,7 @@ Route::get('test4', 'TestController@test4');
 Route::get('test4/{id}', 'LessonController@scoreboard');
 Route::get('export_score/{id}', 'LessonController@exportScore');
 Route::post('test5', 'TestController@test5');
-Route::get('test6', 'StudentController@submissionCode');
+Route::get('test6', 'TestController@test6');
 
 //Deprecated api
 //Route::post('api/submission/code', 'SubmissionController@store');

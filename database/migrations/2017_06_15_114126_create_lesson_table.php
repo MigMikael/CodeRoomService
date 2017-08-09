@@ -21,7 +21,7 @@ class CreateLessonTable extends Migration
             $table->string('status');
             $table->integer('order');
             $table->string('open_submit');
-            $table->string('guide');
+            $table->string('guide')->default('true');
             $table->timestamps();
 
             $table->foreign('course_id')

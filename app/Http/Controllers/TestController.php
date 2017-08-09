@@ -445,11 +445,13 @@ class TestController extends Controller
 
     public function test6()
     {
-        $submission = Submission::findOrFail(1);
+        /*$submission = Submission::findOrFail(1);
         $student = $submission->student;
         foreach ($submission->submissionFiles as $submissionFile){
             Storage::put($submissionFile->filename, $submissionFile->code);
-        }
+        }*/
+        $course = Course::find(1);
+        return $course->lessons->count();
     }
 
 }

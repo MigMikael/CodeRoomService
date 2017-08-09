@@ -6,6 +6,7 @@ use App\Helper\TokenGenerate;
 use App\Teacher;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
+use App\Student;
 
 class TeacherController extends Controller
 {
@@ -49,9 +50,21 @@ class TeacherController extends Controller
             'username' => $email,
             'password' => password_hash($email, PASSWORD_DEFAULT),
         ];
-        Teacher::create($teacher);
+        $teacher = Teacher::create($teacher);
 
-
+        $student = [
+            'student_id' => $teacher->id,
+            'name' => $name,
+            'email' => $email,
+            'image' => $image->id,
+            'token' => $teacher->token,
+            'ip' => '',
+            'status' => 'enable',
+            'username' => $email,
+            'password' => password_hash($email, PASSWORD_DEFAULT),
+            'role' => 'hidden'
+        ];
+        Student::firstOrCreate($student);
 
         return response()->json(['msg' => 'create teacher success']);
     }
