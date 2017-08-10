@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Announcement;
 use App\Course;
 use App\Helper\TokenGenerate;
 use App\Lesson;
@@ -399,6 +400,17 @@ class CourseController extends Controller
                     }
                 }
             }
+        }
+
+        foreach ($course->announcements as $announcement){
+            $new_announcement = [
+                'course_id' => $new_course->id,
+                'title' => $announcement->title,
+                'content' => $announcement->content,
+                'priority' => $announcement->priority,
+                'show' => 'false'
+            ];
+            Announcement::create($new_announcement);
         }
 
         return response()->json(['msg' => 'clone course complete']);

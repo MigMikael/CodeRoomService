@@ -20,6 +20,7 @@ class CreateAnnounceTable extends Migration
             $table->string('title');
             $table->text('content');
             $table->integer('priority');
+            $table->string('show')->default('false');
             $table->timestamps();
 
             $table->foreign('course_id')

@@ -25,11 +25,18 @@ class AnnouncementController extends Controller
             $priority = 2;
         }
 
+        if ($request->has('show')){
+            $show = $request->get('show');
+        }else{
+            $show = 'false';
+        }
+
         $announce = [
             'course_id' => $course_id,
             'title' => $title,
             'content' => $content,
-            'priority' => $priority
+            'priority' => $priority,
+            'show' => $show
         ];
 
         Announcement::create($announce);
@@ -47,6 +54,9 @@ class AnnouncementController extends Controller
 
         if ($request->has('priority')){
             $announce->priority = $request->get('priority');
+        }
+        if ($request->has('show')){
+            $announce->show = $request->get('show');
         }
         $announce->save();
 

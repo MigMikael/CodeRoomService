@@ -13,7 +13,8 @@ class Announcement extends Model
         'course_id',
         'title',
         'content',
-        'priority'
+        'priority',
+        'show',
     ];
 
     public function course(){
