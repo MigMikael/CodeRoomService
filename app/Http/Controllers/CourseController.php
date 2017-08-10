@@ -285,7 +285,7 @@ class CourseController extends Controller
                     'evaluator' => $problem->evaluator,
                     'order' => $problem->order,
                     'question' => $problem->question,
-                    'timelimit' => $problem->tiemlimit,
+                    'timelimit' => $problem->timelimit,
                     'memorylimit' => $problem->memorylimit,
                     'is_parse' => $problem->is_parse,
                     'score' => $problem->score,
@@ -326,7 +326,7 @@ class CourseController extends Controller
                         ProblemInput::create($new_input);
                     }
 
-                    foreach ($problemFile->inputs as $output){
+                    foreach ($problemFile->outputs as $output){
                         $new_output = [
                             'problem_file_id' => $new_prob_file->id,
                             'version' => $output->version,
@@ -386,7 +386,7 @@ class CourseController extends Controller
                             $new_method = [
                                 'analysis_id' => $new_analysis->id,
                                 'access_modifier' => $method->access_modifier,
-                                'non_access_modifier' => $method->non_access_midifier,
+                                'non_access_modifier' => $method->non_access_modifier,
                                 'return_type' => $method->return_type,
                                 'name' => $method->name,
                                 'parameter' => $method->parameter,
