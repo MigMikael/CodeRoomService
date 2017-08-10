@@ -107,9 +107,9 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         #
         Route::get('lesson/{id}', 'LessonController@show');
-        # Todo Lesson Status
+        #
         Route::post('lesson/edit', 'LessonController@update');
-        # Todo Lesson Status
+        #
         Route::post('lesson/store', 'LessonController@store');
         #
         Route::delete('lesson/delete/{id}', 'LessonController@delete');
@@ -144,10 +144,17 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('problem/{id}/submission', 'ProblemController@submission');
 
 
+        #
+        Route::post('problem/input/edit', 'ProblemController@updateInput');
+        #
+        Route::post('problem/output/edit', 'ProblemController@updateOutput');
+
+
+
         # New API
         Route::post('problem/resource/create', 'ResourceController@store');
         # New API
-        Route::post('problem/resource/{id}/edit', 'ResourceController@update');
+        Route::post('problem/resource/edit', 'ResourceController@update');
         # New API
         Route::get('problem/resource/{id}/delete', 'ResourceController@destroy');
         # New API
@@ -160,9 +167,9 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         #
         Route::get('announcement/{id}', 'AnnouncementController@show');
-        # Todo Can support priority
+        #
         Route::post('announcement/store', 'AnnouncementController@store');
-        # Todo Can support priority
+        #
         Route::post('announcement/edit', 'AnnouncementController@update');
         #
         Route::delete('announcement/delete/{id}', 'AnnouncementController@delete');

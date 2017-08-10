@@ -407,4 +407,46 @@ class ProblemController extends Controller
 
         return $submissions;
     }
+
+    public function updateInput(Request $request)
+    {
+        $id = $request->get('id');
+        $problem_input = ProblemInput::findOrFail($id);
+
+        if($request->has('in')){
+            $inFile = $request->file('in');
+            $name = self::storeFile($inFile);
+
+            $content = self::getFile($name);
+            $problem_input->content = $content;
+            $problem_input->version += 1;
+            $problem_input->save();
+
+            return response()->json(['msg' => 'edit input success']);
+        }
+        else{
+            return response()->json(['msg' => 'file input not found']);
+        }
+    }
+
+    public function updateOutput(Request $request)
+    {
+        $id = $request->get('id');
+        $problem_output = ProblemOutput::findOrFail($id);
+
+        if($request->has('sol')){
+            $solFile = $request->file('sol');
+            $name = self::storeFile($solFile);
+
+            $content = self::getFile($name);
+            $problem_output->content = $content;
+            $problem_output->version += 1;
+            $problem_output->save();
+
+            return response()->json(['msg' => 'edit input success']);
+        }
+        else{
+            return response()->json(['msg' => 'file input not found']);
+        }
+    }
 }
