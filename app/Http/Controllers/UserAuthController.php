@@ -26,7 +26,21 @@ class UserAuthController extends Controller
         $student = Student::where('username', '=', $username)->first();
         $teacher = Teacher::where('username', '=', $username)->first();
 
-        if($student != null){
+        if($teacher != null){
+            if(password_verify($password, $teacher->password)){
+                $_SESSION['userID'] = $teacher->id;
+                $_SESSION['userRole'] = $teacher->role;
+                $_SESSION['time'] = Carbon::now();
+
+                $teacher['role'] = $teacher->role;
+                $teacher->makeVisible('token');
+                return $teacher;
+
+            }else{
+                return response()->json(['msg' => 'password is incorrect']);
+            }
+
+        }elseif($student != null){
             if(password_verify($password, $student->password)){
 
                 /*if($student->ip != '' && $current_ip != $student->ip){
@@ -43,20 +57,6 @@ class UserAuthController extends Controller
                 $student['role'] = 'student';
                 $student->makeVisible('token');
                 return $student;
-
-            }else{
-                return response()->json(['msg' => 'password is incorrect']);
-            }
-
-        }elseif($teacher != null){
-            if(password_verify($password, $teacher->password)){
-                $_SESSION['userID'] = $teacher->id;
-                $_SESSION['userRole'] = $teacher->role;
-                $_SESSION['time'] = Carbon::now();
-
-                $teacher['role'] = $teacher->role;
-                $teacher->makeVisible('token');
-                return $teacher;
 
             }else{
                 return response()->json(['msg' => 'password is incorrect']);
