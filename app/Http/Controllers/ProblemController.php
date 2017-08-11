@@ -199,7 +199,7 @@ class ProblemController extends Controller
                 $resource = [
                     'problem_id' => $problem->id,
                     'file_id' => $file->id,
-                    'visible' => 'true',
+                    'visible' => 'false',
                 ];
                 Resource::create($resource);
             }
@@ -209,23 +209,77 @@ class ProblemController extends Controller
 
     public function update(Request $request)
     {
-        /*$id = $request->get('id');
-        $problem = Problem::findOfFail($id);
-
-        $problem->name = $request->get('name');
-        $problem->description = $request->get('description');
-        $problem->evaluator = $request->get('evaluator');
-        $problem->timelimit = $request->get('timelimit');
-        $problem->memorylimit = $request->get('memorylimit');
-        $problem->lesson_id = $request->get('lesson_id');
-        $problem->is_parse = $request->get('is_parse');
+        $problem = Problem::findOrFail($request->get('id'));
 
         if($request->hasFile('file')){
-            $file = $request->file('file');
-            self::sendToProblemFile($problem, $file, 'edit');
-        }*/
+            $new_file = $request->file('file');
+        }
+        else{
+            return response()->json(['msg' => 'file not found']);
+        }
 
-        return response()->json(['msg' => 'success']);
+        $new_problem = [
+            'lesson_id' => $problem->lesson_id,
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
+            'evaluator' => $request->get('evaluator'),
+            'order' => $problem->id,
+            'timelimit' => $request->get('timelimit'),
+            'memorylimit' => $request->get('memorylimit'),
+            'is_parse' => $request->get('is_parse'),
+        ];
+        $new_problem = Problem::create($new_problem);
+
+        // delete old file
+        $course = $problem->lesson->course;
+        $course_name = $course->id.'_'.$course->name;
+        $course_name = str_replace(' ', '_', $course_name);
+        $prob_path = $course_name.'/'.$problem->id.'/'. $problem->name. '/';
+        $files = self::getFiles($prob_path);
+        foreach ($files as $file){
+            self::deleteFile($file);
+        }
+        $question_file = File::findOrFail($problem->question);
+        $question_file->delete();
+        self::delete($problem->id);
+
+
+        $new_file = self::storeFile($new_file);
+        self::unzipProblem($new_file, $new_problem);
+        self::deleteFile($new_file);
+
+        $response = self::checkFileStructure($new_problem);
+        if($response != true){
+            $new_problem->delete();
+            return response()->json($response);
+        }
+
+        $question_file = self::storeQuestion($new_problem->name);
+        $new_problem->question = $question_file->id;
+        $new_problem->save();
+
+        self::storeProblemFile($new_problem);
+        self::storeResource($new_problem);
+
+        if($new_problem->is_parse == 'true'){
+            foreach ($new_problem->problemFiles as $problemFile){
+                $classes = self::analyzeProblemFile($problemFile);
+                self::saveResult($classes, $problemFile);
+            }
+
+            foreach ($new_problem->problemFiles as $problemFile){
+                $problemFile['code'] = '';
+                foreach ($problemFile->problemAnalysis as $analysis){
+                    $analysis->score;
+                    $analysis->attributes;
+                    $analysis->constructors;
+                    $analysis->methods;
+                }
+            }
+            return $new_problem;
+        }
+
+        return response()->json(['msg' => 'edit problem success']);
     }
 
     public function storeScore(Request $request)
@@ -443,10 +497,10 @@ class ProblemController extends Controller
             $problem_output->version += 1;
             $problem_output->save();
 
-            return response()->json(['msg' => 'edit input success']);
+            return response()->json(['msg' => 'edit output success']);
         }
         else{
-            return response()->json(['msg' => 'file input not found']);
+            return response()->json(['msg' => 'file output not found']);
         }
     }
 }

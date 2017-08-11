@@ -8,7 +8,7 @@
 namespace App\Traits;
 use Illuminate\Support\Facades\File;
 use Log;
-use Illuminate\Support\Facades\Storage;
+use Storage;
 use Illuminate\Support\Facades\App;
 use Chumper\Zipper\Zipper;
 
