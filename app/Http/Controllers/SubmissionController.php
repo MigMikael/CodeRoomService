@@ -6,6 +6,7 @@ use App\ProblemAnalysis;
 use App\ProblemAttribute;
 use App\ProblemConstructor;
 use App\ProblemMethod;
+use App\ProblemScore;
 use App\Result;
 use App\ResultAttribute;
 use App\ResultConstructor;
@@ -207,27 +208,73 @@ class SubmissionController extends Controller
         }
         self::updateStudentProgress($submission);
 
+        $score = [
+            'class' => 0,
+            'package' => 0,
+            'enclose' => 0,
+            'extends' => 0,
+            'implements' => 0,
+            'attribute' => 0,
+            'constructor' => 0,
+            'method' => 0,
+        ];
+
+        $total_score = [
+            'class' => 0,
+            'package' => 0,
+            'enclose' => 0,
+            'extends' => 0,
+            'implements' => 0,
+            'attribute' => 0,
+            'constructor' => 0,
+            'method' => 0,
+        ];
         foreach ($submission->submissionFiles as $submissionFile){
             $submissionFile->outputs;
 
             $problem = $submission->problem;
             foreach ($problem->problemFiles as $problemFile){
                 foreach ($problemFile->problemAnalysis as $analysis){
-                    $analysis->score;
-                    $analysis->attributes;
-                    $analysis->constructors;
-                    $analysis->methods;
+                    $problem_score = ProblemScore::where('analysis_id', $analysis->id)->first();
+                    $total_score['class'] += $problem_score->class;
+                    $total_score['package'] += $problem_score->package;
+                    $total_score['enclose'] += $problem_score->enclose;
+                    $total_score['extends'] += $problem_score->extends;
+                    $total_score['implements'] += $problem_score->implements;
+
+                    foreach ($analysis->attributes as $attribute){
+                        $total_score['attribute'] += $attribute->score;
+                    }
+                    foreach ($analysis->constructors as $constructor){
+                        $total_score['constructor'] += $constructor->score;
+                    }
+                    foreach ($analysis->methods as $method){
+                        $total_score['method'] += $method->score;
+                    }
                 }
             }
 
             foreach ($submissionFile->results as $result){
-                $result->score;
-                $result->attributes;
-                $result->constructors;
-                $result->methods;
+                $result_score = ResultScore::where('result_id', $result->id)->first();
+                $score['class'] += $result_score->class;
+                $score['package'] += $result_score->package;
+                $score['enclose'] += $result_score->enclose;
+                $score['extends'] += $result_score->extends;
+                $score['implements'] += $result_score->implements;
+
+                foreach ($result->attributes as $attribute){
+                    $score['attribute'] += $attribute->score;
+                }
+                foreach ($result->constructors as $constructor){
+                    $score['constructor'] += $constructor->score;
+                }
+                foreach ($result->methods as $method){
+                    $score['method'] += $method->score;
+                }
             }
         }
-
+        $submission['score'] = $score;
+        $submission['total_score'] = $total_score;
         $submission['wrong'] = $wrong;
         return $submission;
 
@@ -411,8 +458,7 @@ class SubmissionController extends Controller
     public function getCurrentVersion($problem)
     {
         $currentVersion = 0;
-        $problemFiles = $problem->problemFiles;
-        foreach ($problemFiles as $problemFile){
+        foreach ($problem->problemFiles as $problemFile){
             if(sizeof($problemFile->inputs) > 0){
                 $input = $problemFile->inputs()->first();
                 $currentVersion = $input->version;
