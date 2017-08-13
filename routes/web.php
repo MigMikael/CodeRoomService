@@ -66,6 +66,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::post('course/join', 'CourseController@join');
         #
         Route::get('course/{student_id}/{course_id}', 'CourseController@showStudent');
+        # New API
+        Route::get('course/{id}/lesson/progress', 'CourseController@sumProgress');
 
 
         #
@@ -98,11 +100,15 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
-        Route::get('course/{course_id}', 'CourseController@showTeacher');
+        Route::get('course/{id}', 'CourseController@showTeacher');
         #
-        Route::get('course/mode/{course_id}', 'CourseController@changeMode');
+        Route::get('course/{id}/mode', 'CourseController@changeMode');
+        #
+        Route::get('course/{id}/status', 'CourseController@changeStatus');
         #
         Route::get('course/{id}/member', 'CourseController@member');
+        # New API
+        Route::get('course/{id}/lesson/progress', 'CourseController@sumProgress');
 
 
         #
@@ -152,7 +158,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         # New API
-        Route::post('problem/resource/create', 'ResourceController@store');
+        Route::post('problem/resource/store', 'ResourceController@store');
         # New API
         Route::post('problem/resource/edit', 'ResourceController@update');
         # New API
@@ -182,12 +188,15 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::post('students/store', 'StudentController@addMembers');
         #
-        Route::get('student/disable/{student_id}/{course_id}', 'StudentController@disable');
+        Route::get('student/change_status/{student_id}/{course_id}', 'StudentController@disable');
         #
         Route::get('student/all/{course_id}', 'StudentController@getAll');
         # New API
         Route::get('student/submission/{id}/code', 'StudentController@submissionCode');
 
+
+        #
+        Route::post('submission', 'SubmissionController@store2');
 
         #
         Route::get('remove/ip/{id}', 'StudentController@removeIP');
@@ -203,9 +212,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
-        Route::post('course', 'CourseController@store');
-        #
-        Route::get('course/status/{course_id}', 'CourseController@changeStatus');
+        Route::post('course/store', 'CourseController@store');
         #
         Route::post('course/add/teacher', 'CourseController@addTeacher');
         # New API
@@ -215,7 +222,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::get('teacher', 'TeacherController@getAll');
         # New Api
-        Route::post('teacher', 'TeacherController@store');
+        Route::post('teacher/store', 'TeacherController@store');
         #
         Route::get('teacher/status/{teacher_id}', 'TeacherController@changeStatus');
         #

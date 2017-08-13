@@ -149,13 +149,13 @@ class CourseController extends Controller
         return $course;
     }
 
-    public function showTeacher($course_id)
+    public function showTeacher($id)
     {
         $course = Course::withCount([
             'students', 'teachers', 'lessons', 'badges', 'announcements'
-        ])->findOrFail($course_id);
+        ])->findOrFail($id);
 
-        $course['lessons'] = Lesson::where('course_id', '=', $course_id)
+        $course['lessons'] = Lesson::where('course_id', '=', $id)
             ->ordered()
             ->get();
         foreach ($course['lessons'] as $lesson){
@@ -169,9 +169,9 @@ class CourseController extends Controller
         return $course;
     }
 
-    public function changeStatus($course_id)
+    public function changeStatus($id)
     {
-        $course = Course::findOrFail($course_id);
+        $course = Course::findOrFail($id);
         if($course->status == 'enable'){
             $course->status = 'disable';
         }else{
@@ -182,9 +182,9 @@ class CourseController extends Controller
         return response()->json(['msg' => 'change course status success']);
     }
 
-    public function changeMode($course_id)
+    public function changeMode($id)
     {
-        $course = Course::findOrFail($course_id);
+        $course = Course::findOrFail($id);
         if($course->mode == 'normal'){
             $course->mode = 'test';
             $students = $course->students;
@@ -414,5 +414,28 @@ class CourseController extends Controller
         }
 
         return response()->json(['msg' => 'clone course complete']);
+    }
+
+    public function sumProgress($id)
+    {
+        $course = Course::findOrFail($id);
+        $students = $course->students;
+        foreach ($students as $student){
+            $less = [];
+            foreach ($course->lessons as $lesson){
+                $student_lesson = StudentLesson::where([
+                    ['student_id', $student->id],
+                    ['lesson_id', $lesson->id]
+                ])->first();
+
+                if(sizeof($student_lesson) > 0){
+                    $less[$lesson->name] = $student_lesson->progress;
+                }else{
+                    $less[$lesson->name] = 0;
+                }
+            }
+            $student['progress'] = $less;
+        }
+        return $students;
     }
 }
