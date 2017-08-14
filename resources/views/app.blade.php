@@ -11,7 +11,7 @@
 
     @yield('header')
 
-    <title>ScoreBoard</title>
+    <title>CodeRoomService</title>
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -22,7 +22,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">ScoreBoard</a>
+                <a class="navbar-brand" href="#">CodeRoomService</a>
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
