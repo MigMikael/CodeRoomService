@@ -47,7 +47,17 @@ class CourseController extends Controller
         ];
         $course = Course::create($course);
 
-        return $course;
+        $teachers = $request->get('teachers');
+        foreach ($teachers as $teacher){
+            $teacher_course = [
+                'teacher_id' => $teacher['id'],
+                'course_id' => $course->id,
+                'status' => 'enable'
+            ];
+            TeacherCourse::firstOrCreate($teacher_course);
+        }
+
+        return response()->json(['msg' => 'create course success']);
     }
 
     public function member($id)
