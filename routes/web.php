@@ -57,7 +57,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::get('dashboard', 'StudentController@dashboard');
         #
-        Route::get('profile/{id}', 'StudentController@profile');
+        Route::get('profile/{student_id}', 'StudentController@profile');
         # Todo Student can change Avatar Image
         Route::post('profile/edit', 'StudentController@updateProfile');
         #

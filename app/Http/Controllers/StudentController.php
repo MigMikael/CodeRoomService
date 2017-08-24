@@ -64,9 +64,9 @@ class StudentController extends Controller
         return $data;
     }
 
-    public function profile($id)
+    public function profile($student_id)
     {
-        $student = Student::findOrFail($id);
+        $student = Student::where('student_id', $student_id)->firstOrFail();
         foreach ($student->courses as $course){
             foreach ($course->lessons as $lesson){
                 $student_lesson = StudentLesson::where([
