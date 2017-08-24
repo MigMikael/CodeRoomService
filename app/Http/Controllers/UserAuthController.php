@@ -106,6 +106,7 @@ class UserAuthController extends Controller
             'password' => password_hash($password, PASSWORD_DEFAULT)
         ];
         $student = Student::firstOrCreate($student);
+        $student->makeVisible('token');
         return $student;
     }
 }
