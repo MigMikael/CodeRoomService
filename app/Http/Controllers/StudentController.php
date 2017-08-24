@@ -40,6 +40,25 @@ class StudentController extends Controller
         $courses = Course::withCount([
             'students', 'teachers', 'lessons'
         ])->get();
+
+        foreach ($courses as $course){
+            $problems_count = 0;
+            foreach ($course->lessons as $lesson){
+                $problems_count += $lesson->problems->count();
+            }
+            $course['problems_count'] = $problems_count;
+
+            $student_course = StudentCourse::where([
+                ['student_id', $student->id],
+                ['course_id', $course->id]
+            ])->first();
+
+            if(sizeof($student_course) > 0){
+                $course['progress'] = $student_course->progress;
+            }else{
+                $course['progress'] = 0;
+            }
+        }
         $data['courses'] = $courses;
 
         return $data;
