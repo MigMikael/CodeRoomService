@@ -58,7 +58,7 @@ class LessonController extends Controller
             $input['mode'] = 'normal';
         }
 
-        if($request->has('status')){ // lesson status 'normal' or 'test'
+        if($request->has('status')){ // lesson status 'show' or 'hide'
             $input['status'] = $request->get('status');
         }else{
             $input['status'] = 'show';
@@ -68,6 +68,12 @@ class LessonController extends Controller
             $input['open_submit'] = $request->get('open_submit');
         }else{
             $input['open_submit'] = 'true';
+        }
+
+        if($request->has('guide')){ // guide 'true' or 'false'
+            $input['guide'] = $request->get('guide');
+        }else{
+            $input['guide'] = 'true';
         }
         Lesson::create($input);
 
@@ -93,6 +99,9 @@ class LessonController extends Controller
         }
         if($request->has('open_submit')){
             $lesson->open_submit = $request->get('open_submit');
+        }
+        if($request->has('guide')){
+            $lesson->guide = $request->get('guide');
         }
         $lesson->save();
 

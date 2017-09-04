@@ -15,6 +15,7 @@ class Lesson extends Model
         'status',
         'order',
         'open_submit',
+        'guide',
         'mode'
     ];
 
