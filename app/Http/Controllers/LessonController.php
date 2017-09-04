@@ -52,10 +52,16 @@ class LessonController extends Controller
             'order' => Lesson::where('course_id', $course_id)->max('order') + 1
         ];
 
+        if($request->has('mode')){ // lesson status 'normal' or 'test'
+            $input['mode'] = $request->get('mode');
+        }else{
+            $input['mode'] = 'normal';
+        }
+
         if($request->has('status')){ // lesson status 'normal' or 'test'
             $input['status'] = $request->get('status');
         }else{
-            $input['status'] = 'normal';
+            $input['status'] = 'show';
         }
 
         if($request->has('open_submit')){ // open_submit 'true' or 'false'
@@ -79,6 +85,9 @@ class LessonController extends Controller
         $lesson = Lesson::findOrFail($lesson_id);
         $lesson->name = $request->get('name');
 
+        if($request->has('mode')){
+            $lesson->mode = $request->get('mode');
+        }
         if($request->has('status')){
             $lesson->status = $request->get('status');
         }

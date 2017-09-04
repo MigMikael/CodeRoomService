@@ -19,6 +19,7 @@ class CreateLessonTable extends Migration
             $table->string('name');
             $table->integer('course_id')->unsigned();
             $table->string('status');
+            $table->string('mode');
             $table->integer('order');
             $table->string('open_submit');
             $table->string('guide')->default('true');

@@ -34,6 +34,7 @@ class UserAuthController extends Controller
 
                 $teacher['role'] = $teacher->role;
                 $teacher->makeVisible('token');
+                $teacher->makeVisible('username');
                 return $teacher;
 
             }else{
@@ -56,6 +57,7 @@ class UserAuthController extends Controller
 
                 $student['role'] = 'student';
                 $student->makeVisible('token');
+                $student->makeVisible('username');
                 return $student;
 
             }else{
@@ -107,6 +109,7 @@ class UserAuthController extends Controller
         ];
         $student = Student::firstOrCreate($student);
         $student->makeVisible('token');
+        $student->makeVisible('username');
         return $student;
     }
 }

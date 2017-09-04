@@ -63,6 +63,7 @@ class CourseController extends Controller
     public function member($id)
     {
         $course = Course::findOrFail($id);
+        $course->lessons;
         foreach ($course->students as $student){
             $student->pivot;
             $student->lessons;
