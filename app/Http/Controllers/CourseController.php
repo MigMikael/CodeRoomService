@@ -169,8 +169,9 @@ class CourseController extends Controller
         $course['lessons'] = Lesson::where('course_id', '=', $id)
             ->ordered()
             ->get();
+        $lesson['problems_count'] = 0;
         foreach ($course['lessons'] as $lesson){
-            $lesson['problems_count'] = $lesson->problems()->count();
+            $lesson['problems_count'] += $lesson->problems()->count();
         }
         $course->badges;
         $course->announcements;
