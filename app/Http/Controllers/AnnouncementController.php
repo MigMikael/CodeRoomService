@@ -19,10 +19,11 @@ class AnnouncementController extends Controller
         $title = $request->get('title');
         $content = $request->get('content');
 
+        // priority has two value 1 = normal : 2 = express
         if ($request->has('priority')){
             $priority = $request->get('priority');
         }else{
-            $priority = 2;
+            $priority = 1;
         }
 
         if ($request->has('show')){
