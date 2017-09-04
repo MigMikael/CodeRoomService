@@ -106,7 +106,7 @@ class StudentController extends Controller
         $student->username = $username;
         $student->save();
 
-        return response()->json(['msg' => 'edit complete']);
+        return $student;
     }
 
     public function changePassword(Request $request)

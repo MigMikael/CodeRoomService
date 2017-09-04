@@ -78,12 +78,20 @@ class TeacherController extends Controller
         $email = $request->get('email');
         $username = $request->get('username');
 
+        if ($request->has('image')){
+            $image = File::findOrFail($teacher->image);
+            self::deleteFile($image);
+
+            $image = self::storeImage($request->file('image'));
+            $teacher->image = $image->id;
+        }
+
         $teacher->name = $name;
         $teacher->email = $email;
         $teacher->username = $username;
         $teacher->save();
 
-        return response()->json(['msg' => 'edit complete']);
+        return $teacher;
     }
 
     public function changePassword(Request $request)
