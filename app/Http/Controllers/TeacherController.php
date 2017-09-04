@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\File;
 use App\Helper\TokenGenerate;
 use App\Teacher;
+use App\Traits\FileTrait;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
 use App\Student;
 
 class TeacherController extends Controller
 {
-    use ImageTrait;
+    use ImageTrait, FileTrait;
     public function dashboard()
     {
         $userID = $_SESSION['userID'];
