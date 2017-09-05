@@ -9,7 +9,6 @@ use App\Traits\FileTrait;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
 use App\Student;
-use Log;
 
 class TeacherController extends Controller
 {
@@ -81,7 +80,6 @@ class TeacherController extends Controller
         $email = $request->get('email');
         $username = $request->get('username');
 
-        Log::info($request->file('image'));
         if ($request->hasFile('image')){
             $image = File::findOrFail($teacher->image);
             self::deleteFile($image);
@@ -97,6 +95,8 @@ class TeacherController extends Controller
         $teacher->username = $username;
         $teacher->save();
 
+        $teacher->makeVisible('token');
+        $teacher->makeVisible('username');
         return $teacher;
     }
 

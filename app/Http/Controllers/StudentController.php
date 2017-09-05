@@ -93,9 +93,10 @@ class StudentController extends Controller
         $email = $request->get('email');
         $username = $request->get('username');
 
-        if ($request->has('image')){
+        if ($request->hasFile('image')){
             $image = File::findOrFail($student->image);
             self::deleteFile($image);
+            $image->delete();
 
             $image = self::storeImage($request->file('image'));
             $student->image = $image->id;
@@ -106,6 +107,8 @@ class StudentController extends Controller
         $student->username = $username;
         $student->save();
 
+        $student->makeVisible('token');
+        $student->makeVisible('username');
         return $student;
     }
 

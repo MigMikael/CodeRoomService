@@ -27,11 +27,6 @@ class CreateStudentTable extends Migration
             $table->string('password');
             $table->string('role')->default('student');
             $table->timestamps();
-
-            $table->foreign('image')
-                ->references('id')
-                ->on('file')
-                ->onDelete('cascade');
         });
     }
 
