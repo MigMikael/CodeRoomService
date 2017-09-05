@@ -85,7 +85,8 @@ class TeacherController extends Controller
             self::deleteFile($image);
             $image->delete();
 
-            $image = self::storeImage($request->file('image'));
+            $image = $request->file('image');
+            $image = self::storeImage($image);
             $teacher->image = $image->id;
         }
 
