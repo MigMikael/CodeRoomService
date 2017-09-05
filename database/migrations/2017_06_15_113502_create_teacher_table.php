@@ -27,8 +27,7 @@ class CreateTeacherTable extends Migration
 
             $table->foreign('image')
                 ->references('id')
-                ->on('file')
-                ->onDelete('cascade');
+                ->on('file');
         });
     }
 
