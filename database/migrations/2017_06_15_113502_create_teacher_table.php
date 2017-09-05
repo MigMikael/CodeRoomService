@@ -24,10 +24,6 @@ class CreateTeacherTable extends Migration
             $table->string('username');
             $table->string('password');
             $table->timestamps();
-
-            $table->foreign('image')
-                ->references('id')
-                ->on('file');
         });
     }
 

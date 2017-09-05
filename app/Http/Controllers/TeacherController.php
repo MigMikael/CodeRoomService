@@ -9,6 +9,7 @@ use App\Traits\FileTrait;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
 use App\Student;
+use Log;
 
 class TeacherController extends Controller
 {
@@ -80,7 +81,8 @@ class TeacherController extends Controller
         $email = $request->get('email');
         $username = $request->get('username');
 
-        if ($request->has('image')){
+        Log::info($request->file('image'));
+        if ($request->hasFile('image')){
             $image = File::findOrFail($teacher->image);
             self::deleteFile($image);
             $image->delete();
