@@ -83,6 +83,7 @@ class TeacherController extends Controller
         if ($request->has('image')){
             $image = File::findOrFail($teacher->image);
             self::deleteFile($image);
+            $image->delete();
 
             $image = self::storeImage($request->file('image'));
             $teacher->image = $image->id;
