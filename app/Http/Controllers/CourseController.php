@@ -142,6 +142,7 @@ class CourseController extends Controller
                 ->get();
         }
 
+        $course['problems_count'] = 0;
         foreach ($course->lessons as $lesson){
             $student_lesson = StudentLesson::where([
                 ['student_id', '=', $student->id],
@@ -152,7 +153,7 @@ class CourseController extends Controller
             }else{
                 $lesson['progress'] = $student_lesson->progress;
             }
-            $lesson['problems_count'] = $lesson->problems()->count();
+            $course['problems_count'] += $lesson->problems()->count();
         }
         $course->badges;
         $course->announcements;

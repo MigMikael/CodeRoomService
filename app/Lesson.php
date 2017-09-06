@@ -42,11 +42,11 @@ class Lesson extends Model
 
     public function scopeNormal($query)
     {
-        return $query->where('status', '=', 'normal');
+        return $query->where('mode', '=', 'normal');
     }
 
     public function scopeTest($query)
     {
-        return $query->where('status', '=', 'test');
+        return $query->where('mode', '=', 'test');
     }
 }
