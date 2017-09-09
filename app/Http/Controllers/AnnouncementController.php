@@ -71,4 +71,17 @@ class AnnouncementController extends Controller
 
         return response()->json(['msg' => 'delete announcement success']);
     }
+
+    public function changeStatus($id)
+    {
+        $announce = Announcement::findOrFail($id);
+        if($announce->show == 'true'){
+            $announce->show = 'false';
+        }else{
+            $announce->show = 'true';
+        }
+        $announce->save();
+
+        return response()->json(['msg' => 'change status complete']);
+    }
 }

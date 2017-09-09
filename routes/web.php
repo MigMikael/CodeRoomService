@@ -151,6 +151,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::post('problem/change_order', 'ProblemController@changeOrder');
         #
+        Route::get('problem/change_status/{id}', 'ProblemController@changeStatus');
+        #
         Route::get('problem/{id}/submission', 'ProblemController@submission');
 
 
@@ -158,6 +160,14 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::post('problem/input/edit', 'ProblemController@updateInput');
         #
         Route::post('problem/output/edit', 'ProblemController@updateOutput');
+        #
+        Route::delete('problem/input/{id}/delete', 'ProblemController@destroyInput');
+        #
+        Route::delete('problem/output/{id}/delete', 'ProblemController@destroyOutput');
+        #
+        Route::delete('problem/delete_input/{problem_id}', 'ProblemController@destroyAllInput');
+        #
+        Route::delete('problem/delete_output/{problem_id}', 'ProblemController@destroyAllOutput');
 
 
 
@@ -183,7 +193,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::post('announcement/edit', 'AnnouncementController@update');
         #
         Route::delete('announcement/delete/{id}', 'AnnouncementController@delete');
-
+        #
+        Route::get('announcement/change_status/{id}', 'AnnouncementController@changeStatus');
 
         #
         Route::get('student/{id}', 'StudentController@profile');
@@ -236,16 +247,6 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 });
 
-//Route::get('test/student', 'TestController@testStudent');
-//Route::post('test', 'TestController@test');
-//Route::get('test2', 'TestController@test2');
-Route::get('test3', 'TestController@test3');
-Route::get('test4', 'TestController@test4');
 Route::get('test4/{id}', 'LessonController@scoreboard');
 Route::get('export_score/{id}', 'LessonController@exportScore');
-Route::post('test5', 'TestController@test5');
-Route::get('test6', 'TestController@test6');
 
-//Deprecated api
-//Route::post('api/submission/code', 'SubmissionController@store');
-//Route::get('problem/getQuestion/{id}', 'FileController@question');

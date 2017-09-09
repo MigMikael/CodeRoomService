@@ -155,6 +155,17 @@ class CourseController extends Controller
             }
             $course['problems_count'] += $lesson->problems()->count();
         }
+        $student_course = StudentCourse::where([
+            ['student_id', $student_id],
+            ['course_id', $course_id]
+        ])->first();
+
+        if(sizeof($student_course) < 1){
+            $course['progress'] = 0;
+        }else{
+            $course['progress'] = $student_course->progress;
+        }
+
         $course->badges;
         $course->announcements;
 

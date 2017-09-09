@@ -503,4 +503,57 @@ class ProblemController extends Controller
             return response()->json(['msg' => 'file output not found']);
         }
     }
+
+    public function destroyInput($id)
+    {
+        $problem_input = ProblemInput::findOrFail($id);
+        $problem_input->delete();
+
+        return response()->json(['msg' => 'delete input complete']);
+    }
+
+    public function destroyOutput($id)
+    {
+        $problem_output = ProblemOutput::findOrFail($id);
+        $problem_output->delete();
+
+        return response()->json(['msg' => 'delete output complete']);
+    }
+
+    public function destroyAllInput($problem_id)
+    {
+        $problem = Problem::findOrFail($problem_id);
+        foreach ($problem->problemFiles as $problemFile){
+            foreach ($problemFile->inputs as $input){
+                $input->delete();
+            }
+        }
+
+        return response()->json(['msg' => 'delete input complete']);
+    }
+
+    public function destroyAllOutput($problem_id)
+    {
+        $problem = Problem::findOrFail($problem_id);
+        foreach ($problem->problemFiles as $problemFile){
+            foreach ($problemFile->outputs as $output){
+                $output->delete();
+            }
+        }
+
+        return response()->json(['msg' => 'delete output complete']);
+    }
+
+    public function changeStatus($id)
+    {
+        $problem = Problem::findOrFail($id);
+        if($problem->status == 'show'){
+            $problem->status = 'hide';
+        }else{
+            $problem->status = 'show';
+        }
+        $problem->save();
+
+        return response()->json(['msg' => 'change status complete']);
+    }
 }
