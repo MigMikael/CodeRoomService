@@ -281,6 +281,21 @@ class SubmissionController extends Controller
         //return response()->json(['msg' => 'submit success']);
     }
 
+    public function store3(Request $request)
+    {
+        $student_id = $request->get('student_id');
+        $problem_id = $request->get('problem_id');
+
+        $sub_num = self::getSubNum($student_id, $problem_id);
+        $submission = [
+            'student_id' => $student_id,
+            'problem_id' => $problem_id,
+            'sub_num' => $sub_num,
+            'is_accept' => 'false'
+        ];
+        $submission = Submission::create($submission);
+    }
+
     public function storeSubmissionFile($submission)
     {
         $src_path = 'submission/'.$submission->id.'/'. $submission->problem->name. '/src';

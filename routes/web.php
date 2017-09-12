@@ -70,7 +70,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::post('course/join', 'CourseController@join');
         #
         Route::get('course/{student_id}/{course_id}', 'CourseController@showStudent');
-        # New API
+        #
         Route::get('course/{id}/lesson/progress', 'CourseController@sumProgress');
 
 
@@ -111,7 +111,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('course/{id}/status', 'CourseController@changeStatus');
         #
         Route::get('course/{id}/member', 'CourseController@member');
-        # New API
+        #
         Route::get('course/{id}/lesson/progress', 'CourseController@sumProgress');
 
 
@@ -125,9 +125,9 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::delete('lesson/delete/{id}', 'LessonController@delete');
         #
         Route::post('lesson/change_order', 'LessonController@changeOrder');
-        # New API
+        #
         Route::get('lesson/change_submit/{id}', 'LessonController@changeSubmit');
-        # New API
+        #
         Route::get('lesson/change_status/{id}', 'LessonController@changeStatus');
         #
         Route::get('lesson/scoreboard/{id}', 'LessonController@scoreboard');
@@ -135,8 +135,9 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('lesson/export/score/{id}', 'LessonController@exportScore');
         #
         Route::get('lesson/{id}/guide/change_status', 'LessonController@changeGuide');
-        # New API
+        #
         Route::get('lesson/{id}/resource/visible/{status}', 'ResourceController@changeVisible');
+
 
         #
         Route::get('problem/{id}', 'ProblemController@show');
@@ -151,7 +152,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::post('problem/change_order', 'ProblemController@changeOrder');
         #
-        Route::get('problem/change_status/{id}', 'ProblemController@changeStatus');
+        Route::get('problem/{id}/status', 'ProblemController@changeStatus');
         #
         Route::get('problem/{id}/submission', 'ProblemController@submission');
 
@@ -171,13 +172,13 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
 
-        # New API
+        #
         Route::post('problem/resource/store', 'ResourceController@store');
-        # New API
+        #
         Route::post('problem/resource/edit', 'ResourceController@update');
-        # New API
+        #
         Route::get('problem/resource/{id}/delete', 'ResourceController@destroy');
-        # New API
+        #
         Route::get('problem/resource/{id}/visible', 'ResourceController@changeStatus');
 
 
@@ -194,7 +195,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::delete('announcement/delete/{id}', 'AnnouncementController@delete');
         #
-        Route::get('announcement/change_status/{id}', 'AnnouncementController@changeStatus');
+        Route::get('announcement/{id}/status', 'AnnouncementController@changeStatus');
+
 
         #
         Route::get('student/{id}', 'StudentController@profile');
@@ -206,12 +208,13 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('student/change_status/{student_id}/{course_id}', 'StudentController@disable');
         #
         Route::get('student/all/{course_id}', 'StudentController@getAll');
-        # New API
+        #
         Route::get('student/submission/{id}/code', 'StudentController@submissionCode');
 
 
         #
         Route::post('submission', 'SubmissionController@store2');
+
 
         #
         Route::get('remove/ip/{id}', 'StudentController@removeIP');
@@ -230,13 +233,13 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::post('course/store', 'CourseController@store');
         #
         Route::post('course/add/teacher', 'CourseController@addTeacher');
-        # New API
+        #
         Route::post('course/clone', 'CourseController@cloneCourse');
 
 
         #
         Route::get('teacher', 'TeacherController@getAll');
-        # New Api
+        #
         Route::post('teacher/store', 'TeacherController@store');
         #
         Route::get('teacher/status/{teacher_id}', 'TeacherController@changeStatus');
