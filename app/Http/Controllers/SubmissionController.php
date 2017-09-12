@@ -122,8 +122,8 @@ class SubmissionController extends Controller
             'is_accept' => 'false'
         ];
         $submission = Submission::create($submission);
-        $files = $request->get('files');
-        $submit_success = self::storeSubmissionFile2($submission, $files);
+        $code = $request->get('code');
+        $submit_success = self::storeSubmissionFile2($submission, $code);
 
         if(!$submit_success){
             return response()->json(['msg' => 'submit file not found']);
@@ -281,21 +281,6 @@ class SubmissionController extends Controller
         //return response()->json(['msg' => 'submit success']);
     }
 
-    public function store3(Request $request)
-    {
-        $student_id = $request->get('student_id');
-        $problem_id = $request->get('problem_id');
-
-        $sub_num = self::getSubNum($student_id, $problem_id);
-        $submission = [
-            'student_id' => $student_id,
-            'problem_id' => $problem_id,
-            'sub_num' => $sub_num,
-            'is_accept' => 'false'
-        ];
-        $submission = Submission::create($submission);
-    }
-
     public function storeSubmissionFile($submission)
     {
         $src_path = 'submission/'.$submission->id.'/'. $submission->problem->name. '/src';
@@ -334,19 +319,23 @@ class SubmissionController extends Controller
         return true;
     }
 
-    public function storeSubmissionFile2($submission, $files)
+    public function storeSubmissionFile2($submission, $code)
     {
-        for($i = 0; $i < sizeof($files); $i++){
-            $file = $files[$i];
-            $f = [
-                'submission_id' => $submission->id,
-                'package' => $file['package'],
-                'filename' => $file['filename'],
-                'mime' => $file['mime'],
-                'code' => $file['code'],
-            ];
-            SubmissionFile::create($f);
+        for($i = 0; $i < sizeof($code); $i++){
+            $files = $code[$i];
+            for($j = 0; $j < sizeof($files); $j++){
+                $file = $files[$j];
+                $f = [
+                    'submission_id' => $submission->id,
+                    'package' => str_replace('src/', '', $file['package']),
+                    'filename' => $file['filename'],
+                    'mime' => $file['mime'],
+                    'code' => $file['code'],
+                ];
+                SubmissionFile::create($f);
+            }
         }
+
         return true;
     }
 
