@@ -69,6 +69,7 @@ class ProblemController extends Controller
             'timelimit' => $request->get('timelimit'),
             'memorylimit' => $request->get('memorylimit'),
             'is_parse' => $request->get('is_parse'),
+            'status' => 'hide'
         ];
         $problem = Problem::create($problem);
 
