@@ -75,7 +75,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
-        Route::get('lesson/{id}', 'LessonController@show');
+        Route::get('lesson/{lesson_id}/{student_id}', 'LessonController@show');
         #
         Route::get('announcement/{id}', 'AnnouncementController@show');
 

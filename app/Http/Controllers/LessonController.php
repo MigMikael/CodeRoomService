@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\File;
 use App\Resource;
+use App\Submission;
 use Carbon\Carbon;
 use App\Lesson;
 use App\Problem;
@@ -12,9 +13,9 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class LessonController extends Controller
 {
-    public function show($id)
+    public function show($lesson_id, $student_id)
     {
-        $lesson = Lesson::withCount(['problems'])->findOrFail($id);
+        $lesson = Lesson::withCount(['problems'])->findOrFail($lesson_id);
 
         $problems = Problem::where('lesson_id', '=', $lesson->id)
             ->ordered()
@@ -30,6 +31,18 @@ class LessonController extends Controller
             foreach ($resources as $resource){
                 $file = File::find($resource->file_id);
                 array_push($resources_file, $file);
+            }
+
+            $submission = Submission::where([
+                ['problem_id', $problem->id],
+                ['student_id', $student_id],
+                ['is_accept', 'true']
+            ])->first();
+
+            if(sizeof($submission) == 1){
+                $problem['is_accept'] = 'true';
+            }else{
+                $problem['is_accept'] = 'false';
             }
 
             $problem['resources_file'] = $resources_file;
