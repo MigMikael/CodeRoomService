@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class LessonController extends Controller
 {
-    public function show($lesson_id, $student_id)
+    public function showStudent($lesson_id, $student_id)
     {
         $lesson = Lesson::withCount(['problems'])->findOrFail($lesson_id);
 
@@ -45,6 +45,36 @@ class LessonController extends Controller
                 $problem['is_accept'] = 'false';
             }
 
+            $problem['resources_file'] = $resources_file;
+        }
+        $lesson['problems'] = $problems;
+
+        foreach ($lesson['problems'] as $problem){
+            $problem['question'] = url('problem/'.$problem->id.'/question');
+        }
+
+        return $lesson;
+    }
+
+    public function showTeacher($id)
+    {
+        $lesson = Lesson::withCount(['problems'])->findOrFail($id);
+
+        $problems = Problem::where('lesson_id', '=', $lesson->id)
+            ->ordered()
+            ->get();
+
+        foreach ($problems as $problem){
+            $resources = Resource::where([
+                ['problem_id', $problem->id],
+                ['visible', 'true']
+            ])->get();
+
+            $resources_file = [];
+            foreach ($resources as $resource){
+                $file = File::find($resource->file_id);
+                array_push($resources_file, $file);
+            }
             $problem['resources_file'] = $resources_file;
         }
         $lesson['problems'] = $problems;
