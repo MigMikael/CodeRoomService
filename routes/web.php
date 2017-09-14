@@ -58,7 +58,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('dashboard', 'StudentController@dashboard');
         #
         Route::get('profile/{student_id}', 'StudentController@profile');
-        # Todo Student can change Avatar Image
+        #
         Route::post('profile/edit', 'StudentController@updateProfile');
         #
         Route::post('change_password', 'StudentController@changePassword');
@@ -169,7 +169,6 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::delete('problem/delete_input/{problem_id}', 'ProblemController@destroyAllInput');
         #
         Route::delete('problem/delete_output/{problem_id}', 'ProblemController@destroyAllOutput');
-
 
 
         #

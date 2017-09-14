@@ -183,7 +183,8 @@ class ProblemController extends Controller
     public function storeResource($problem)
     {
         $course = $problem->lesson->course;
-        $resource_path = $course->id.'_'.$course->name.'/'.$problem->id.'/'. $problem->name. '/resource';
+        $course_name = str_replace(' ', '_', $course->name);
+        $resource_path = $course->id.'_'.$course_name.'/'.$problem->id.'/'. $problem->name. '/resource';
         $files = self::getFiles($resource_path);
         if(sizeof($files) > 0){
             foreach ($files as $file){
