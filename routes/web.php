@@ -116,7 +116,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
-        Route::get('lesson/{id}', 'LessonController@show');
+        Route::get('lesson/{id}', 'LessonController@showTeacher');
         #
         Route::post('lesson/edit', 'LessonController@update');
         #
