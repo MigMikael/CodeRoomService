@@ -258,9 +258,12 @@ class SubmissionController extends Controller
             $files = $code[$i]['files'];
             for($j = 0; $j < sizeof($files); $j++){
                 $file = $files[$j];
+                $package = str_replace('src/', '', $file['package']);
+                $package = str_replace('/', '.', $package);
+
                 $f = [
                     'submission_id' => $submission->id,
-                    'package' => str_replace('src/', '', $file['package']),
+                    'package' => $package,
                     'filename' => $file['filename'],
                     'mime' => $file['mime'],
                     'code' => $file['code'],
