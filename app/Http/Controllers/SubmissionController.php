@@ -131,8 +131,8 @@ class SubmissionController extends Controller
 
         $wrong = [];
         $problem = $submission->problem;
-        $lesson = $problem->lesson;
-        array_push($wrong, 'guide '.$lesson->guide);
+        #$lesson = $problem->lesson;
+        //array_push($wrong, 'guide '.$lesson->guide);
         if ($problem->is_parse == 'true'){
             Log::info('is_parse : true');
             $classes = self::analyzeSubmitFile2($submission);
