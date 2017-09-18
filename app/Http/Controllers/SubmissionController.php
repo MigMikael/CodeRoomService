@@ -119,7 +119,7 @@ class SubmissionController extends Controller
             'student_id' => $student_id,
             'problem_id' => $problem_id,
             'sub_num' => $sub_num,
-            'is_accept' => 'false'
+            'is_accept' => 'true'
         ];
         $submission = Submission::create($submission);
         $code = $request->get('code');
@@ -255,7 +255,7 @@ class SubmissionController extends Controller
     public function storeSubmissionFile2($submission, $code)
     {
         for($i = 0; $i < sizeof($code); $i++){
-            $files = $code[$i];
+            $files = $code[$i]['files'];
             for($j = 0; $j < sizeof($files); $j++){
                 $file = $files[$j];
                 $f = [
@@ -334,7 +334,23 @@ class SubmissionController extends Controller
                 foreach ($scores as $score){
                     if($score['name'] == $fileName){
                         /*Log::info(gettype($score['score']));*/
-                        if($score['score'] != '100.000000'){
+                        if($score['score'] == '100.000000'){
+                            // this is correct
+                            $output = [
+                                'submission_file_id' => $submissionFile->id,
+                                'content' => '',
+                                'score' => $score['score'],
+                                'error' => '',
+                            ];
+                        }elseif ($score['score'] == 'Exited with error status 1'){
+                            // this is time limit exi
+                            $output = [
+                                'submission_file_id' => $submissionFile->id,
+                                'content' => '',
+                                'score' => 0,
+                                'error' => 'Memory Limit Exceed',
+                            ];
+                        }else{
                             // this is wrong
                             $isAccept = false;
                             $output = [
@@ -342,14 +358,6 @@ class SubmissionController extends Controller
                                 'content' => '',
                                 'score' => 0,
                                 'error' => $score['score'],
-                            ];
-                        }else{
-                            // this is correct
-                            $output = [
-                                'submission_file_id' => $submissionFile->id,
-                                'content' => '',
-                                'score' => $score['score'],
-                                'error' => '',
                             ];
                         }
                         $o = SubmissionOutput::create($output);
