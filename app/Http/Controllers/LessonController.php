@@ -22,10 +22,7 @@ class LessonController extends Controller
             ->get();
 
         foreach ($problems as $problem){
-            $resources = Resource::where([
-                ['problem_id', $problem->id],
-                ['visible', 'true']
-            ])->get();
+            $resources = Resource::where('problem_id', $problem->id)->get();
 
             $resources_file = [];
             foreach ($resources as $resource){
