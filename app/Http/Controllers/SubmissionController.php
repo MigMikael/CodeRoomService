@@ -468,7 +468,11 @@ class SubmissionController extends Controller
                 }
 
                 $problem = $submission->problem;
-                foreach ($problem->problemFiles as $problemFile){
+                $problemFiles = ProblemFile::where([
+                    ['problem_id', '=', $problem->id],
+                    ['package', '!=', 'driver']
+                ])->get();
+                foreach ($problemFiles as $problemFile){
                     foreach ($problemFile->problemAnalysis as $analysis){
                         $problem_score = ProblemScore::where('analysis_id', $analysis->id)->first();
                         $total_score['class'] += $problem_score->class;
