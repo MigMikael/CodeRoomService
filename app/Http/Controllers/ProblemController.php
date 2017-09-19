@@ -336,7 +336,7 @@ class ProblemController extends Controller
                     if ($met['loop'] == 'null'){
                         $met['loop'] = 'false';
                     }elseif ($met['loop'] == true){
-                        $met['recursive'] = 'true';
+                        $met['loop'] = 'true';
                     }else{
                         $met['loop'] = 'false';
                     }
