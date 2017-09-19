@@ -326,15 +326,19 @@ class ProblemController extends Controller
                     $method = ProblemMethod::findOrFail($met['id']);
                     if ($met['recursive'] == 'null'){
                         $met['recursive'] = 'false';
-                    }else{
+                    }elseif ($met['recursive'] == true){
                         $met['recursive'] = 'true';
+                    }else{
+                        $met['recursive'] = 'false';
                     }
                     $method->recursive = $met['recursive'];
 
                     if ($met['loop'] == 'null'){
                         $met['loop'] = 'false';
+                    }elseif ($met['loop'] == true){
+                        $met['recursive'] = 'true';
                     }else{
-                        $met['loop'] = 'true';
+                        $met['loop'] = 'false';
                     }
                     $method->loop = $met['loop'];
                     $method->score = $met['score'];
