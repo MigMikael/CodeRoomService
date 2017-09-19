@@ -35,13 +35,13 @@ class StudentController extends Controller
         ])->get();
 
         foreach ($student['courses'] as $course){
-            $course = Course::findOrFail($course->id);
+            $c = Course::findOrFail($course->id);
             $prob_count = 0;
-            foreach ($course->lessons as $lesson){
+            foreach ($c->lessons as $lesson){
                 $prob_count += $lesson->problems->count();
             }
 
-            $student['courses']['problems_count'] = $prob_count;
+            $course['problems_count'] = $prob_count;
         }
 
         $data = [];
