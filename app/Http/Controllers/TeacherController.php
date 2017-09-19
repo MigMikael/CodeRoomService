@@ -22,6 +22,16 @@ class TeacherController extends Controller
             'students', 'teachers', 'lessons',
         ])->get();
 
+        foreach ($teacher['courses'] as $course){
+            $course = Course::findOrFail($course->id);
+            $prob_count = 0;
+            foreach ($course->lessons as $lesson){
+                $prob_count += $lesson->problems->count();
+            }
+
+            $teacher['courses']['problems_count'] = $prob_count;
+        }
+
         $data = [];
         $data['teacher'] = $teacher;
 
