@@ -456,6 +456,7 @@ class SubmissionController extends Controller
             'constructor' => 0,
             'method' => 0,
         ];
+
         if($submission != null){
             foreach ($submission->submissionFiles as $submissionFile){
                 $submissionFile->outputs;
@@ -465,32 +466,6 @@ class SubmissionController extends Controller
                     $result->attributes;
                     $result->constructors;
                     $result->methods;
-                }
-
-                $problem = $submission->problem;
-                $problemFiles = ProblemFile::where([
-                    ['problem_id', '=', $problem->id],
-                    ['package', '!=', 'driver']
-                ])->get();
-                foreach ($problemFiles as $problemFile){
-                    foreach ($problemFile->problemAnalysis as $analysis){
-                        $problem_score = ProblemScore::where('analysis_id', $analysis->id)->first();
-                        $total_score['class'] += $problem_score->class;
-                        $total_score['package'] += $problem_score->package;
-                        $total_score['enclose'] += $problem_score->enclose;
-                        $total_score['extends'] += $problem_score->extends;
-                        $total_score['implements'] += $problem_score->implements;
-
-                        foreach ($analysis->attributes as $attribute){
-                            $total_score['attribute'] += $attribute->score;
-                        }
-                        foreach ($analysis->constructors as $constructor){
-                            $total_score['constructor'] += $constructor->score;
-                        }
-                        foreach ($analysis->methods as $method){
-                            $total_score['method'] += $method->score;
-                        }
-                    }
                 }
 
                 foreach ($submissionFile->results as $result){
@@ -512,9 +487,37 @@ class SubmissionController extends Controller
                     }
                 }
             }
+
+            $problem = $submission->problem;
+            $problemFiles = ProblemFile::where([
+                ['problem_id', '=', $problem->id],
+                ['package', '!=', 'driver']
+            ])->get();
+            Log::info("Problem File Size " . sizeof($problemFiles));
+            foreach ($problemFiles as $problemFile){
+                foreach ($problemFile->problemAnalysis as $analysis){
+                    $problem_score = ProblemScore::where('analysis_id', $analysis->id)->first();
+                    $total_score['class'] += $problem_score->class;
+                    $total_score['package'] += $problem_score->package;
+                    $total_score['enclose'] += $problem_score->enclose;
+                    $total_score['extends'] += $problem_score->extends;
+                    $total_score['implements'] += $problem_score->implements;
+
+                    foreach ($analysis->attributes as $attribute){
+                        $total_score['attribute'] += $attribute->score;
+                    }
+                    foreach ($analysis->constructors as $constructor){
+                        $total_score['constructor'] += $constructor->score;
+                    }
+                    foreach ($analysis->methods as $method){
+                        $total_score['method'] += $method->score;
+                    }
+                }
+            }
         }else{
             $submission = [];
         }
+
         $submission['score'] = $score;
         $submission['total_score'] = $total_score;
         $data['submission'] = $submission;
