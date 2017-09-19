@@ -173,12 +173,12 @@ class LessonController extends Controller
     public function changeStatus($id)
     {
         $lesson = Lesson::findOrFail($id);
-        if($lesson->status == 'normal'){
-            $lesson->status = 'test';
-            $msg = 'change status to test success';
+        if($lesson->status == 'show'){
+            $lesson->status = 'hide';
+            $msg = 'change status to hide success';
         }else{
-            $lesson->status = 'normal';
-            $msg = 'open submit success';
+            $lesson->status = 'show';
+            $msg = 'change status to show success';
         }
         $lesson->save();
 
