@@ -326,7 +326,7 @@ class ProblemController extends Controller
                     $method = ProblemMethod::findOrFail($met['id']);
                     if ($met['recursive'] == 'null'){
                         $met['recursive'] = 'false';
-                    }elseif ($met['recursive'] == true){
+                    }elseif ($met['recursive'] == 1){
                         $met['recursive'] = 'true';
                     }else{
                         $met['recursive'] = 'false';
@@ -335,7 +335,7 @@ class ProblemController extends Controller
 
                     if ($met['loop'] == 'null'){
                         $met['loop'] = 'false';
-                    }elseif ($met['loop'] == true){
+                    }elseif ($met['loop'] == 1){
                         $met['loop'] = 'true';
                     }else{
                         $met['loop'] = 'false';
