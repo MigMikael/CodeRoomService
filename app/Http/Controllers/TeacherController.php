@@ -9,6 +9,7 @@ use App\Traits\FileTrait;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
 use App\Student;
+use App\Course;
 
 class TeacherController extends Controller
 {
