@@ -586,6 +586,18 @@ class SubmissionController extends Controller
                         $pa .= $param['datatype'].';'.$param['name'].'|';
                     }
 
+                    if ($method['recursive'] == 0){
+                        $method['recursive'] = 'false';
+                    }else{
+                        $method['recursive'] = 'true';
+                    }
+
+
+                    if ($method['loop_exist'] == 0){
+                        $method['loop_exist'] = 'false';
+                    }else{
+                        $method['loop_exist'] = 'true';
+                    }
                     $me = [
                         'result_id' => $result->id,
                         'access_modifier' => $method['modifier'],
