@@ -324,22 +324,7 @@ class ProblemController extends Controller
                 $mets = $pA['methods'];
                 foreach ($mets as $met){
                     $method = ProblemMethod::findOrFail($met['id']);
-                    if ($met['recursive'] == 'null'){
-                        $met['recursive'] = 'false';
-                    }elseif ($met['recursive'] == 1){
-                        $met['recursive'] = 'true';
-                    }else{
-                        $met['recursive'] = 'false';
-                    }
                     $method->recursive = $met['recursive'];
-
-                    if ($met['loop'] == 'null'){
-                        $met['loop'] = 'false';
-                    }elseif ($met['loop'] == 1){
-                        $met['loop'] = 'true';
-                    }else{
-                        $met['loop'] = 'false';
-                    }
                     $method->loop = $met['loop'];
                     $method->score = $met['score'];
                     $method->save();
