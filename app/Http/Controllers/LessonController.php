@@ -33,10 +33,20 @@ class LessonController extends Controller
             $submission = Submission::where([
                 ['problem_id', $problem->id],
                 ['student_id', $student_id],
-                ['is_accept', 'true']
-            ])->first();
+            ])->orderBy('id', 'desc')->first();
 
-            if(sizeof($submission) == 1){
+            foreach ($submission->submissionFiles as $submissionFile){
+                $submissionFile->outputs;
+
+                foreach ($submissionFile->results as $result){
+                    $result->score;
+                    $result->attributes;
+                    $result->constructors;
+                    $result->methods;
+                }
+            }
+
+            if(sizeof($submission) == 1 && $submission->is_accept == 'true'){
                 $problem['is_accept'] = 'true';
             }else{
                 $problem['is_accept'] = 'false';

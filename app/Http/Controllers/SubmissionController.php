@@ -537,6 +537,10 @@ class SubmissionController extends Controller
             $filename = explode('.', $submissionFile->filename);
             $filename = $filename[0];
 
+            if($class['package'] == 'default'){
+                $class['package'] = 'default package';
+            }
+
             if($class['name'] == $filename && $class['package'] == $submissionFile->package){
                 $im = '';
                 foreach ($class['implements'] as $implement){
