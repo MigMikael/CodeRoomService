@@ -35,14 +35,16 @@ class LessonController extends Controller
                 ['student_id', $student_id],
             ])->orderBy('id', 'desc')->first();
 
-            foreach ($submission->submissionFiles as $submissionFile){
-                $submissionFile->outputs;
+            if(sizeof($submission) == 1){
+                foreach ($submission->submissionFiles as $submissionFile){
+                    $submissionFile->outputs;
 
-                foreach ($submissionFile->results as $result){
-                    $result->score;
-                    $result->attributes;
-                    $result->constructors;
-                    $result->methods;
+                    foreach ($submissionFile->results as $result){
+                        $result->score;
+                        $result->attributes;
+                        $result->constructors;
+                        $result->methods;
+                    }
                 }
             }
 
