@@ -139,7 +139,7 @@ class SubmissionController extends Controller
 
             foreach ($submission->submissionFiles as $submissionFile){
                 self::saveResult($classes, $submissionFile);
-                $wrong = self::calStructureScore($submissionFile);
+                $wrong = self::calStructureScore2($submissionFile);
             }
 
             $results_classname = [];
@@ -672,7 +672,6 @@ class SubmissionController extends Controller
                 }else{
                     $implements_score = 0;
                     array_push($wrong, $result->class.' มี implements '.$result->implements . ' ไม่ตรง');
-
                 }
             }else{
                 $class_score = 0;
@@ -837,6 +836,224 @@ class SubmissionController extends Controller
                 //Log::info('Method IS CORRECT '. $is_correct);
             }
         }
+        return $wrong;
+    }
+
+    public function calStructureScore2($submissionFile)
+    {
+        $submission = $submissionFile->submission;
+        $problem = $submission->problem;
+        $wrong = [];
+
+        foreach ($problem->problemFiles as $problemFile){
+            $problem_analysis = $problemFile->problemAnalysis;
+            foreach ($problem_analysis as $analysis){
+                $rs = Result::where('class', '=', $analysis->class)->get();
+
+                $result = null;
+                foreach ($rs as $r){
+                    $this_problem = $r->submissionFile->submission->problem;
+                    if ($problem->id == $this_problem->id){
+                        $result = $r;
+                    }
+                }
+
+                if($result != null){
+                    $class_score = $analysis->score->class;
+
+                    if($result->package == $analysis->package){
+                        $package_score = $analysis->score->package;
+                    }else{
+                        $package_score = 0;
+                        array_push($wrong, $result->class.' มี package '.$result->package . ' ไม่ตรง');
+                    }
+
+                    if($result->enclose == $analysis->enclose){
+                        $enclose_score = $analysis->score->enclose;
+                    }else{
+                        $enclose_score = 0;
+                        array_push($wrong, $result->class.' มี enclose '.$result->enclose . ' ไม่ตรง');
+                    }
+
+                    if($result->extends == $analysis->extends){
+                        $extends_score = $analysis->score->extends;
+                    }else{
+                        $extends_score = 0;
+                        array_push($wrong, $result->class.' มี extends '.$result->extends . ' ไม่ตรง');
+                    }
+
+                    if($result->implements == $analysis->implements){
+                        $implements_score = $analysis->score->extends;
+                    }else{
+                        $implements_score = 0;
+                        array_push($wrong, $result->class.' มี implements '.$result->implements . ' ไม่ตรง');
+                    }
+                }else{
+                    $class_score = 0;
+                    $package_score = 0;
+                    $enclose_score = 0;
+                    $extends_score = 0;
+                    $implements_score = 0;
+                }
+
+                $result_score = [
+                    'result_id' => $result->id,
+                    'class' => $class_score,
+                    'package' => $package_score,
+                    'enclose' => $enclose_score,
+                    'extends' => $extends_score,
+                    'implements' => $implements_score
+                ];
+                Log::info('-------------------------------------------------------------');
+                Log::info('##### CLASS NAME'. $result->class);
+                Log::info('-------------------------------------------------------------');
+                Log::info('##### CLASS SCORE '. $class_score);
+                Log::info('##### ENCLOSE SCORE '. $enclose_score);
+                Log::info('##### EXTENDS SCORE '. $extends_score);
+                Log::info('##### IMPLEMENTS SCORE '. $implements_score);
+                Log::info('-------------------------------------------------------------');
+
+                $rs = ResultScore::create($result_score);
+                $submission->score += $rs->class + $rs->package + $rs->enclose + $rs->extends + $rs->implements;
+
+                foreach ($analysis->attributes as $attribute){
+                    $result_attributes = ResultAttribute::where('name', '=', $attribute->name)
+                        ->orderBy('id', 'desc')
+                        ->get();
+                    $result_attr = null;
+                    foreach($result_attributes as $result_attribute){
+                        $this_problem = $result_attribute->result->submissionFile->submission->problem;
+                        if($problem->id == $this_problem->id){
+                            $result_attr = $result_attribute;
+                            break;
+                        }else{
+                            $result_attr = null;
+                        }
+                    }
+
+                    $correct = true;
+                    if($result_attr != null){
+                        if($attribute->access_modifier != $result_attr->access_modifier){
+                            $correct = false;
+                        } elseif ($attribute->non_access_modifier != $result_attr->non_access_modifier){
+                            $correct = false;
+                        } elseif ($attribute->data_type != $result_attr->data_type){
+                            $correct = false;
+                        }
+                    }else{
+                        $correct = false;
+                    }
+
+                    if($correct){
+                        $result_attr->score = $attribute->score;
+                    }else{
+                        $result_attr->score = 0;
+                        array_push($wrong, $result->class.' มี attribute '.$result_attr->name . ' ไม่ตรง');
+                    }
+                    $result_attr->save();
+                    $submission->score += $result_attr->score;
+                    Log::info('Attribute IS CORRECT '. $correct);
+
+                    Log::info('-------------------------------------------------------------');
+                    Log::info('##### ATTRIBUTE NAME'. $attribute->name);
+                    Log::info('-------------------------------------------------------------');
+                    Log::info('##### ATTRIBUTE Access Modifier :'. $attribute->access_modifier.'5555');
+                    Log::info('##### ATTRIBUTE Non Access Modifier '. $attribute->non_access_modifier);
+                    Log::info('##### ATTRIBUTE Data Type '. $attribute->data_type);
+
+
+                    Log::info('##### P ATTRIBUTE NAME'. $result_attr->name);
+                    Log::info('-------------------------------------------------------------');
+                    Log::info('##### P ATTRIBUTE Access Modifier :'. $result_attr->access_modifier.'5555');
+                    Log::info('##### P ATTRIBUTE Non Access Modifier '. $result_attr->non_access_modifier);
+                    Log::info('##### P ATTRIBUTE Data Type '. $result_attr->data_type);
+                    Log::info('-------------------------------------------------------------');
+                }
+
+                foreach ($analysis->constructors as $constructor){
+                    $result_constructors = ResultConstructor::where('name', '=', $constructor->name)
+                        ->orderBy('id', 'desc')
+                        ->get();
+                    $result_con = null;
+                    foreach ($result_constructors as $result_constructor){
+                        $this_problem = $result_constructor->result->submissionFile->submission->problem;
+                        if($problem->id == $this_problem->id){
+                            $result_con = $result_constructor;
+                            break;
+                        }else{
+                            $result_con = null;
+                        }
+                    }
+
+                    $is_correct = true;
+                    if($result_con != null){
+                        if($constructor->access_modifiler != $result_con->access_modifiler){
+                            $is_correct = false;
+                        } elseif ($constructor->parameter != $result_con->parameter){
+                            $is_correct = false;
+                        }
+                    }else{
+                        $is_correct = false;
+                    }
+
+                    if($is_correct){
+                        $result_con->score = $constructor->score;
+                    }else{
+                        $result_con->score = 0;
+                        array_push($wrong, $result->class.' มี constructor '.$result_con->name . ' ไม่ตรง');
+                    }
+                    $result_con->save();
+                    $submission->score += $result_con->score;
+                    Log::info('Constructor IS CORRECT '. $is_correct);
+                }
+
+                foreach ($analysis->methods as $method){
+                    $result_methods = ResultMethod::where('name', '=', $method->name)
+                        ->orderBy('id', 'desc')
+                        ->get();
+                    $result_me = null;
+                    foreach ($result_methods as $result_method){
+                        $this_problem = $result_method->result->submissionFile->submission->problem;
+                        if($problem->id == $this_problem->id){
+                            $result_me = $result_method;
+                            break;
+                        }else{
+                            $result_me = null;
+                        }
+                    }
+
+                    $is_correct = true;
+                    if($result_me != null){
+                        if($method->access_modifiler != $result_me->access_modifiler){
+                            $is_correct = false;
+                        } elseif ($method->non_access_modifiler != $result_me->non_access_modifiler){
+                            $is_correct = false;
+                        } elseif ($method->return_type != $result_me->return_type){
+                            $is_correct = false;
+                        } elseif ($method->recursive != $result_me->recursive){
+                            $is_correct = false;
+                        } elseif ($method->loop != $result_me->loop){
+                            $is_correct = false;
+                        } elseif ($method->parameter != $result_me->parameter){
+                            $is_correct = false;
+                        }
+                    } else {
+                        $is_correct = false;
+                    }
+
+                    if ($is_correct){
+                        $result_me->score = $method->score;
+                    }else{
+                        $result_me->score = 0;
+                        array_push($wrong, $result->class.' มี method '.$method->name . ' ไม่ตรง');
+                    }
+                    $result_me->save();
+                    $submission->score += $result_me->score;
+                    Log::info('Method IS CORRECT '. $is_correct);
+                }
+            }
+        }
+
         return $wrong;
     }
 }
