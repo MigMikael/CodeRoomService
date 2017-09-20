@@ -21,7 +21,7 @@ class ResultMethod extends Model
         'score',
     ];
 
-    public function problemAnalysis()
+    public function result()
     {
         return $this->belongsTo('App\Result', 'result_id');
     }
