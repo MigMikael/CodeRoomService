@@ -43,10 +43,10 @@ class ProblemController extends Controller
 
         $resources_file = [];
         foreach ($problem->resources as $resource){
-            $file = File::find($resource->file_id);
-            array_push($resources_file, $file);
+            $res = File::find($resource->file_id);
+            array_push($resources_file, $res);
         }
-        $problem['resources_file'] = $resources_file;
+        $problem['resources'] = $resources_file;
         $problem['question'] = url('problem/'.$problem->id.'/question');
         /*$submission = Submission::where('problem_id', '=', $problem->id)->get()->last();
         $problem['lastSubmission'] = $submission;*/
