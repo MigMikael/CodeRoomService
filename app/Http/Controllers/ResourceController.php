@@ -58,7 +58,7 @@ class ResourceController extends Controller
 
     public function changeStatus($id)
     {
-        $resource = Resource::findOrFail($id);
+        $resource = Resource::where('file_id', $id)->first();
         if($resource->visible == 'true'){
             $resource->visible = 'false';
             $msg = 'change resource visible to false';

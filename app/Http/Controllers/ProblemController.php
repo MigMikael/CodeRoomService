@@ -44,7 +44,6 @@ class ProblemController extends Controller
         $resources_file = [];
         foreach ($problem->resources as $resource){
             $res = File::find($resource->file_id);
-            $res['resource_id'] = $resource->id;
             array_push($resources_file, $res);
         }
         $problem['resources'] = $resources_file;
