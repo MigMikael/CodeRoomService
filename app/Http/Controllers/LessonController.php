@@ -29,6 +29,7 @@ class LessonController extends Controller
                 $file = File::find($resource->file_id);
                 array_push($resources_file, $file);
             }
+            $problem['resources_file'] = $resources_file;
 
             $submission = Submission::where([
                 ['problem_id', $problem->id],
@@ -48,13 +49,15 @@ class LessonController extends Controller
                 }
             }
 
-            if(sizeof($submission) == 1 && $submission->is_accept == 'true'){
-                $problem['is_accept'] = 'true';
+            if(sizeof($submission) == 1){
+                if($submission->is_accept == 'true'){
+                    $problem['is_accept'] = 'true';
+                }else{
+                    $problem['is_accept'] = 'false';
+                }
             }else{
-                $problem['is_accept'] = 'false';
+                $problem['is_accept'] = 'not_submit';
             }
-
-            $problem['resources_file'] = $resources_file;
         }
         $lesson['problems'] = $problems;
 
