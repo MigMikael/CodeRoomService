@@ -43,7 +43,7 @@ Route::post('register', 'UserAuthController@registerUser');
 #
 Route::get('image/show/{id}', 'ImageController@show');
 #
-Route::get('file/show/{id}', 'FileController@show');
+Route::get('file/show/{id}', 'FileController@showResource');
 #
 Route::get('problem/{id}/question', 'FileController@question');
 
