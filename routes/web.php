@@ -158,6 +158,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
+        Route::post('problem/in_sol/store', 'ProblemController@storeInputAndOutput');
+        #
         Route::post('problem/input/edit', 'ProblemController@updateInput');
         #
         Route::post('problem/output/edit', 'ProblemController@updateOutput');

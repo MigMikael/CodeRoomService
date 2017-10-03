@@ -94,7 +94,7 @@ class ProblemController extends Controller
         $problem->save();
 
         self::storeProblemFile($problem);
-        self::storeResource($problem);
+        self::storeResources($problem);
 
         if($problem->is_parse == 'true'){
             foreach ($problem->problemFiles as $problemFile){
@@ -186,7 +186,7 @@ class ProblemController extends Controller
         $problem->save();
     }
 
-    public function storeResource($problem)
+    public function storeResources($problem)
     {
         $course = $problem->lesson->course;
         $course_name = str_replace(' ', '_', $course->name);
@@ -468,6 +468,42 @@ class ProblemController extends Controller
         }
 
         return $submissions;
+    }
+
+    public function storeInputAndOutput(Request $request)
+    {
+        $type = $request->get('type');
+        if($request->hasFile('file')){
+            $theFile = $request->file('file');
+        }else{
+            return response()->json(['msg' => 'file not found']);
+        }
+
+        if($type == 'input'){
+            $name = self::storeFile($theFile);
+
+            $input = [
+                'problem_file_id' => $request->get('problem_file_id'),
+                'version' => 1,
+                'filename' => $name,
+                'content' => self::getFile($name)
+            ];
+            $input = ProblemInput::create($input);
+
+            return response()->json(['msg' => 'create input success']);
+        }else{
+            $name = self::storeFile($theFile);
+
+            $output = [
+                'problem_file_id' => $request->get('problem_file_id'),
+                'version' => 1,
+                'filename' => $name,
+                'content' => self::getFile($name)
+            ];
+            $outFile = ProblemOutput::create($output);
+
+            return response()->json(['msg' => 'create output success']);
+        }
     }
 
     public function updateInput(Request $request)
