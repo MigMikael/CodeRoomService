@@ -480,25 +480,25 @@ class ProblemController extends Controller
         }
 
         if($type == 'input'){
-            $name = self::storeFile($theFile);
+            $f = self::storeFile($theFile);
 
             $input = [
                 'problem_file_id' => $request->get('problem_file_id'),
                 'version' => 1,
-                'filename' => $name,
-                'content' => self::getFile($name)
+                'filename' => $f->name,
+                'content' => self::getFile($f->name)
             ];
             $input = ProblemInput::create($input);
 
             return response()->json(['msg' => 'create input success']);
         }else{
-            $name = self::storeFile($theFile);
+            $f = self::storeFile($theFile);
 
             $output = [
                 'problem_file_id' => $request->get('problem_file_id'),
                 'version' => 1,
-                'filename' => $name,
-                'content' => self::getFile($name)
+                'filename' => $f->name,
+                'content' => self::getFile($f->name)
             ];
             $outFile = ProblemOutput::create($output);
 
