@@ -511,7 +511,7 @@ class ProblemController extends Controller
         $id = $request->get('id');
         $problem_input = ProblemInput::findOrFail($id);
 
-        if($request->has('in')){
+        if($request->hasFile('in')){
             $inFile = $request->file('in');
             $name = self::storeFile($inFile);
 
@@ -532,7 +532,7 @@ class ProblemController extends Controller
         $id = $request->get('id');
         $problem_output = ProblemOutput::findOrFail($id);
 
-        if($request->has('sol')){
+        if($request->hasFile('sol')){
             $solFile = $request->file('sol');
             $name = self::storeFile($solFile);
 

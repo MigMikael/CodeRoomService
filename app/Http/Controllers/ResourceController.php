@@ -16,7 +16,7 @@ class ResourceController extends Controller
     {
         $problem_id = $request->get('problem_id');
 
-        if($request->has('file')){
+        if($request->hasFile('file')){
             $file = $request->file('file');
             $file = self::storeFile($file);
         }else{
@@ -41,7 +41,7 @@ class ResourceController extends Controller
         $resource = Resource::findOrFail($id);
         $file = File::findOrFail($resource->file_id);
 
-        if($request->has('file')){
+        if($request->hasFile('file')){
             $newFile = $request->file('file');
             $newFile = self::storeFile($newFile);
             $resource->file_id = $newFile->id;
