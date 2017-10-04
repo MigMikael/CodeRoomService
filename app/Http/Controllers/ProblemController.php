@@ -232,6 +232,8 @@ class ProblemController extends Controller
         ];
         $problem->update($new_problem);
 
+        $new_problem = Problem::find($problem->id);
+
         // delete old file
         if($request->hasFile('file')){
             $new_file = $request->file('file');
