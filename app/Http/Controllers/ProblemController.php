@@ -230,23 +230,23 @@ class ProblemController extends Controller
             'is_parse' => $request->get('is_parse'),
             'status' => $problem->status
         ];
-        $new_problem = Problem::create($new_problem);
+        $problem->update($new_problem);
 
         // delete old file
-        $course = $problem->lesson->course;
-        $course_name = $course->id.'_'.$course->name;
-        $course_name = str_replace(' ', '_', $course_name);
-        $prob_path = $course_name.'/'.$problem->id.'/'. $problem->name. '/';
-        $files = self::getFiles($prob_path);
-        foreach ($files as $file){
-            self::deleteFile($file);
-        }
-        $question_file = File::findOrFail($problem->question);
-        $question_file->delete();
-        self::delete($problem->id);
-
         if($request->hasFile('file')){
             $new_file = $request->file('file');
+
+            $course = $problem->lesson->course;
+            $course_name = $course->id.'_'.$course->name;
+            $course_name = str_replace(' ', '_', $course_name);
+            $prob_path = $course_name.'/'.$problem->id.'/'. $problem->name. '/';
+            $files = self::getFiles($prob_path);
+            foreach ($files as $file){
+                self::deleteByPath($file);
+            }
+            $question_file = File::findOrFail($problem->question);
+            $question_file->delete();
+            self::delete($problem->id);
 
             $new_file = self::storeFile($new_file);
             self::unzipProblem($new_file, $new_problem);

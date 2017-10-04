@@ -222,6 +222,11 @@ trait FileTrait
         Storage::delete($file->name);
     }
 
+    public function deleteByPath($path)
+    {
+        Storage::delete($path);
+    }
+
     public function getMime($file)
     {
         $mime = Storage::mimeType($file);
