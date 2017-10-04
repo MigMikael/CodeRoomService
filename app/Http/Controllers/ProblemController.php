@@ -219,13 +219,6 @@ class ProblemController extends Controller
     {
         $problem = Problem::findOrFail($request->get('id'));
 
-        if($request->hasFile('file')){
-            $new_file = $request->file('file');
-        }
-        else{
-            return response()->json(['msg' => 'file not found']);
-        }
-
         $new_problem = [
             'lesson_id' => $problem->lesson_id,
             'name' => $request->get('name'),
@@ -251,40 +244,43 @@ class ProblemController extends Controller
         $question_file->delete();
         self::delete($problem->id);
 
+        if($request->hasFile('file')){
+            $new_file = $request->file('file');
 
-        $new_file = self::storeFile($new_file);
-        self::unzipProblem($new_file, $new_problem);
-        self::deleteFile($new_file);
+            $new_file = self::storeFile($new_file);
+            self::unzipProblem($new_file, $new_problem);
+            self::deleteFile($new_file);
 
-        $response = self::checkFileStructure($new_problem);
-        if($response != true){
-            $new_problem->delete();
-            return response()->json($response);
-        }
-
-        $question_file = self::storeQuestion($new_problem->name);
-        $new_problem->question = $question_file->id;
-        $new_problem->save();
-
-        self::storeProblemFile($new_problem);
-        self::storeResources($new_problem);
-
-        if($new_problem->is_parse == 'true'){
-            foreach ($new_problem->problemFiles as $problemFile){
-                $classes = self::analyzeProblemFile($problemFile);
-                self::saveResult($classes, $problemFile);
+            $response = self::checkFileStructure($new_problem);
+            if($response != true){
+                $new_problem->delete();
+                return response()->json($response);
             }
 
-            foreach ($new_problem->problemFiles as $problemFile){
-                $problemFile['code'] = '';
-                foreach ($problemFile->problemAnalysis as $analysis){
-                    $analysis->score;
-                    $analysis->attributes;
-                    $analysis->constructors;
-                    $analysis->methods;
+            $question_file = self::storeQuestion($new_problem->name);
+            $new_problem->question = $question_file->id;
+            $new_problem->save();
+
+            self::storeProblemFile($new_problem);
+            self::storeResources($new_problem);
+
+            if($new_problem->is_parse == 'true'){
+                foreach ($new_problem->problemFiles as $problemFile){
+                    $classes = self::analyzeProblemFile($problemFile);
+                    self::saveResult($classes, $problemFile);
                 }
+
+                foreach ($new_problem->problemFiles as $problemFile){
+                    $problemFile['code'] = '';
+                    foreach ($problemFile->problemAnalysis as $analysis){
+                        $analysis->score;
+                        $analysis->attributes;
+                        $analysis->constructors;
+                        $analysis->methods;
+                    }
+                }
+                return $new_problem;
             }
-            return $new_problem;
         }
 
         return response()->json(['msg' => 'edit problem success']);
