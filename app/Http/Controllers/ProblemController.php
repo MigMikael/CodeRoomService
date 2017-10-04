@@ -231,7 +231,7 @@ class ProblemController extends Controller
             'name' => $request->get('name'),
             'description' => $request->get('description'),
             'evaluator' => $request->get('evaluator'),
-            'order' => $problem->id,
+            'order' => $problem->order,
             'timelimit' => $request->get('timelimit'),
             'memorylimit' => $request->get('memorylimit'),
             'is_parse' => $request->get('is_parse'),
