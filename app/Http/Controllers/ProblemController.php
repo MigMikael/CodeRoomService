@@ -267,7 +267,7 @@ class ProblemController extends Controller
         $new_problem->save();
 
         self::storeProblemFile($new_problem);
-        self::storeResource($new_problem);
+        self::storeResources($new_problem);
 
         if($new_problem->is_parse == 'true'){
             foreach ($new_problem->problemFiles as $problemFile){
