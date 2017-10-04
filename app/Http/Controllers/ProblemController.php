@@ -513,9 +513,9 @@ class ProblemController extends Controller
 
         if($request->hasFile('in')){
             $inFile = $request->file('in');
-            $name = self::storeFile($inFile);
+            $f = self::storeFile($inFile);
 
-            $content = self::getFile($name);
+            $content = self::getFile($f->name);
             $problem_input->content = $content;
             $problem_input->version += 1;
             $problem_input->save();
@@ -534,9 +534,9 @@ class ProblemController extends Controller
 
         if($request->hasFile('sol')){
             $solFile = $request->file('sol');
-            $name = self::storeFile($solFile);
+            $f = self::storeFile($solFile);
 
-            $content = self::getFile($name);
+            $content = self::getFile($f->name);
             $problem_output->content = $content;
             $problem_output->version += 1;
             $problem_output->save();
