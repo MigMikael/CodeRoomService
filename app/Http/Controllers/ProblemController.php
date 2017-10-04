@@ -485,7 +485,7 @@ class ProblemController extends Controller
             $input = [
                 'problem_file_id' => $request->get('problem_file_id'),
                 'version' => 1,
-                'filename' => $f->name,
+                'filename' => $f->original_name,
                 'content' => self::getFile($f->name)
             ];
             $input = ProblemInput::create($input);
@@ -497,8 +497,9 @@ class ProblemController extends Controller
             $output = [
                 'problem_file_id' => $request->get('problem_file_id'),
                 'version' => 1,
-                'filename' => $f->name,
-                'content' => self::getFile($f->name)
+                'filename' => $f->original_name,
+                'content' => self::getFile($f->name),
+                'score' => 100.00
             ];
             $outFile = ProblemOutput::create($output);
 
