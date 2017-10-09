@@ -236,6 +236,10 @@ class ProblemController extends Controller
 
         // delete old file
         if($request->hasFile('file')){
+            foreach ($problem->problemFiles as $problemFile){
+                $problemFile->delete();
+            }
+
             $new_file = $request->file('file');
 
             $course = $problem->lesson->course;
@@ -248,7 +252,7 @@ class ProblemController extends Controller
             }
             $question_file = File::findOrFail($problem->question);
             $question_file->delete();
-            self::delete($problem->id);
+            self::deleteResource($problem->id);
 
             $new_file = self::storeFile($new_file);
             self::unzipProblem($new_file, $new_problem);
@@ -432,16 +436,15 @@ class ProblemController extends Controller
         }
     }
 
-    public function delete($id)
+    public function deleteResource($id)
     {
         $problem = Problem::findOrFail($id);
         foreach ($problem->resources as $resource){
             $file = File::find($resource->file_id);
             $file->delete();
         }
-        $problem->delete();
 
-        return response()->json(['msg' => 'delete problem success']);
+        return response()->json(['msg' => 'delete problem resource success']);
     }
 
     public function changeOrder(Request $request)
