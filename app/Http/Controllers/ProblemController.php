@@ -599,7 +599,20 @@ class ProblemController extends Controller
         if($problem->status == 'show'){
             $problem->status = 'hide';
         }else{
-            $problem->status = 'show';
+            $is_equals = true;
+            foreach ($problem->problemFiles as $problemFile){
+                $input_count = $problemFile->inputs()->count();
+                $output_count = $problemFile->outputs()->count();
+                if($input_count != $output_count){
+                    $is_equals = false;
+                }
+            }
+
+            if($is_equals){
+                $problem->status = 'show';
+            }else{
+                return response()->json(['msg' => 'input and output not equals']);
+            }
         }
         $problem->save();
 

@@ -236,6 +236,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::post('course/add/teacher', 'CourseController@addTeacher');
         #
         Route::post('course/clone', 'CourseController@cloneCourse');
+        #
+        Route::delete('course/{id}/delete', 'CourseController@destroy');
 
 
         #

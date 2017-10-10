@@ -462,4 +462,12 @@ class CourseController extends Controller
         }
         return $students;
     }
+
+    public function destroy($id)
+    {
+        $course = Course::findOrFail($id);
+        $course->delete();
+
+        return response()->json(['msg' => 'delete course success']);
+    }
 }
