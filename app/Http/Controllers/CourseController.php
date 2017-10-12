@@ -18,6 +18,7 @@ use App\ProblemScore;
 use App\Student;
 use App\StudentCourse;
 use App\StudentLesson;
+use App\Submission;
 use App\TeacherCourse;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
@@ -63,7 +64,9 @@ class CourseController extends Controller
     public function member($id)
     {
         $course = Course::findOrFail($id);
-        $course->lessons;
+        foreach ($course->lessons as $lesson){
+            $lesson->problems;
+        }
         foreach ($course->students as $student){
             $student->pivot;
             $student->lessons;
@@ -489,5 +492,37 @@ class CourseController extends Controller
         }
 
         return $progress_data;
+    }
+
+    public function summaryDetail($lesson_id)
+    {
+        $summary_data = [];
+        $lesson = Lesson::findOrFail($lesson_id);
+        foreach ($lesson->students as $student){
+            $data['code'] = $student->student_id;
+            $data['name'] = $student->name;
+            $data['problem'] = [];
+            $data['sum_score'] = 0;
+            $data['sum_total_score'] = 0;
+            foreach ($lesson->problems as $problem){
+                $submission = Submission::where([
+                    ['problem_id', $problem->id],
+                    ['student_id', $student->id]
+                ])->orderBy('id', 'desc')->first();
+
+                $temp['name'] = $problem->name;
+                if(sizeof($submission) != 1){
+                    $temp['score'] = 0;
+                }else{
+                    $temp['score'] = $submission->score;
+                }
+                $data['sum_score'] += $temp['score'];
+                $temp['total_score'] = $problem->score;
+                $data['sum_total_score'] += $temp['total_score'];
+                array_push($data['problem'], $temp);
+            }
+            array_push($summary_data, $data);
+        }
+        return $summary_data;
     }
 }

@@ -236,10 +236,10 @@ class StudentController extends Controller
         return response()->json(['msg' => 'add students success']);
     }
 
-    public function disable($student_id, $course_id)
+    public function disable($id, $course_id)
     {
         $student_course = StudentCourse::where([
-            ['student_id', '=', $student_id],
+            ['student_id', '=', $id],
             ['course_id', '=', $course_id]
         ])->first();
 

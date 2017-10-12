@@ -27,7 +27,7 @@ class Lesson extends Model
     public function students()
     {
         return $this->belongsToMany('App\Student', 'student_lesson', 'lesson_id', 'student_id')
-            ->withPivot('progress');
+            ->withPivot('progress')->where('role', '!=', 'hidden');
     }
 
     public function problems()
