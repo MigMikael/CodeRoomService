@@ -470,4 +470,14 @@ class CourseController extends Controller
 
         return response()->json(['msg' => 'delete course success']);
     }
+
+    public function progressDetail($course_id)
+    {
+        $course = Course::findOrFail($course_id);
+        foreach ($course->students as $student){
+            $student->lessons;
+        }
+
+        return $course;
+    }
 }
