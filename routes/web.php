@@ -116,6 +116,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::get('course/{lesson_id}/detail/summary', 'CourseController@summayrDetail');
         #
+        Route::get('course/{lesson_id}/{problem_id}/detail', 'CourseController@problemDetail');
+        #
         Route::get('course/{id}/lesson/progress', 'CourseController@sumProgress');
 
 

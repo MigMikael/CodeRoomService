@@ -19,6 +19,7 @@ use App\Student;
 use App\StudentCourse;
 use App\StudentLesson;
 use App\Submission;
+use App\ResultScore;
 use App\TeacherCourse;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
@@ -510,6 +511,7 @@ class CourseController extends Controller
                     ['student_id', $student->id]
                 ])->orderBy('id', 'desc')->first();
 
+                $temp['problem_id'] = $problem->id;
                 $temp['name'] = $problem->name;
                 if(sizeof($submission) != 1){
                     $temp['score'] = 0;
@@ -524,5 +526,97 @@ class CourseController extends Controller
             array_push($summary_data, $data);
         }
         return $summary_data;
+    }
+
+    public function problemDetail($lesson_id,$problem_id)
+    {
+        $problem_data = [];
+        $lesson = Lesson::findOrFail($lesson_id);
+        foreach ($lesson->students as $student){
+            $data['code'] = $student->student_id;
+            $data['name'] = $student->name;
+            $data['class'] = 0;
+            $data['total_class'] = 0;
+            $data['package'] = 0;
+            $data['total_package'] = 0;
+            $data['enclose'] = 0;
+            $data['total_enclose'] = 0;
+            $data['extends'] = 0;
+            $data['total_extends'] = 0;
+            $data['implements'] = 0;
+            $data['total_implements'] = 0;
+            $data['attribute'] = 0;
+            $data['total_attribute'] = 0;
+            $data['constructor'] = 0;
+            $data['total_constructor'] = 0;
+            $data['method'] = 0;
+            $data['total_method'] = 0;
+            $data['output'] = [];
+
+            $submission = Submission::where([
+                ['student_id', '=', $student->id],
+                ['problem_id', '=', $problem_id]
+            ])->orderBy('id', 'desc')->first();
+
+            Log::info(sizeof($submission));
+            if(sizeof($submission) == 1){
+                foreach ($submission->submissionFiles as $submissionFile){
+                    foreach ($submissionFile->results as $result){
+                        $result_score = ResultScore::where('result_id', $result->id)->first();
+                        $data['class'] += $result_score->class;
+                        $data['package'] += $result_score->package;
+                        $data['enclose'] += $result_score->enclose;
+                        $data['extends'] += $result_score->extends;
+                        $data['implements'] += $result_score->implements;
+
+                        foreach ($result->attributes as $attribute){
+                            $data['attribute'] += $attribute->score;
+                        }
+                        foreach ($result->constructors as $constructor){
+                            $data['constructor'] += $constructor->score;
+                        }
+                        foreach ($result->methods as $method){
+                            $data['method'] += $method->score;
+                        }
+                    }
+
+                    foreach ($submissionFile->outputs as $output){
+                        $temp['score'] = $output->score;
+                        $temp['error'] = $output->error;
+                        array_push($data['output'], $temp);
+                    }
+                }
+            }
+
+            $problem = Problem::findOrFail($problem_id);
+            $problemFiles = ProblemFile::where([
+                ['problem_id', '=', $problem->id],
+                ['package', '!=', 'driver']
+            ])->get();
+
+            foreach ($problemFiles as $problemFile){
+                foreach ($problemFile->problemAnalysis as $analysis){
+                    $problem_score = ProblemScore::where('analysis_id', $analysis->id)->first();
+                    $data['total_class'] += $problem_score->class;
+                    $data['total_package'] += $problem_score->package;
+                    $data['total_enclose'] += $problem_score->enclose;
+                    $data['total_extends'] += $problem_score->extends;
+                    $data['total_implements'] += $problem_score->implements;
+
+                    foreach ($analysis->attributes as $attribute){
+                        $data['total_attribute'] += $attribute->score;
+                    }
+                    foreach ($analysis->constructors as $constructor){
+                        $data['total_constructor'] += $constructor->score;
+                    }
+                    foreach ($analysis->methods as $method){
+                        $data['total_method'] += $method->score;
+                    }
+                }
+            }
+
+            array_push($problem_data, $data);
+        }
+        return $problem_data;
     }
 }
