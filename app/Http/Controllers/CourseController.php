@@ -471,13 +471,23 @@ class CourseController extends Controller
         return response()->json(['msg' => 'delete course success']);
     }
 
-    public function progressDetail($course_id)
+    public function progressDetail($id)
     {
-        $course = Course::findOrFail($course_id);
+        $progress_data = [];
+        $course = Course::findOrFail($id);
         foreach ($course->students as $student){
-            $student->lessons;
+            $data['code'] = $student->student_id;
+            $data['name'] = $student->name;
+            $data['course_progress'] = $student->pivot->progress;
+            $data['lesson_progress'] = [];
+            foreach ($student->lessons as $lesson){
+                $temp['name'] = $lesson->name;
+                $temp['progress'] = $lesson->pivot->progress;
+                array_push($data['lesson_progress'], $temp);
+            }
+            array_push($progress_data, $data);
         }
 
-        return $course;
+        return $progress_data;
     }
 }
