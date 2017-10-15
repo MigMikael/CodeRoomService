@@ -140,6 +140,10 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::get('lesson/export/score/{id}', 'LessonController@exportScore');
         #
+        Route::get('lesson/{id}/export/by_problem/{problem_id}', 'LessonController@exportByProblem');
+        #
+        Route::get('lesson/{id}/export/by_student/{student_id}', 'LessonController@exportByStudent');
+        #
         Route::get('lesson/{id}/guide/change_status', 'LessonController@changeGuide');
         #
         Route::get('lesson/{id}/resource/visible/{status}', 'ResourceController@changeVisible');

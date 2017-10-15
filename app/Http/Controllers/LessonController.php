@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\File;
 use App\Resource;
+use App\Student;
 use App\Submission;
 use Carbon\Carbon;
 use App\Lesson;
 use App\Problem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Zipper;
 use Maatwebsite\Excel\Facades\Excel;
 
 class LessonController extends Controller
@@ -262,6 +265,50 @@ class LessonController extends Controller
                 $sheet->fromArray($data_score);
             });
         })->download('xlsx');
+    }
+
+    public function exportByProblem($id, $problem_id)
+    {
+        $lesson = Lesson::findOrFail($id);
+
+        $problem = Problem::findOrFail($problem_id);
+        $exportFilename = $problem->name.'.zip';
+        $path = $problem->name . '/';
+        foreach ($problem->submissions as $submission){
+            $student_lesson = Student::where('student_id', $submission->student->id)->first();
+            if(sizeof($student_lesson) == 1){
+                $student_id = $submission->student->student_id;
+                $eachFilePath = $path . $student_id . '/';
+                foreach ($submission->submissionFiles as $submissionFile){
+                    Storage::put($eachFilePath . $submissionFile->package . $submissionFile->filename, $submissionFile->code);
+                }
+            }
+        }
+        $files = glob(storage_path($path . '*'));
+        Zipper::make($exportFilename)->add($files);
+        return response($files, 200)->header('Content-Type', 'application/zip');
+    }
+
+    public function exportByStudent($id, $student_id)
+    {
+        $lesson = Lesson::findOrFail($id);
+
+        $student = Student::findOrFail($student_id);
+        $exportFilename = $student->student_id.'.zip';
+        $path = $student->student_id . '/';
+        foreach ($student->submissions as $submission){
+            $problem = $submission->problem;
+            $prob_lesson = $problem->lesson;
+            if($lesson->id == $prob_lesson->id){
+                $eachFilePath = $path . $problem->name . '/';
+                foreach ($submission->submissionFiles as $submissionFile){
+                    Storage::put($eachFilePath . $submissionFile->package . $submissionFile->filename, $submissionFile->code);
+                }
+            }
+        }
+        $files = glob(storage_path($path . '*'));
+        Zipper::make($exportFilename)->add($files);
+        return response($files, 200)->header('Content-Type', 'application/zip');
     }
 
     public function scoreboard($id)
