@@ -287,10 +287,10 @@ class LessonController extends Controller
                 }
             }
         }
-        $rootPath = storage_path() . '/' . $problem->name;
+        $rootPath = storage_path() . '/app/' . $problem->name;
 
         $zip = new ZipArchive();
-        $zip->open('file.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->open(storage_path() . '/app/' . $problem->name . '.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($rootPath),
