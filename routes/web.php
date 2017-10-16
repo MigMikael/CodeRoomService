@@ -243,6 +243,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::post('course/edit', 'CourseController@update');
         #
+        Route::get('course/status/{id}', 'CourseController@changeStatus');
+        #
         Route::post('course/add/teacher', 'CourseController@addTeacher');
         #
         Route::post('course/clone', 'CourseController@cloneCourse');
