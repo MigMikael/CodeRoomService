@@ -82,6 +82,30 @@ class TeacherController extends Controller
         return response()->json(['msg' => 'create teacher success']);
     }
 
+    public function update(Request $request)
+    {
+        $id = $request->get('id');
+        $teacher = Teacher::findOrFail($id);
+
+        $teacher->name = $request->get('name');
+        $teacher->email = $request->get('email');
+        $teacher->username = $request->get('username');
+        $teacher->password = $request->get('password');
+
+        if ($request->hasFile('image')){
+            $image = File::findOrFail($teacher->image);
+            self::deleteFile($image);
+            $image->delete();
+
+            $image = $request->file('image');
+            $image = self::storeImage($image);
+            $teacher->image = $image->id;
+        }
+        $teacher->save();
+
+        return response()->json(['msg' => 'edit teacher success']);
+    }
+
     public function updateProfile(Request $request)
     {
         $id = $request->get('id');

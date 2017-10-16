@@ -237,11 +237,11 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
     Route::group(['middleware' => 'adminAuth', 'prefix' => 'admin'], function (){
 
         #
-        Route::get('dashboard', 'AdminController@dashboard');
-
-
+        Route::get('course', 'CourseController@getAll');
         #
         Route::post('course/store', 'CourseController@store');
+        #
+        Route::post('course/edit', 'CourseController@update');
         #
         Route::post('course/add/teacher', 'CourseController@addTeacher');
         #
@@ -254,6 +254,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('teacher', 'TeacherController@getAll');
         #
         Route::post('teacher/store', 'TeacherController@store');
+        #
+        Route::post('teacher/edit', 'TeacherController@update');
         #
         Route::get('teacher/status/{teacher_id}', 'TeacherController@changeStatus');
         #

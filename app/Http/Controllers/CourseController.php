@@ -62,6 +62,37 @@ class CourseController extends Controller
         return response()->json(['msg' => 'create course success']);
     }
 
+    public function update(Request $request)
+    {
+        $id = $request->get('id');
+        $course = Course::findOrFail($id);
+
+        $course->name = $request->get('name');
+        if($request->hasFile('image')){
+            $image = self::storeImage($request->file('image'));
+            $course->image = $image->id;
+        }
+        $course->save();
+
+        $teachers = $request->get('teachers');
+        foreach ($teachers as $teacher){
+            $teacher_course = [
+                'teacher_id' => $teacher['id'],
+                'course_id' => $course->id,
+                'status' => 'enable'
+            ];
+            TeacherCourse::firstOrCreate($teacher_course);
+        }
+
+        return response()->json(['msg' => 'edit course success']);
+    }
+
+    public function getAll()
+    {
+        $courses = Course::all();
+        return $courses;
+    }
+
     public function member($id)
     {
         $course = Course::findOrFail($id);
