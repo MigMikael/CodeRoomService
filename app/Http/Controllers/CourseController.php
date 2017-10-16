@@ -511,6 +511,7 @@ class CourseController extends Controller
         $progress_data = [];
         $course = Course::findOrFail($id);
         foreach ($course->students as $student){
+            $data['id'] = $student->id;
             $data['code'] = $student->student_id;
             $data['name'] = $student->name;
             $data['course_progress'] = $student->pivot->progress;
@@ -531,6 +532,7 @@ class CourseController extends Controller
         $summary_data = [];
         $lesson = Lesson::findOrFail($lesson_id);
         foreach ($lesson->students as $student){
+            $data['id'] = $student->id;
             $data['code'] = $student->student_id;
             $data['name'] = $student->name;
             $data['problem'] = [];
