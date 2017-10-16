@@ -228,6 +228,13 @@ class CourseController extends Controller
         return $course;
     }
 
+    public function showAdmin($id)
+    {
+        $course = Course::findOrFail($id);
+        $course->teachers;
+        return $course;
+    }
+
     public function changeStatus($id)
     {
         $course = Course::findOrFail($id);

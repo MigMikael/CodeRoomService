@@ -39,6 +39,16 @@ class TeacherController extends Controller
         return $data;
     }
 
+    public function showAdmin($id)
+    {
+        $teacher = Teacher::findOrFail($id);
+        $teacher->makeVisible('token');
+        $teacher->makeVisible('username');
+        $teacher->makeVisible('password');
+
+        return $teacher;
+    }
+
     public function profile($id)
     {
         $teacher = Teacher::findOrFail($id);

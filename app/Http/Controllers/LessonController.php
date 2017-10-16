@@ -290,7 +290,7 @@ class LessonController extends Controller
         $rootPath = storage_path() . '/app/' . $problem->name;
 
         $zip = new ZipArchive();
-        $zip->open(storage_path() . '/app/' . $problem->name . '.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->open(storage_path() . '/app/' . $exportFilename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         $files = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator($rootPath),
@@ -313,10 +313,10 @@ class LessonController extends Controller
         $zip->close();
 
         //return response($files, 200)->header('Content-Type', 'application/zip');
-        /*return response()->download(storage_path() . '/' . $exportFilename, $exportFilename,
+        return response()->download(storage_path() . '/app/' . $exportFilename, $exportFilename,
                 ['Content-Type' => 'application/zip']
-            );*/
-        return 'success';
+            );
+        //return 'success';
     }
 
     public function exportByStudent($id, $student_id)

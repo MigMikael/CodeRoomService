@@ -239,6 +239,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::get('course', 'CourseController@getAll');
         #
+        Route::get('course/{id}', 'CourseController@showAdmin');
+        #
         Route::post('course/store', 'CourseController@store');
         #
         Route::post('course/edit', 'CourseController@update');
@@ -254,6 +256,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         #
         Route::get('teacher', 'TeacherController@getAll');
+        #
+        Route::get('teacher/{id}', 'TeacherController@showAdmin');
         #
         Route::post('teacher/store', 'TeacherController@store');
         #
