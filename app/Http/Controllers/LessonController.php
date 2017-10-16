@@ -12,6 +12,7 @@ use App\Problem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Zipper;
+use ZipArchive;
 use Maatwebsite\Excel\Facades\Excel;
 
 class LessonController extends Controller
@@ -280,13 +281,28 @@ class LessonController extends Controller
                 $student_id = $submission->student->student_id;
                 $eachFilePath = $path . $student_id . '/';
                 foreach ($submission->submissionFiles as $submissionFile){
-                    Storage::put($eachFilePath . $submissionFile->package . $submissionFile->filename, $submissionFile->code);
+                    Storage::put($eachFilePath . $submissionFile->package .'/'. $submissionFile->filename, $submissionFile->code);
                 }
             }
         }
-        $files = glob(storage_path($path . '*'));
-        Zipper::make($exportFilename)->add($files);
-        return response($files, 200)->header('Content-Type', 'application/zip');
+        $zipFile = storage_path() . '/' . $exportFilename;
+        $zipArchive = new \ZipArchive();
+
+        if (!$zipArchive->open($zipFile, ZIPARCHIVE::OVERWRITE))
+            die("Failed to create archive\n");
+
+        $zipArchive->addGlob("*.*");
+
+        if (!$zipArchive->status == ZIPARCHIVE::ER_OK)
+            echo "Failed to write files to zip\n";
+
+        $zipArchive->close();
+
+        //return response($files, 200)->header('Content-Type', 'application/zip');
+        /*return response()->download(storage_path() . '/' . $exportFilename, $exportFilename,
+                ['Content-Type' => 'application/zip']
+            );*/
+        return 'success';
     }
 
     public function exportByStudent($id, $student_id)
