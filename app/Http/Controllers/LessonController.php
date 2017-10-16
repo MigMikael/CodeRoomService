@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Zipper;
 use ZipArchive;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 use Maatwebsite\Excel\Facades\Excel;
 
 class LessonController extends Controller
@@ -285,18 +287,30 @@ class LessonController extends Controller
                 }
             }
         }
-        $zipFile = storage_path() . '/' . $exportFilename;
-        $zipArchive = new \ZipArchive();
+        $rootPath = storage_path() . '/' . $problem->name;
 
-        if (!$zipArchive->open($zipFile, ZIPARCHIVE::OVERWRITE))
-            die("Failed to create archive\n");
+        $zip = new ZipArchive();
+        $zip->open('file.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
-        $zipArchive->addGlob("*.*");
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($rootPath),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
 
-        if (!$zipArchive->status == ZIPARCHIVE::ER_OK)
-            echo "Failed to write files to zip\n";
+        foreach ($files as $name => $file)
+        {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir())
+            {
+                // Get real and relative path for current file
+                $filePath = $file->getRealPath();
+                $relativePath = substr($filePath, strlen($rootPath) + 1);
 
-        $zipArchive->close();
+                // Add current file to archive
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+        $zip->close();
 
         //return response($files, 200)->header('Content-Type', 'application/zip');
         /*return response()->download(storage_path() . '/' . $exportFilename, $exportFilename,
