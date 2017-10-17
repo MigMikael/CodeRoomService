@@ -271,6 +271,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 });
 
+Route::get('test/progress/{id}', 'CourseController@progressDetail');
 Route::get('test/{id}/{problem_id}', 'LessonController@exportByProblem');
 Route::get('test4/{id}', 'LessonController@scoreboard');
 Route::get('export_score/{id}', 'LessonController@exportScore');

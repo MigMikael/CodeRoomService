@@ -523,10 +523,15 @@ class CourseController extends Controller
             $data['name'] = $student->name;
             $data['course_progress'] = $student->pivot->progress;
             $data['lesson_progress'] = [];
+            foreach ($course->lessons as $lesson){
+                $data['lesson_progress'][$lesson->name]['progress'] = 0;
+            }
+
             foreach ($student->lessons as $lesson){
-                $temp['name'] = $lesson->name;
+                $data['lesson_progress'][$lesson->name]['progress'] = $lesson->pivot->progress;;
+                /*$temp['name'] = $lesson->name;
                 $temp['progress'] = $lesson->pivot->progress;
-                array_push($data['lesson_progress'], $temp);
+                array_push($data['lesson_progress'], $temp);*/
             }
             array_push($progress_data, $data);
         }
