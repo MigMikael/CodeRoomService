@@ -12,13 +12,14 @@ use App\Problem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Zipper;
-use ZipArchive;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Traits\FileTrait;
+use Log;
 
 class LessonController extends Controller
 {
+    use FileTrait;
+
     public function showStudent($lesson_id, $student_id)
     {
         $lesson = Lesson::withCount(['problems'])->findOrFail($lesson_id);
@@ -238,7 +239,11 @@ class LessonController extends Controller
             foreach ($problem->submissions as $submission){
                 if($submission->score > 0){
                     $curr_std = $submission->student;
-                    $student = $students->where('id', $curr_std->id)->first();
+                    $student = $students->where([
+                        ['id', $curr_std->id],
+                        ['role', '!=', 'hidden']
+                    ])->first();
+                    Log::info('student id '.$student->id);
                     $score[$student->id][$problem->name] = $submission->score;
                     $score[$student->id]['total'] += $submission->score;
                 }
@@ -288,32 +293,12 @@ class LessonController extends Controller
             }
         }
         $rootPath = storage_path() . '/app/' . $problem->name;
+        $exportPath = storage_path() . '/app/' . $exportFilename;
+        self::zipFile($exportPath, $rootPath);
 
-        $zip = new ZipArchive();
-        $zip->open(storage_path() . '/app/' . $exportFilename, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-        $files = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($rootPath),
-            RecursiveIteratorIterator::LEAVES_ONLY
-        );
-
-        foreach ($files as $name => $file)
-        {
-            // Skip directories (they would be added automatically)
-            if (!$file->isDir())
-            {
-                // Get real and relative path for current file
-                $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                // Add current file to archive
-                $zip->addFile($filePath, $relativePath);
-            }
-        }
-        $zip->close();
 
         //return response($files, 200)->header('Content-Type', 'application/zip');
-        return response()->download(storage_path() . '/app/' . $exportFilename, $exportFilename,
+        return response()->download($exportPath, $exportFilename,
                 ['Content-Type' => 'application/zip']
             );
         //return 'success';
@@ -332,13 +317,17 @@ class LessonController extends Controller
             if($lesson->id == $prob_lesson->id){
                 $eachFilePath = $path . $problem->name . '/';
                 foreach ($submission->submissionFiles as $submissionFile){
-                    Storage::put($eachFilePath . $submissionFile->package . $submissionFile->filename, $submissionFile->code);
+                    Storage::put($eachFilePath . $submissionFile->package . '/' . $submissionFile->filename, $submissionFile->code);
                 }
             }
         }
-        $files = glob(storage_path($path . '*'));
-        Zipper::make($exportFilename)->add($files);
-        return response($files, 200)->header('Content-Type', 'application/zip');
+        $rootPath = storage_path() . '/app/' . $student->student_id;
+        $exportPath = storage_path() . '/app/' . $exportFilename;
+        self::zipFile($exportPath, $rootPath);
+
+        return response()->download($exportPath, $exportFilename,
+            ['Content-Type' => 'application/zip']
+        );
     }
 
     public function scoreboard($id)
