@@ -297,7 +297,9 @@ class LessonController extends Controller
         return response()->download($exportPath, $exportFilename,
             ['Content-Type' => 'application/zip']
         );*/
-        return response()->file($exportPath, ['Content-Type' => 'application/zip']);
+        //return response()->file($exportPath, ['Content-Type' => 'application/zip']);
+
+        return response()->make($exportPath)->header('Content-Type', 'application/zip');
     }
 
     public function exportByStudent($id, $student_id)
@@ -325,7 +327,9 @@ class LessonController extends Controller
         return response()->download($exportPath, $exportFilename,
             ['Content-Type' => 'application/zip']
         );*/
-        return response()->file($exportPath, ['Content-Type' => 'application/zip']);
+        //return response()->file($exportPath, ['Content-Type' => 'application/zip']);
+
+        return response()->make($exportPath)->header('Content-Type', 'application/zip');
     }
 
     public function scoreboard($id)
