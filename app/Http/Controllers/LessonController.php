@@ -237,13 +237,9 @@ class LessonController extends Controller
         }
         foreach ($lesson->problems as $problem){
             foreach ($problem->submissions as $submission){
-                if($submission->score > 0){
-                    $curr_std = $submission->student;
-                    $student = $students->where([
-                        ['id', $curr_std->id],
-                        ['role', '!=', 'hidden']
-                    ])->first();
-                    Log::info('student id '.$student->id);
+                $curr_std = $submission->student;
+                if($submission->score > 0 && $curr_std->role != 'hidden'){
+                    $student = $students->where('id', $curr_std->id)->first();
                     $score[$student->id][$problem->name] = $submission->score;
                     $score[$student->id]['total'] += $submission->score;
                 }
