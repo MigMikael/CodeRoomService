@@ -293,10 +293,11 @@ class LessonController extends Controller
         self::zipFile($exportPath, $rootPath);
 
 
-        ob_end_clean();
+        /*ob_end_clean();
         return response()->download($exportPath, $exportFilename,
             ['Content-Type' => 'application/zip']
-        );
+        );*/
+        return response()->file($exportPath, ['Content-Type' => 'application/zip']);
     }
 
     public function exportByStudent($id, $student_id)
@@ -320,10 +321,11 @@ class LessonController extends Controller
         $exportPath = storage_path() . '/app/' . $exportFilename;
         self::zipFile($exportPath, $rootPath);
 
-        ob_end_clean();
+        /*ob_end_clean();
         return response()->download($exportPath, $exportFilename,
             ['Content-Type' => 'application/zip']
-        );
+        );*/
+        return response()->file($exportPath, ['Content-Type' => 'application/zip']);
     }
 
     public function scoreboard($id)
