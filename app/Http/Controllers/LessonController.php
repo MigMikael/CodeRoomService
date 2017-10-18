@@ -268,7 +268,14 @@ class LessonController extends Controller
             $excel->sheet('sheet1', function($sheet) use ($data_score) {
                 $sheet->fromArray($data_score);
             });
-        })->download('xlsx');
+        })->store('xlsx');
+
+        $exportPath = storage_path() . '/app/' . $filename;
+        $ex = base64_encode(file_get_contents($exportPath));
+
+        return response()->json([
+            'excel' => $ex,
+        ]);
     }
 
     public function exportByProblem($id, $problem_id)
@@ -302,9 +309,6 @@ class LessonController extends Controller
         return response()->download($exportPath, $exportFilename,
             ['Content-Type' => 'application/zip']
         );*/
-        //return response()->file($exportPath, ['Content-Type' => 'application/zip']);
-
-        //return response()->make($exportPath)->header('Content-Type', 'application/zip');
     }
 
     public function exportByStudent($id, $student_id)
@@ -338,9 +342,6 @@ class LessonController extends Controller
         return response()->download($exportPath, $exportFilename,
             ['Content-Type' => 'application/zip']
         );*/
-        //return response()->file($exportPath, ['Content-Type' => 'application/zip']);
-
-        //return response()->make($exportPath)->header('Content-Type', 'application/zip');
     }
 
     public function scoreboard($id)
