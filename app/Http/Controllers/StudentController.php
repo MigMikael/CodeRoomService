@@ -224,13 +224,22 @@ class StudentController extends Controller
                 $student = $curr_student;
             }
 
+            $course = Course::findOrFail($course_id);
             $studentCourse = [
                 'student_id' => $student->id,
-                'course_id' => $course_id,
+                'course_id' => $course->id,
                 'status' => 'enable',
                 'progress' => 0,
             ];
             StudentCourse::firstOrCreate($studentCourse);
+            foreach ($course->lessons as $lesson){
+                $studentLesson = [
+                    'student_id' => $student->id,
+                    'lesson_id' => $lesson->id,
+                    'progress' => 0
+                ];
+                StudentLesson::firstOrCreate($studentLesson);
+            }
         }
 
         return response()->json(['msg' => 'add students success']);

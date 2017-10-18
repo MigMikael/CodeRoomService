@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Course;
 use App\File;
 use App\Resource;
 use App\Student;
+use App\StudentLesson;
 use App\Submission;
 use Carbon\Carbon;
 use App\Lesson;
@@ -108,6 +110,7 @@ class LessonController extends Controller
     public function store(Request $request)
     {
         $course_id = $request->get('course_id');
+        $course = Course::findOrFail($course_id);
         $input = [
             'name' => $request->get('name'),
             'course_id' => $course_id,
@@ -137,7 +140,15 @@ class LessonController extends Controller
         }else{
             $input['guide'] = 'true';
         }
-        Lesson::create($input);
+        $lesson = Lesson::create($input);
+        foreach ($course->students as $student){
+            $studentLesson = [
+                'student_id' => $student->id,
+                'lesson_id' => $lesson->id,
+                'progress' => 0
+            ];
+            StudentLesson::firstOrCreate($studentLesson);
+        }
 
         // Todo fix it
         //$request = $request->create('api/gen_lesson_badge', 'POST', $lesson);
@@ -290,8 +301,8 @@ class LessonController extends Controller
         foreach ($problem->submissions as $submission){
             $student_lesson = Student::where('student_id', $submission->student->id)->first();
             if(sizeof($student_lesson) == 1){
-                $student_id = $submission->student->student_id;
-                $eachFilePath = $path . $student_id . '/';
+                $student = $submission->student;
+                $eachFilePath = $path . $student->student_id . '/';
                 foreach ($submission->submissionFiles as $submissionFile){
                     Storage::put($eachFilePath . $submissionFile->package .'/'. $submissionFile->filename, $submissionFile->code);
                 }

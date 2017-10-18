@@ -137,6 +137,14 @@ class CourseController extends Controller
             ];
 
             StudentCourse::create($student_course);
+            foreach ($course->lessons as $lesson){
+                $studentLesson = [
+                    'student_id' => $student_id,
+                    'lesson_id' => $lesson->id,
+                    'progress' => 0
+                ];
+                StudentLesson::firstOrCreate($studentLesson);
+            }
             return response()->json(['msg' => 'join course success']);
 
         }else{

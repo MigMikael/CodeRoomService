@@ -611,7 +611,7 @@ class ProblemController extends Controller
             if($is_equals){
                 $problem->status = 'show';
             }else{
-                return response()->json(['msg' => 'input and output not equals']);
+                return response()->json(['msg' => 'in and sol not equals']);
             }
         }
         $problem->save();
