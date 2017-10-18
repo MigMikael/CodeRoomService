@@ -272,7 +272,7 @@ class LessonController extends Controller
             });
         })->store('xlsx', $path);
 
-        $exportPath = storage_path() . '/app/' . $filename;
+        $exportPath = storage_path() . '/app/' . $filename . '.xlsx';
         $ex = base64_encode(file_get_contents($exportPath));
 
         return response()->json([
