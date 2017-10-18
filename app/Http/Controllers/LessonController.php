@@ -262,13 +262,15 @@ class LessonController extends Controller
             array_push($data_score, $row);
         }
 
+        $path = storage_path() . '/app/';
+
         $filename = 'score-'.Carbon::now();
         $filename = str_replace(' ', '-', $filename);
         Excel::create($filename, function($excel) use ($data_score) {
             $excel->sheet('sheet1', function($sheet) use ($data_score) {
                 $sheet->fromArray($data_score);
             });
-        })->store('xlsx');
+        })->store('xlsx', $path);
 
         $exportPath = storage_path() . '/app/' . $filename;
         $ex = base64_encode(file_get_contents($exportPath));
