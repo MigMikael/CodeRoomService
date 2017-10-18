@@ -292,13 +292,11 @@ class LessonController extends Controller
         $exportPath = storage_path() . '/app/' . $exportFilename;
         self::zipFile($exportPath, $rootPath);
 
-        header("Content-Type: application/zip");
-        header("Content-Transfer-Encoding: Binary");
-        header("Content-Length:".filesize($exportPath));
-        Log::info('file size '. filesize($exportPath));
-        header("Content-Disposition: attachment; filename=yourfile.zip");
-        readfile($exportPath);
-        exit;
+        $zz = base64_encode(file_get_contents($exportPath));
+
+        return response()->json([
+            'zip' => $zz,
+        ]);
 
         /*ob_end_clean();
         return response()->download($exportPath, $exportFilename,
@@ -330,13 +328,11 @@ class LessonController extends Controller
         $exportPath = storage_path() . '/app/' . $exportFilename;
         self::zipFile($exportPath, $rootPath);
 
-        header("Content-Type: application/zip");
-        header("Content-Transfer-Encoding: Binary");
-        header("Content-Length:".filesize($exportPath));
-        Log::info('file size '. filesize($exportPath));
-        header("Content-Disposition: attachment; filename=yourfile.zip");
-        readfile($exportPath);
-        exit;
+        $zz = base64_encode(file_get_contents($exportPath));
+
+        return response()->json([
+            'zip' => $zz,
+        ]);
 
         /*ob_end_clean();
         return response()->download($exportPath, $exportFilename,
