@@ -618,4 +618,12 @@ class ProblemController extends Controller
 
         return response()->json(['msg' => 'change status complete']);
     }
+
+    public function delete($id)
+    {
+        $problem = Problem::findOrFail($id);
+        $problem->delete();
+
+        return response()->json(['msg' => 'delete problem success']);
+    }
 }

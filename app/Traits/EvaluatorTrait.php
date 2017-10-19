@@ -433,7 +433,7 @@ trait EvaluatorTrait
         }
 
         $client = new Client();
-        $res = $client->request('POST', $evaluator_ip.'/api/student/code', [
+        $res = $client->request('POST', $evaluator_ip.'/api/student/analysis', [
             'json' => [
                 'files' => $data,
             ]
@@ -454,7 +454,7 @@ trait EvaluatorTrait
         array_push($codes, $problemFile->code);
 
         $client = new Client();
-        $res = $client->request('POST', $evaluator_ip.'/api/teacher/required', [
+        $res = $client->request('POST', $evaluator_ip.'/api/teacher/analysis', [
             'json' => [
                 'code' => $codes,
             ]

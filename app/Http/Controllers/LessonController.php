@@ -13,7 +13,6 @@ use App\Lesson;
 use App\Problem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Zipper;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Traits\FileTrait;
 use Log;
@@ -299,7 +298,7 @@ class LessonController extends Controller
         $exportFilename = $problem->name.'.zip';
         $path = $problem->name . '/';
         foreach ($problem->submissions as $submission){
-            $student_lesson = Student::where('student_id', $submission->student->id)->first();
+            $student_lesson = Student::where('id', $submission->student->id)->first();
             if(sizeof($student_lesson) == 1){
                 $student = $submission->student;
                 $eachFilePath = $path . $student->student_id . '/';
