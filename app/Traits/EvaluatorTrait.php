@@ -400,9 +400,10 @@ trait EvaluatorTrait
     public function analyzeSubmitFile2($submission)
     {
         $evaluator_ip = env('EVALUATOR_IP');
+        $subjectName = self::getSubjectName($submission->problem);
         $data = [];
         foreach ($submission->submissionFiles as $submissionFile){
-            $code = $submissionFile->code;
+            /*$code = $submissionFile->code;
             $is_main = false;
             $main = strpos($code, 'main');
             if($main != false){
@@ -413,7 +414,7 @@ trait EvaluatorTrait
                 if($args != false && $args1 != false && $args2 != false){
                     $is_main = true;
                 }
-            }
+            }*/
 
             $package = $submissionFile->package;
             if($package == 'default package'){
@@ -424,10 +425,9 @@ trait EvaluatorTrait
             $fileName = $temps[0];
 
             $dataFile = [
-                'package' => $package,
+                'package' => '/'.$package,
                 'filename' => $fileName,
                 'code' => $submissionFile->code,
-                'is_main' => $is_main
             ];
             array_push($data, $dataFile);
         }
@@ -435,6 +435,8 @@ trait EvaluatorTrait
         $client = new Client();
         $res = $client->request('POST', $evaluator_ip.'/api/student/analysis', [
             'json' => [
+                'subject' => $subjectName,
+                'problem' => $submission->problem->name,
                 'files' => $data,
             ]
         ]);
@@ -446,17 +448,35 @@ trait EvaluatorTrait
         return $json;
     }
 
-    public function analyzeProblemFile($problemFile)
+    public function analyzeProblemFile($problem)
     {
         $evaluator_ip = env('EVALUATOR_IP');
-        $codes = [];
+        $subjectName = self::getSubjectName($problem);
+        $data = [];
 
-        array_push($codes, $problemFile->code);
+        foreach ($problem->problemFiles as $problemFile){
+            $package = $problemFile->package;
+            if($package == 'default package'){
+                $package = '';
+            }
+
+            $temps = explode('.', $problemFile->filename);
+            $fileName = $temps[0];
+
+            $dataFile = [
+                'package' => '/'.$package,
+                'filename' => $fileName,
+                'code' => $problemFile->code,
+            ];
+            array_push($data, $dataFile);
+        }
 
         $client = new Client();
         $res = $client->request('POST', $evaluator_ip.'/api/teacher/analysis', [
             'json' => [
-                'code' => $codes,
+                'subject' => $subjectName,
+                'problem' => $problem->name,
+                'files' => $data,
             ]
         ]);
 
