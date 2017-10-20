@@ -647,8 +647,8 @@ class CourseController extends Controller
                 }
             }else{
                 for ($i = 0; $i < $size; $i++){
-                    $temp['score'] = '';
-                    $temp['error'] = '';
+                    $temp['score'] = '-';
+                    $temp['error'] = '-';
                     array_push($data['output'], $temp);
                 }
             }

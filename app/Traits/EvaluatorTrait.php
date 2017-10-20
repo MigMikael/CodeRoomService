@@ -456,19 +456,21 @@ trait EvaluatorTrait
 
         foreach ($problem->problemFiles as $problemFile){
             $package = $problemFile->package;
-            if($package == 'default package'){
-                $package = '';
+            if($package != 'driver'){
+                if($package == 'default package'){
+                    $package = '';
+                }
+
+                $temps = explode('.', $problemFile->filename);
+                $fileName = $temps[0];
+
+                $dataFile = [
+                    'package' => $package,
+                    'filename' => $fileName,
+                    'code' => $problemFile->code,
+                ];
+                array_push($data, $dataFile);
             }
-
-            $temps = explode('.', $problemFile->filename);
-            $fileName = $temps[0];
-
-            $dataFile = [
-                'package' => $package,
-                'filename' => $fileName,
-                'code' => $problemFile->code,
-            ];
-            array_push($data, $dataFile);
         }
 
         $client = new Client();
