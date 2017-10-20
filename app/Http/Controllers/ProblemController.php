@@ -357,7 +357,7 @@ class ProblemController extends Controller
 
             $class_file = strpos($problemFile->code, 'class '.$filename);
 
-            if($class_file == true && $class['package'] = $problemFile->package){
+            if($class_file == true && $class['package'] = $problemFile->package && $problemFile->package != 'driver'){
                 $im = '';
                 foreach ($class['implements'] as $implement){
                     $im .= $implement['name'];
