@@ -139,6 +139,8 @@ class SubmissionController extends Controller
 
             foreach ($submission->submissionFiles as $submissionFile){
                 self::saveResult($classes, $submissionFile);
+            }
+            foreach ($submission->submissionFiles as $submissionFile){
                 $wrong = self::calStructureScore2($submissionFile);
             }
 
@@ -169,6 +171,7 @@ class SubmissionController extends Controller
         if ($hasTestCase){
             $hasDriver = self::checkDriver($problem);
             $currentVer = self::getCurrentVersion($problem);
+
 
             if(!$hasDriver) {
                 // this submit in problem that not have driver
@@ -542,6 +545,14 @@ class SubmissionController extends Controller
             }
 
             $class_file = strpos($submissionFile->code, 'class ' . $filename);
+
+            Log::info('class_file '.$class_file);
+
+            Log::info('class_package '.$class['package']);
+            Log::info('submit_package '.$submissionFile->package);
+
+            Log::info('strlen class name '.strlen($class['name']));
+            Log::info('strlen file name '. strlen($filename));
 
             if($class_file == true && $class['package'] == $submissionFile->package && strlen($class['name']) == strlen($filename)){
                 $im = '';
