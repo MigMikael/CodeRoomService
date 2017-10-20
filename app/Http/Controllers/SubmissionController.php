@@ -543,7 +543,7 @@ class SubmissionController extends Controller
 
             $class_file = strpos($submissionFile->code, 'class ' . $filename);
 
-            if($class_file == true && $class['package'] == $submissionFile->package){
+            if($class_file == true && $class['package'] == $submissionFile->package && strlen($class['name']) == strlen($filename)){
                 $im = '';
                 foreach ($class['implements'] as $implement){
                     $im .= $implement['name'];
