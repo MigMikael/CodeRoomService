@@ -419,8 +419,6 @@ trait EvaluatorTrait
             $package = $submissionFile->package;
             if($package == 'default package'){
                 $package = '';
-            }else{
-                $package = str_replace('.', '/', $package);
             }
 
             $temps = explode('.', $submissionFile->filename);
@@ -460,8 +458,6 @@ trait EvaluatorTrait
             $package = $problemFile->package;
             if($package == 'default package'){
                 $package = '';
-            }else{
-                $package = str_replace('.', '/', $package);
             }
 
             $temps = explode('.', $problemFile->filename);
