@@ -113,7 +113,6 @@ class ProblemController extends Controller
             }
             return $problem;
         }
-        self::updateLessonProgress($problem->lesson);
         
         return response()->json(['msg' => 'create problem success']);
     }
@@ -626,6 +625,7 @@ class ProblemController extends Controller
             }
         }
         $problem->save();
+        self::updateLessonProgress($problem->lesson);
 
         return response()->json(['msg' => 'change status complete']);
     }

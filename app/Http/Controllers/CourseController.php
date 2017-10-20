@@ -585,6 +585,12 @@ class CourseController extends Controller
     {
         $problem_data = [];
         $lesson = Lesson::findOrFail($lesson_id);
+        $problem = Problem::findOrFail($problem_id);
+        $size = 0;
+        foreach ($problem->problemFiles as $problemFile){
+            $size += $problemFile->outputs->count();
+        }
+
         foreach ($lesson->students as $student){
             $data['code'] = $student->student_id;
             $data['name'] = $student->name;
@@ -639,9 +645,13 @@ class CourseController extends Controller
                         array_push($data['output'], $temp);
                     }
                 }
+            }else{
+                for ($i = 0; $i < $size; $i++){
+                    $temp['score'] = '';
+                    $temp['error'] = '';
+                }
             }
 
-            $problem = Problem::findOrFail($problem_id);
             $problemFiles = ProblemFile::where([
                 ['problem_id', '=', $problem->id],
                 ['package', '!=', 'driver']
