@@ -493,27 +493,29 @@ class ProblemController extends Controller
 
         if($type == 'input'){
             $f = self::storeFile($theFile);
-
+            $problemFile = ProblemFile::where('problem_file_id' ,$request->get('problem_file_id'))->first();
             $input = [
-                'problem_file_id' => $request->get('problem_file_id'),
-                'version' => 1,
+                'problem_file_id' => $problemFile->id,
+                'version' => self::getMaxInputVersion($problemFile) + 1,
                 'filename' => $f->original_name,
                 'content' => self::getFile($f->name)
             ];
-            $input = ProblemInput::create($input);
+            ProblemInput::create($input);
+            self::updateInputVersion($problemFile);
 
             return response()->json(['msg' => 'create input success']);
         }else{
             $f = self::storeFile($theFile);
-
+            $problemFile = ProblemFile::where('problem_file_id' ,$request->get('problem_file_id'))->first();
             $output = [
-                'problem_file_id' => $request->get('problem_file_id'),
-                'version' => 1,
+                'problem_file_id' => $problemFile->id,
+                'version' => self::getMaxOutputVersion($problemFile) + 1,
                 'filename' => $f->original_name,
                 'content' => self::getFile($f->name),
                 'score' => 100.00
             ];
-            $outFile = ProblemOutput::create($output);
+            ProblemOutput::create($output);
+            self::updateOutputVersion($problemFile);
 
             return response()->json(['msg' => 'create output success']);
         }
@@ -531,8 +533,10 @@ class ProblemController extends Controller
             $content = self::getFile($f->name);
             $problem_input->filename = $f->original_name;
             $problem_input->content = $content;
-            $problem_input->version += 1;
+            $problem_input->version = self::getMaxInputVersion($problem_input->problemFile) + 1;
             $problem_input->save();
+
+            self::updateInputVersion($problem_input->problemFile);
 
             return response()->json(['msg' => 'edit input success']);
         }
@@ -553,8 +557,10 @@ class ProblemController extends Controller
             $content = self::getFile($f->name);
             $problem_output->filename = $f->original_name;
             $problem_output->content = $content;
-            $problem_output->version += 1;
+            $problem_output->version = self::getMaxOutputVersion($problem_output->problemFile) + 1;
             $problem_output->save();
+
+            self::updateOutputVersion($problem_output->problemFile);
 
             return response()->json(['msg' => 'edit output success']);
         }
@@ -566,6 +572,9 @@ class ProblemController extends Controller
     public function destroyInput($id)
     {
         $problem_input = ProblemInput::findOrFail($id);
+        $problem_input->version = self::getMaxOutputVersion($problem_input->problemFile) + 1;
+        self::updateInputVersion($problem_input->problemFile);
+
         $problem_input->delete();
 
         return response()->json(['msg' => 'delete input complete']);
@@ -574,6 +583,9 @@ class ProblemController extends Controller
     public function destroyOutput($id)
     {
         $problem_output = ProblemOutput::findOrFail($id);
+        $problem_output->version = self::getMaxOutputVersion($problem_output->problemFile) + 1;
+        self::updateOutputVersion($problem_output->problemFile);
+
         $problem_output->delete();
 
         return response()->json(['msg' => 'delete output complete']);
@@ -639,5 +651,47 @@ class ProblemController extends Controller
         self::updateLessonProgress($lesson);
 
         return response()->json(['msg' => 'delete problem success']);
+    }
+
+    public function getMaxInputVersion($problemFile)
+    {
+        $input = ProblemInput::where('problem_file_id', $problemFile->id)
+            ->first();
+
+        if(sizeof($input) == 1){
+            $max = ProblemInput::where('problem_file_id', $problemFile->id)
+                ->max('version');
+            return $max;
+        }else{
+            return 0;
+        }
+    }
+
+    public function getMaxOutputVersion($problemFile)
+    {
+        $output = ProblemOutput::where('problem_file_id', $problemFile->id)->first();
+        if(sizeof($output) == 1){
+            return $output->version;
+        }else{
+            return 0;
+        }
+    }
+
+    public function updateInputVersion($problemFile)
+    {
+        $maxVer = self::getMaxInputVersion($problemFile);
+        foreach ($problemFile->inputs as $input){
+            $input->version = $maxVer;
+            $input->save();
+        }
+    }
+
+    public function updateOutputVersion($problemFile)
+    {
+        $maxVer = self::getMaxOutputVersion($problemFile);
+        foreach ($problemFile->outputs as $output){
+            $output->version = $maxVer;
+            $output->save();
+        }
     }
 }
