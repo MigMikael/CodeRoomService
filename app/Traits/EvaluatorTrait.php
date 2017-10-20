@@ -425,7 +425,7 @@ trait EvaluatorTrait
             $fileName = $temps[0];
 
             $dataFile = [
-                'package' => '/'.$package,
+                'package' => $package,
                 'filename' => $fileName,
                 'code' => $submissionFile->code,
             ];
