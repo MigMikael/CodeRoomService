@@ -300,9 +300,6 @@ trait EvaluatorTrait
             $package = $submissionFile->package;
             if($package == 'default package'){
                 $package = '';
-            } else {
-                $package = str_replace('.','/', $package);
-                $package .= '/';
             }
 
             $temps = explode('.', $submissionFile->filename);
