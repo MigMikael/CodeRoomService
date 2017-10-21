@@ -286,7 +286,7 @@ class SubmissionController extends Controller
         $submissionFiles = $submission->submissionFiles;
         foreach ($submissionFiles as $submissionFile){
             $problemFile = ProblemFile::where('filename', '=', $submissionFile->filename)->first();
-            //Log::info('##### '. $problemFile->filename);
+
             $problemOutputNum = ProblemInput::where('problem_file_id', '=', $problemFile->id)->count();
 
             if($problemOutputNum > 0){
@@ -308,6 +308,7 @@ class SubmissionController extends Controller
                             'score' => 0,
                             'error' => 'Memory Limit Exceed',
                         ];
+                        array_push($wrong, 'ผลลัพธ์ที่ '.$count.'ผิด');
                     }else{
                         // this is wrong
                         $output = [
@@ -365,6 +366,7 @@ class SubmissionController extends Controller
                                 'score' => 0,
                                 'error' => 'Memory Limit Exceed',
                             ];
+                            array_push($wrong, 'ผลลัพธ์ที่ '.$count.'ผิด');
                         }else{
                             // this is wrong
                             $output = [
