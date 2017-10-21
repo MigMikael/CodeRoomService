@@ -113,7 +113,7 @@ class TeacherController extends Controller
         }
         $teacher->save();
 
-        return response()->json(['msg' => 'edit teacher success']);
+        return $teacher;
     }
 
     public function updateProfile(Request $request)

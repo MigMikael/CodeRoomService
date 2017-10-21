@@ -99,7 +99,11 @@ class ProblemController extends Controller
         if($problem->is_parse == 'true'){
             $classes = self::analyzeProblemFile($problem);
 
-            self::saveResult($classes, $problem->problemFiles);
+            $res = self::saveResult($classes, $problem->problemFiles);
+            if($res == 'analysis error'){
+                Log::info($res);
+                return response()->json(['msg' => $res]);
+            }
 
             foreach ($problem->problemFiles as $problemFile){
                 $problemFile['code'] = '';
@@ -346,6 +350,10 @@ class ProblemController extends Controller
 
     public function saveResult($classes, $problemFiles)
     {
+        if($classes['class'] == null){
+            return 'analysis error';
+        }
+
         foreach ($classes['class'] as $class){
             foreach ($problemFiles as $problemFile){
                 $filename = explode('.', $problemFile->filename);
@@ -365,7 +373,7 @@ class ProblemController extends Controller
                 Log::info('strlen class name '.strlen($class['name']));
                 Log::info('strlen file name '. strlen($filename));
 
-                if($class_file == true && $class['package'] = $problemFile->package && $problemFile->package != 'driver'){
+                if($class_file != false && $class['package'] = $problemFile->package && $problemFile->package != 'driver'){
                     $im = '';
                     foreach ($class['implements'] as $implement){
                         $im .= $implement['name'];
@@ -453,6 +461,7 @@ class ProblemController extends Controller
                 }
             }
         }
+        return 'analysis success';
     }
 
     public function deleteResource($id)
