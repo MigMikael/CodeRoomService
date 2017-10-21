@@ -158,44 +158,44 @@ class ProblemController extends Controller
                 'code' => $code,
             ];
 
-            $problem_file = ProblemFile::create($problem_file);
+            ProblemFile::create($problem_file);
+        }
 
-            $inputPath = $course_name.'/'.$problem->id.'/'. $problem->name. '/testCase/';
-            $inputFiles = self::getFiles($inputPath);
-            foreach ($inputFiles as $inputFile){
-                $temps = explode('/', $inputFile);
-                $fileName = $temps[sizeof($temps) - 1];
-                $folderName = $temps[sizeof($temps) - 2];
-                $folderName = $folderName.'.java';
-                $version = 1;
+        $inputPath = $course_name.'/'.$problem->id.'/'. $problem->name. '/testCase/';
+        $inputFiles = self::getFiles($inputPath);
+        foreach ($inputFiles as $inputFile){
+            $temps = explode('/', $inputFile);
+            $fileName = $temps[sizeof($temps) - 1];
+            $folderName = $temps[sizeof($temps) - 2];
+            $folderName = $folderName.'.java';
+            $version = 1;
 
-                $pro_file = ProblemFile::where('filename', $folderName)->first();
+            $pro_file = ProblemFile::where('filename', $folderName)->first();
 
-                if(sizeof($pro_file) != 1){
-                    Log::info('in sol wrong folder');
-                    return 'in sol wrong folder';
-                }
+            if(sizeof($pro_file) != 1){
+                Log::info('in sol wrong folder');
+                return 'in sol wrong folder';
+            }
 
-                if(strpos($fileName, 'in') != false) {          // This is input file
-                    $problemInput = [
-                        'problem_file_id' => $pro_file->id,
-                        'version' => $version,
-                        'filename' => $fileName,
-                        'content' => self::getFile($inputFile)
-                    ];
-                    ProblemInput::create($problemInput);
-                }
-                else if(strpos($fileName, 'sol') != false) {    //This is output file
-                    $problemOutput = [
-                        'problem_file_id' => $pro_file->id,
-                        'version' => $version,
-                        'filename' => $fileName,
-                        'content' => self::getFile($inputFile),
-                        'score' => 100
-                    ];
-                    $output = ProblemOutput::create($problemOutput);
-                    $problem->score += $output->score;
-                }
+            if(strpos($fileName, 'in') != false) {          // This is input file
+                $problemInput = [
+                    'problem_file_id' => $pro_file->id,
+                    'version' => $version,
+                    'filename' => $fileName,
+                    'content' => self::getFile($inputFile)
+                ];
+                ProblemInput::create($problemInput);
+            }
+            else if(strpos($fileName, 'sol') != false) {    //This is output file
+                $problemOutput = [
+                    'problem_file_id' => $pro_file->id,
+                    'version' => $version,
+                    'filename' => $fileName,
+                    'content' => self::getFile($inputFile),
+                    'score' => 100
+                ];
+                $output = ProblemOutput::create($problemOutput);
+                $problem->score += $output->score;
             }
         }
         $problem->save();
