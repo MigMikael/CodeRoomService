@@ -356,19 +356,11 @@ class ProblemController extends Controller
 
         foreach ($classes['class'] as $class){
             foreach ($problemFiles as $problemFile){
-                $filename = explode('.', $problemFile->filename);
-                $filename = $filename[0];
-
                 if($class['package'] == 'default'){
                     $class['package'] = 'default package';
                 }
 
-                $class_file = strpos($problemFile->code, 'class '.$filename. ' ');
-
-                Log::info('class_pos '.$class_file);
-
-                Log::info('class_package '.$class['package']);
-                Log::info('submit_package '.$problemFile->package);
+                $class_file = strpos($problemFile->code, 'class '.$class['name']. ' ');
 
                 /*Log::info('strlen class name '.strlen($class['name']));
                 Log::info('strlen file name '. strlen($filename));*/

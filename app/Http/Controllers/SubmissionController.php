@@ -544,7 +544,7 @@ class SubmissionController extends Controller
                     $class['package'] = 'default package';
                 }
 
-                $class_file = strpos($submissionFile->code, 'class ' . $filename . ' ');
+                $class_file = strpos($submissionFile->code, 'class ' . $class['name'] . ' ');
 
                 Log::info('class_file '.$class_file);
 
