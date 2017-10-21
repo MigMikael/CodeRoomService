@@ -112,6 +112,9 @@ class TeacherController extends Controller
             $teacher->image = $image->id;
         }
         $teacher->save();
+        $teacher->makeVisible('username');
+        $teacher->makeVisible('password');
+        $teacher->makeVisible('token');
 
         return $teacher;
     }
