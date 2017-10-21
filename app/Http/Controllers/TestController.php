@@ -454,4 +454,16 @@ class TestController extends Controller
         return $course->lessons->count();
     }
 
+    public function teststrpos()
+    {
+        $str = 'public class Runners { @Required static int round;';
+        $pos = strpos($str, 'class Runner ');
+
+        if($pos == false){
+            return 'false';
+        }else{
+            return $pos;
+        }
+    }
+
 }

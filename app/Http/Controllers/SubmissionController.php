@@ -554,7 +554,7 @@ class SubmissionController extends Controller
                 Log::info('strlen class name '.strlen($class['name']));
                 Log::info('strlen file name '. strlen($filename));
 
-                if($class_file == true && $class['package'] == $submissionFile->package && strlen($class['name']) == strlen($filename)){
+                if($class_file == true && $class['package'] == $submissionFile->package){
                     $im = '';
                     foreach ($class['implements'] as $implement){
                         $im .= $implement['name'];
