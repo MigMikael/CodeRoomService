@@ -190,7 +190,7 @@ class SubmissionController extends Controller
 
                 // send Student Code to Evaluator
                 $scores = self::evaluateFile($submission);
-                self::saveScore($scores, $submission);
+                self::saveScore($scores, $submission, $wrong);
 
             }else{
                 $data = self::checkInputVersion($problem, $hasDriver);
@@ -205,7 +205,7 @@ class SubmissionController extends Controller
 
                 self::sendDriver($problem);
                 $scores = self::evaluateFile2($submission);
-                self::saveScore2($scores, $submission);
+                self::saveScore2($scores, $submission, $wrong);
             }
         }
         if(sizeof($wrong) > 0){
@@ -281,52 +281,58 @@ class SubmissionController extends Controller
         return true;
     }
 
-    public function saveScore($scores, $submission)
+    public function saveScore($scores, $submission, $wrong)
     {
         $submissionFiles = $submission->submissionFiles;
-        $isAccept = true;
         foreach ($submissionFiles as $submissionFile){
             $problemFile = ProblemFile::where('filename', '=', $submissionFile->filename)->first();
             //Log::info('##### '. $problemFile->filename);
             $problemOutputNum = ProblemInput::where('problem_file_id', '=', $problemFile->id)->count();
 
             if($problemOutputNum > 0){
+                $count = 1;
                 foreach ($scores as $score){
-                    if($score['score'] != '100.000000'){
-                        $isAccept = false;
-                        $output = [
-                            'submission_file_id' => $submissionFile->id,
-                            'content' => '',
-                            'score' => 0,
-                            'error' => $score['score'],
-                        ];
-                    }else{
+                    if($score['score'] == '100.000000'){
+                        // this is correct
                         $output = [
                             'submission_file_id' => $submissionFile->id,
                             'content' => '',
                             'score' => $score['score'],
                             'error' => '',
                         ];
+                    }elseif ($score['score'] == 'Exited with error status 1'){
+                        // this is time limit exceed
+                        $output = [
+                            'submission_file_id' => $submissionFile->id,
+                            'content' => '',
+                            'score' => 0,
+                            'error' => 'Memory Limit Exceed',
+                        ];
+                    }else{
+                        // this is wrong
+                        $output = [
+                            'submission_file_id' => $submissionFile->id,
+                            'content' => '',
+                            'score' => 0,
+                            'error' => $score['score'],
+                        ];
+                        array_push($wrong, 'ผลลัพธ์ที่ '.$count.'ผิด');
                     }
                     $o = SubmissionOutput::create($output);
                     $submission->score += $o->score;
+                    $count++;
                 }
             }
-        }
-        if ($isAccept == true){
-            $submission->is_accept = 'true';
-        }else{
-            $submission->is_accept = 'false';
         }
         $submission->save();
     }
 
-    public function saveScore2($scores, $submission)
+    public function saveScore2($scores, $submission, $wrong)
     {
         $problem = $submission->problem;
         $problemFiles = $problem->problemFiles;
 
-        $isAccept = true;
+        $count = 0;
         foreach ($problemFiles as $problemFile){
             if($problemFile->package == 'driver'){
                 $submissionFile = [
@@ -361,24 +367,20 @@ class SubmissionController extends Controller
                             ];
                         }else{
                             // this is wrong
-                            $isAccept = false;
                             $output = [
                                 'submission_file_id' => $submissionFile->id,
                                 'content' => '',
                                 'score' => 0,
                                 'error' => $score['score'],
                             ];
+                            array_push($wrong, 'ผลลัพธ์ที่ '.$count.'ผิด');
                         }
                         $o = SubmissionOutput::create($output);
                         $submission->score += $o->score;
+                        $count++;
                     }
                 }
             }
-        }
-        if ($isAccept == true){
-            $submission->is_accept = 'true';
-        }else{
-            $submission->is_accept = 'false';
         }
         $submission->save();
     }

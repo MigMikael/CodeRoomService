@@ -596,7 +596,7 @@ class ProblemController extends Controller
     public function destroyInput($id)
     {
         $problem_input = ProblemInput::findOrFail($id);
-        $problem_input->version = self::getMaxOutputVersion($problem_input->problemFile) + 1;
+        $problem_input->version = self::getMaxInputVersion($problem_input->problemFile) + 1;
         self::updateInputVersion($problem_input->problemFile);
 
         $problem_input->delete();
@@ -695,7 +695,9 @@ class ProblemController extends Controller
     {
         $output = ProblemOutput::where('problem_file_id', $problemFile->id)->first();
         if(sizeof($output) == 1){
-            return $output->version;
+            $max = ProblemInput::where('problem_file_id', $problemFile->id)
+                ->max('version');
+            return $max;
         }else{
             return 0;
         }
