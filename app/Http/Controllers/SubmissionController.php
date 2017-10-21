@@ -137,7 +137,11 @@ class SubmissionController extends Controller
             Log::info('is_parse : true');
             $classes = self::analyzeSubmitFile2($submission);
 
-            self::saveResult($classes, $submission->submissionFiles);
+            $res = self::saveResult($classes, $submission->submissionFiles);
+            if($res == 'analysis error'){
+                Log::info($res);
+                return response()->json(['msg' => $res]);
+            }
 
             foreach ($submission->submissionFiles as $submissionFile){
                 $wrong = self::calStructureScore2($submissionFile);
@@ -535,6 +539,10 @@ class SubmissionController extends Controller
 
     public function saveResult($classes, $submissionFiles)
     {
+        if($classes['class'] == null){
+            return 'analysis error';
+        }
+
         foreach ($classes['class'] as $class){
             foreach ($submissionFiles as $submissionFile){
                 $filename = explode('.', $submissionFile->filename);
@@ -637,6 +645,8 @@ class SubmissionController extends Controller
                 }
             }
         }
+
+        return 'analysis success';
     }
 
     public function calStructureScore($submissionFile)

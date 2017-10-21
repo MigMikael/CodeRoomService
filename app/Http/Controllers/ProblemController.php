@@ -93,7 +93,11 @@ class ProblemController extends Controller
         $problem->question = $question_file->id;
         $problem->save();
 
-        self::storeProblemFile($problem);
+        $res = self::storeProblemFile($problem);
+        if($res != 'success'){
+            return response()->json(['msg' => $res]);
+        }
+
         self::storeResources($problem);
 
         if($problem->is_parse == 'true'){
@@ -161,11 +165,20 @@ class ProblemController extends Controller
             foreach ($inputFiles as $inputFile){
                 $temps = explode('/', $inputFile);
                 $fileName = $temps[sizeof($temps) - 1];
+                $folderName = $temps[sizeof($temps) - 2];
+                $folderName = $folderName.'.java';
                 $version = 1;
+
+                $pro_file = ProblemFile::where('filename', $folderName)->first();
+
+                if(sizeof($pro_file) != 1){
+                    Log::info('in sol wrong folder');
+                    return 'in sol wrong folder';
+                }
 
                 if(strpos($fileName, 'in') != false) {          // This is input file
                     $problemInput = [
-                        'problem_file_id' => $problem_file->id,
+                        'problem_file_id' => $pro_file->id,
                         'version' => $version,
                         'filename' => $fileName,
                         'content' => self::getFile($inputFile)
@@ -174,7 +187,7 @@ class ProblemController extends Controller
                 }
                 else if(strpos($fileName, 'sol') != false) {    //This is output file
                     $problemOutput = [
-                        'problem_file_id' => $problem_file->id,
+                        'problem_file_id' => $pro_file->id,
                         'version' => $version,
                         'filename' => $fileName,
                         'content' => self::getFile($inputFile),
@@ -186,6 +199,7 @@ class ProblemController extends Controller
             }
         }
         $problem->save();
+        return 'success';
     }
 
     public function storeResources($problem)
