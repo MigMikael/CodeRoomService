@@ -28,6 +28,9 @@ use Log;
 class SubmissionController extends Controller
 {
     use FileTrait, EvaluatorTrait, DatabaseTrait;
+
+    public $wrong = [];
+
     public function store(Request $request)
     {
         $student_id = $request->get('student_id');
@@ -129,10 +132,8 @@ class SubmissionController extends Controller
             return response()->json(['msg' => 'submit file not found']);
         }
 
-        $wrong = [];
         $problem = $submission->problem;
-        #$lesson = $problem->lesson;
-        //array_push($wrong, 'guide '.$lesson->guide);
+
         if ($problem->is_parse == 'true'){
             Log::info('is_parse : true');
             $classes = self::analyzeSubmitFile2($submission);
@@ -144,7 +145,7 @@ class SubmissionController extends Controller
             }
 
             foreach ($submission->submissionFiles as $submissionFile){
-                $wrong = self::calStructureScore2($submissionFile);
+                self::calStructureScore2($submissionFile);
             }
 
             $results_classname = [];
@@ -166,7 +167,7 @@ class SubmissionController extends Controller
             $class_diffs = array_diff($problemAnalysis_classname, $results_classname);
             Log::info(print_r($class_diffs, true));
             foreach ($class_diffs as $diff){
-                array_push($wrong, 'ไม่มีคลาส '.$diff);
+                array_push($this->wrong, 'ไม่มีคลาส '.$diff);
             }
         }
 
@@ -190,7 +191,7 @@ class SubmissionController extends Controller
 
                 // send Student Code to Evaluator
                 $scores = self::evaluateFile($submission);
-                self::saveScore($scores, $submission, $wrong);
+                self::saveScore($scores, $submission);
 
             }else{
                 $data = self::checkInputVersion($problem, $hasDriver);
@@ -205,16 +206,16 @@ class SubmissionController extends Controller
 
                 self::sendDriver($problem);
                 $scores = self::evaluateFile2($submission);
-                self::saveScore2($scores, $submission, $wrong);
+                self::saveScore2($scores, $submission);
             }
         }
-        if(sizeof($wrong) > 0){
+        if(sizeof($this->wrong) > 0){
             $submission->is_accept = 'false';
             $submission->save();
         }
         self::updateStudentProgress($submission);
 
-        $submission['wrong'] = $wrong;
+        $submission['wrong'] = $this->wrong;
         return $submission;
 
         //return response()->json(['msg' => 'submit success']);
@@ -281,7 +282,7 @@ class SubmissionController extends Controller
         return true;
     }
 
-    public function saveScore($scores, $submission, $wrong)
+    public function saveScore($scores, $submission)
     {
         $submissionFiles = $submission->submissionFiles;
         foreach ($submissionFiles as $submissionFile){
@@ -308,7 +309,7 @@ class SubmissionController extends Controller
                             'score' => 0,
                             'error' => 'Memory Limit Exceed',
                         ];
-                        array_push($wrong, 'ผลลัพธ์ที่ '.$count.'ผิด');
+                        array_push($this->wrong, 'ผลลัพธ์ที่ '.$count.' ผิด');
                     }else{
                         // this is wrong
                         $output = [
@@ -317,7 +318,7 @@ class SubmissionController extends Controller
                             'score' => 0,
                             'error' => $score['score'],
                         ];
-                        array_push($wrong, 'ผลลัพธ์ที่ '.$count.'ผิด');
+                        array_push($this->wrong, 'ผลลัพธ์ที่ '.$count.' ผิด');
                     }
                     $o = SubmissionOutput::create($output);
                     $submission->score += $o->score;
@@ -328,7 +329,7 @@ class SubmissionController extends Controller
         $submission->save();
     }
 
-    public function saveScore2($scores, $submission, $wrong)
+    public function saveScore2($scores, $submission)
     {
         $problem = $submission->problem;
         $problemFiles = $problem->problemFiles;
@@ -366,7 +367,7 @@ class SubmissionController extends Controller
                                 'score' => 0,
                                 'error' => 'Memory Limit Exceed',
                             ];
-                            array_push($wrong, 'ผลลัพธ์ที่ '.$count.'ผิด');
+                            array_push($this->wrong, 'ผลลัพธ์ที่ '.$count.' ผิด');
                         }else{
                             // this is wrong
                             $output = [
@@ -375,7 +376,7 @@ class SubmissionController extends Controller
                                 'score' => 0,
                                 'error' => $score['score'],
                             ];
-                            array_push($wrong, 'ผลลัพธ์ที่ '.$count.'ผิด');
+                            array_push($this->wrong, 'ผลลัพธ์ที่ '.$count.' ผิด');
                         }
                         $o = SubmissionOutput::create($output);
                         $submission->score += $o->score;
@@ -657,7 +658,6 @@ class SubmissionController extends Controller
     {
         $submission = $submissionFile->submission;
         $problem = $submission->problem;
-        $wrong = [];
 
         foreach ($submissionFile->results as $result){
             $ps = ProblemAnalysis::where('class', '=', $result->class)->get();
@@ -676,28 +676,28 @@ class SubmissionController extends Controller
                     $package_score = $problemAnalysis->score->package;
                 }else{
                     $package_score = 0;
-                    array_push($wrong, $result->class.' มี package '.$result->package . ' ไม่ตรง');
+                    array_push($this->wrong, $result->class.' มี package '.$result->package . ' ไม่ตรง');
                 }
 
                 if($result->enclose == $problemAnalysis->enclose){
                     $enclose_score = $problemAnalysis->score->enclose;
                 }else{
                     $enclose_score = 0;
-                    array_push($wrong, $result->class.' มี enclose '.$result->enclose . ' ไม่ตรง');
+                    array_push($this->wrong, $result->class.' มี enclose '.$result->enclose . ' ไม่ตรง');
                 }
 
                 if($result->extends == $problemAnalysis->extends){
                     $extends_score = $problemAnalysis->score->extends;
                 }else{
                     $extends_score = 0;
-                    array_push($wrong, $result->class.' มี extends '.$result->extends . ' ไม่ตรง');
+                    array_push($this->wrong, $result->class.' มี extends '.$result->extends . ' ไม่ตรง');
                 }
 
                 if($result->implements == $problemAnalysis->implements){
                     $implements_score = $problemAnalysis->score->extends;
                 }else{
                     $implements_score = 0;
-                    array_push($wrong, $result->class.' มี implements '.$result->implements . ' ไม่ตรง');
+                    array_push($this->wrong, $result->class.' มี implements '.$result->implements . ' ไม่ตรง');
                 }
             }else{
                 $class_score = 0;
@@ -757,7 +757,7 @@ class SubmissionController extends Controller
                     $attribute->score = $prob_attr->score;
                 }else{
                     $attribute->score = 0;
-                    array_push($wrong, $result->class.' มี attribute '.$attribute->name . ' ไม่ตรง');
+                    array_push($this->wrong, $result->class.' มี attribute '.$attribute->name . ' ไม่ตรง');
                 }
                 $attribute->save();
                 $submission->score += $attribute->score;
@@ -809,7 +809,7 @@ class SubmissionController extends Controller
                     $constructor->score = $prob_con->score;
                 }else{
                     $constructor->score = 0;
-                    array_push($wrong, $result->class.' มี constructor '.$constructor->name . ' ไม่ตรง');
+                    array_push($this->wrong, $result->class.' มี constructor '.$constructor->name . ' ไม่ตรง');
 
                 }
                 $constructor->save();
@@ -855,21 +855,19 @@ class SubmissionController extends Controller
                     $method->score = $prob_me->score;
                 }else{
                     $method->score = 0;
-                    array_push($wrong, $result->class.' มี method '.$method->name . ' ไม่ตรง');
+                    array_push($this->wrong, $result->class.' มี method '.$method->name . ' ไม่ตรง');
                 }
                 $method->save();
                 $submission->score += $method->score;
                 //Log::info('Method IS CORRECT '. $is_correct);
             }
         }
-        return $wrong;
     }
 
     public function calStructureScore2($submissionFile)
     {
         $submission = $submissionFile->submission;
         $problem = $submission->problem;
-        $wrong = [];
 
         foreach ($problem->problemFiles as $problemFile){
             $problem_analysis = $problemFile->problemAnalysis;
@@ -891,28 +889,28 @@ class SubmissionController extends Controller
                         $package_score = $analysis->score->package;
                     }else{
                         $package_score = 0;
-                        array_push($wrong, $result->class.' มี package '.$result->package . ' ไม่ตรง');
+                        array_push($this->wrong, $result->class.' มี package '.$result->package . ' ไม่ตรง');
                     }
 
                     if($result->enclose == $analysis->enclose){
                         $enclose_score = $analysis->score->enclose;
                     }else{
                         $enclose_score = 0;
-                        array_push($wrong, $result->class.' มี enclose '.$result->enclose . ' ไม่ตรง');
+                        array_push($this->wrong, $result->class.' มี enclose '.$result->enclose . ' ไม่ตรง');
                     }
 
                     if($result->extends == $analysis->extends){
                         $extends_score = $analysis->score->extends;
                     }else{
                         $extends_score = 0;
-                        array_push($wrong, $result->class.' มี extends '.$result->extends . ' ไม่ตรง');
+                        array_push($this->wrong, $result->class.' มี extends '.$result->extends . ' ไม่ตรง');
                     }
 
                     if($result->implements == $analysis->implements){
                         $implements_score = $analysis->score->extends;
                     }else{
                         $implements_score = 0;
-                        array_push($wrong, $result->class.' มี implements '.$result->implements . ' ไม่ตรง');
+                        array_push($this->wrong, $result->class.' มี implements '.$result->implements . ' ไม่ตรง');
                     }
                 }else{
                     $class_score = 0;
@@ -974,7 +972,7 @@ class SubmissionController extends Controller
                         $result_attr->score = $attribute->score;
                     }else{
                         $result_attr->score = 0;
-                        array_push($wrong, $result->class.' มี attribute '.$result_attr->name . ' ไม่ตรง');
+                        array_push($this->wrong, $result->class.' มี attribute '.$result_attr->name . ' ไม่ตรง');
                     }
                     $result_attr->save();
                     $submission->score += $result_attr->score;
@@ -1026,7 +1024,7 @@ class SubmissionController extends Controller
                         $result_con->score = $constructor->score;
                     }else{
                         $result_con->score = 0;
-                        array_push($wrong, $result->class.' มี constructor '.$result_con->name . ' ไม่ตรง');
+                        array_push($this->wrong, $result->class.' มี constructor '.$result_con->name . ' ไม่ตรง');
                     }
                     $result_con->save();
                     $submission->score += $result_con->score;
@@ -1071,7 +1069,7 @@ class SubmissionController extends Controller
                         $result_me->score = $method->score;
                     }else{
                         $result_me->score = 0;
-                        array_push($wrong, $result->class.' มี method '.$method->name . ' ไม่ตรง');
+                        array_push($this->wrong, $result->class.' มี method '.$method->name . ' ไม่ตรง');
                     }
                     $result_me->save();
                     $submission->score += $result_me->score;
@@ -1079,7 +1077,5 @@ class SubmissionController extends Controller
                 }
             }
         }
-
-        return $wrong;
     }
 }
