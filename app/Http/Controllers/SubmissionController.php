@@ -481,20 +481,22 @@ class SubmissionController extends Controller
 
                 foreach ($submissionFile->results as $result){
                     $result_score = ResultScore::where('result_id', $result->id)->first();
-                    $score['class'] += $result_score->class;
-                    $score['package'] += $result_score->package;
-                    $score['enclose'] += $result_score->enclose;
-                    $score['extends'] += $result_score->extends;
-                    $score['implements'] += $result_score->implements;
+                    if(sizeof($result_score) == 1){
+                        $score['class'] += $result_score->class;
+                        $score['package'] += $result_score->package;
+                        $score['enclose'] += $result_score->enclose;
+                        $score['extends'] += $result_score->extends;
+                        $score['implements'] += $result_score->implements;
 
-                    foreach ($result->attributes as $attribute){
-                        $score['attribute'] += $attribute->score;
-                    }
-                    foreach ($result->constructors as $constructor){
-                        $score['constructor'] += $constructor->score;
-                    }
-                    foreach ($result->methods as $method){
-                        $score['method'] += $method->score;
+                        foreach ($result->attributes as $attribute){
+                            $score['attribute'] += $attribute->score;
+                        }
+                        foreach ($result->constructors as $constructor){
+                            $score['constructor'] += $constructor->score;
+                        }
+                        foreach ($result->methods as $method){
+                            $score['method'] += $method->score;
+                        }
                     }
                 }
             }

@@ -597,6 +597,7 @@ class ProblemController extends Controller
     {
         $problem_input = ProblemInput::findOrFail($id);
         $problem_input->version = self::getMaxInputVersion($problem_input->problemFile) + 1;
+        $problem_input->save();
         self::updateInputVersion($problem_input->problemFile);
 
         $problem_input->delete();
@@ -608,6 +609,7 @@ class ProblemController extends Controller
     {
         $problem_output = ProblemOutput::findOrFail($id);
         $problem_output->version = self::getMaxOutputVersion($problem_output->problemFile) + 1;
+        $problem_output->save();
         self::updateOutputVersion($problem_output->problemFile);
 
         $problem_output->delete();

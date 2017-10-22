@@ -23,6 +23,7 @@ use App\ResultScore;
 use App\TeacherCourse;
 use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
+use App\File;
 use Storage;
 use Log;
 
@@ -69,6 +70,10 @@ class CourseController extends Controller
 
         $course->name = $request->get('name');
         if($request->hasFile('image')){
+            $image = File::findOrFail($course->image);
+            self::deleteFile($image);
+            $image->delete();
+
             $image = self::storeImage($request->file('image'));
             $course->image = $image->id;
         }
