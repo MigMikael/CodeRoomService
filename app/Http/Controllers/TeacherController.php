@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\File;
 use App\Helper\TokenGenerate;
+use App\StudentLesson;
 use App\Teacher;
 use App\Traits\FileTrait;
 use Illuminate\Http\Request;
@@ -61,8 +62,13 @@ class TeacherController extends Controller
         $name = $request->get('name');
         $email = $request->get('email');
 
-        $id = Teacher::count() + 1;
-        $image = self::genImage($id);
+
+        if($request->hasFile('image')){
+            $image = self::storeImage($request->file('image'));
+        }else{
+            return response()->json(['msg' => 'image not found']);
+        }
+
         $teacher = [
             'name' => $name,
             'email' => $email,
@@ -100,7 +106,13 @@ class TeacherController extends Controller
         $teacher->name = $request->get('name');
         $teacher->email = $request->get('email');
         $teacher->username = $request->get('username');
-        $teacher->password = $request->get('password');
+        $teacher->password = password_hash($request->get('password'), PASSWORD_DEFAULT);
+
+        $student = Student::where('student_id', $teacher->id)->first();
+        $student->name = $teacher->name;
+        $student->email = $teacher->email;
+        $student->username = $teacher->username;
+        $student->password = $teacher->password;
 
         if ($request->hasFile('image')){
             $image = File::findOrFail($teacher->image);
@@ -112,6 +124,7 @@ class TeacherController extends Controller
             $teacher->image = $image->id;
         }
         $teacher->save();
+        $student->save();
         $teacher->makeVisible('username');
         $teacher->makeVisible('password');
         $teacher->makeVisible('token');

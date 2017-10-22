@@ -39,28 +39,32 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
-        $image = self::storeImage($request->file('image'));
-        $course = [
-            'name' => $request->get('name'),
-            'color' => $request->get('color'),
-            'token' => (new TokenGenerate())->generate(6),
-            'image' => $image->id,
-            'status' => 'enable',
-            'mode' => 'normal',
-        ];
-        $course = Course::create($course);
-
-        $teachers = $request->get('teachers');
-        foreach ($teachers as $teacher){
-            $teacher_course = [
-                'teacher_id' => $teacher['id'],
-                'course_id' => $course->id,
-                'status' => 'enable'
+        if($request->hasFile('image')){
+            $image = self::storeImage($request->file('image'));
+            $course = [
+                'name' => $request->get('name'),
+                'color' => $request->get('color'),
+                'token' => (new TokenGenerate())->generate(6),
+                'image' => $image->id,
+                'status' => 'enable',
+                'mode' => 'normal',
             ];
-            TeacherCourse::firstOrCreate($teacher_course);
-        }
+            $course = Course::create($course);
 
-        return response()->json(['msg' => 'create course success']);
+            $teachers = $request->get('teachers');
+            foreach ($teachers as $teacher){
+                $teacher_course = [
+                    'teacher_id' => $teacher['id'],
+                    'course_id' => $course->id,
+                    'status' => 'enable'
+                ];
+                TeacherCourse::firstOrCreate($teacher_course);
+            }
+            return response()->json(['msg' => 'create course success']);
+
+        }else{
+            return response()->json(['msg' => 'image not found']);
+        }
     }
 
     public function update(Request $request)
