@@ -309,7 +309,7 @@ class SubmissionController extends Controller
                             'score' => 0,
                             'error' => 'Memory Limit Exceed',
                         ];
-                        array_push($this->wrong, 'ผลลัพธ์ที่ '.$count.' ผิด');
+                        array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
                     }else{
                         // this is wrong
                         $output = [
@@ -318,7 +318,7 @@ class SubmissionController extends Controller
                             'score' => 0,
                             'error' => $score['score'],
                         ];
-                        array_push($this->wrong, 'ผลลัพธ์ที่ '.$count.' ผิด');
+                        array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
                     }
                     $o = SubmissionOutput::create($output);
                     $submission->score += $o->score;
@@ -334,7 +334,7 @@ class SubmissionController extends Controller
         $problem = $submission->problem;
         $problemFiles = $problem->problemFiles;
 
-        $count = 0;
+        $count = 1;
         foreach ($problemFiles as $problemFile){
             if($problemFile->package == 'driver'){
                 $submissionFile = [
@@ -367,7 +367,7 @@ class SubmissionController extends Controller
                                 'score' => 0,
                                 'error' => 'Memory Limit Exceed',
                             ];
-                            array_push($this->wrong, 'ผลลัพธ์ที่ '.$count.' ผิด');
+                            array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
                         }else{
                             // this is wrong
                             $output = [
@@ -376,7 +376,7 @@ class SubmissionController extends Controller
                                 'score' => 0,
                                 'error' => $score['score'],
                             ];
-                            array_push($this->wrong, 'ผลลัพธ์ที่ '.$count.' ผิด');
+                            array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
                         }
                         $o = SubmissionOutput::create($output);
                         $submission->score += $o->score;
