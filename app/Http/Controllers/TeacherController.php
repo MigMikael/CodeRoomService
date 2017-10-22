@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
 use App\Student;
 use App\Course;
+use Log;
 
 class TeacherController extends Controller
 {
@@ -66,7 +67,8 @@ class TeacherController extends Controller
         if($request->hasFile('image')){
             $image = self::storeImage($request->file('image'));
         }else{
-            return response()->json(['msg' => 'image not found']);
+            Log::info('teacher image not found');
+            return response()->json(['msg' => 'teacher image not found']);
         }
 
         $teacher = [
@@ -106,13 +108,11 @@ class TeacherController extends Controller
         $teacher->name = $request->get('name');
         $teacher->email = $request->get('email');
         $teacher->username = $request->get('username');
-        $teacher->password = password_hash($request->get('password'), PASSWORD_DEFAULT);
 
         $student = Student::where('student_id', $teacher->id)->first();
         $student->name = $teacher->name;
         $student->email = $teacher->email;
         $student->username = $teacher->username;
-        $student->password = $teacher->password;
 
         if ($request->hasFile('image')){
             $image = File::findOrFail($teacher->image);
@@ -122,6 +122,7 @@ class TeacherController extends Controller
             $image = $request->file('image');
             $image = self::storeImage($image);
             $teacher->image = $image->id;
+            $student->image = $teacher->image;
         }
         $teacher->save();
         $student->save();

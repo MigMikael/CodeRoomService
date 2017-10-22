@@ -63,7 +63,8 @@ class CourseController extends Controller
             return response()->json(['msg' => 'create course success']);
 
         }else{
-            return response()->json(['msg' => 'image not found']);
+            Log::info('course image not found');
+            return response()->json(['msg' => 'course image not found']);
         }
     }
 
