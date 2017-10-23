@@ -43,7 +43,7 @@ class CourseController extends Controller
             $image = self::storeImage($request->file('image'));
             $course = [
                 'name' => $request->get('name'),
-                'color' => $request->get('color'),
+                'color' => '244:67:54',
                 'token' => (new TokenGenerate())->generate(6),
                 'image' => $image->id,
                 'status' => 'enable',
