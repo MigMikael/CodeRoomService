@@ -17,7 +17,7 @@ class CreateProblemTable extends Migration
             $table->increments('id');
             $table->integer('lesson_id')->unsigned();
             $table->string('name');
-            $table->string('description');
+            $table->string('description')->nullable();
             $table->string('evaluator');
             $table->integer('order');
             $table->integer('question')->nullable();

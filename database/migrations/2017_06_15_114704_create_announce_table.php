@@ -18,7 +18,7 @@ class CreateAnnounceTable extends Migration
             $table->increments('id');
             $table->integer('course_id')->unsigned();
             $table->string('title');
-            $table->text('content');
+            $table->text('content')->nullable();
             $table->integer('priority');
             $table->string('show')->default('false');
             $table->timestamps();

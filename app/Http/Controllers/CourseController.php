@@ -111,7 +111,15 @@ class CourseController extends Controller
         }
         foreach ($course->students as $student){
             $student->pivot;
-            $student->lessons;
+            foreach ($student->lessons as $lesson){
+                if($lesson->course_id == $course->id){
+                    $studentLesson = StudentLesson::where([
+                        ['lesson_id', $lesson->id],
+                        ['student_id', $student->id]
+                    ]);
+                }
+            }
+            $student['lesson'];
         }
         foreach ($course->teachers as $teacher){
             $teacher->courses;
@@ -546,7 +554,9 @@ class CourseController extends Controller
             }
 
             foreach ($student->lessons as $lesson){
-                $data['lesson_progress'][$lesson->name]['progress'] = $lesson->pivot->progress;;
+                if($data['lesson_progress'][$lesson->name]['progress'] == 0){
+                    $data['lesson_progress'][$lesson->name]['progress'] = $lesson->pivot->progress;
+                }
                 /*$temp['name'] = $lesson->name;
                 $temp['progress'] = $lesson->pivot->progress;
                 array_push($data['lesson_progress'], $temp);*/

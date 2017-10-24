@@ -188,7 +188,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::post('problem/resource/edit', 'ResourceController@update');
         #
-        Route::get('problem/resource/{id}/delete', 'ResourceController@destroy');
+        Route::delete('problem/resource/{id}/delete', 'ResourceController@destroy');
         #
         Route::get('problem/resource/{id}/visible', 'ResourceController@changeStatus');
 

@@ -38,8 +38,8 @@ class ResourceController extends Controller
     public function update(Request $request)
     {
         $id = $request->get('id');
-        $resource = Resource::findOrFail($id);
-        $file = File::findOrFail($resource->file_id);
+        $file = File::findOrFail($id);
+        $resource = Resource::findOrFail($file->id);
 
         if($request->hasFile('file')){
             $newFile = $request->file('file');

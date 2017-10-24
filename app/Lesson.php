@@ -49,4 +49,9 @@ class Lesson extends Model
     {
         return $query->where('mode', '=', 'test');
     }
+
+    public function scopeInCourse($query, $course_id)
+    {
+        return $query->where('course_id', '=', $course_id);
+    }
 }
