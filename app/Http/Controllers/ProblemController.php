@@ -517,7 +517,9 @@ class ProblemController extends Controller
 
         if($type == 'input'){
             $f = self::storeFile($theFile);
-            $problemFile = ProblemFile::where('problem_file_id' ,$request->get('problem_file_id'))->first();
+            $problemFile_id = $request->get('problem_file_id');
+
+            $problemFile = ProblemFile::findOrFail($problemFile_id);
             $input = [
                 'problem_file_id' => $problemFile->id,
                 'version' => self::getMaxInputVersion($problemFile) + 1,
@@ -530,7 +532,9 @@ class ProblemController extends Controller
             return response()->json(['msg' => 'create input success']);
         }else{
             $f = self::storeFile($theFile);
-            $problemFile = ProblemFile::where('problem_file_id' ,$request->get('problem_file_id'))->first();
+            $problemFile_id = $request->get('problem_file_id');
+
+            $problemFile = ProblemFile::findOrFail($problemFile_id);
             $output = [
                 'problem_file_id' => $problemFile->id,
                 'version' => self::getMaxOutputVersion($problemFile) + 1,

@@ -114,7 +114,7 @@ class CourseController extends Controller
             $teacher->courses;
             $teacher->pivot;
         }
-        
+
         $progress_data = [];
         foreach ($course->students as $student){
             $data['id'] = $student->id;
@@ -715,5 +715,14 @@ class CourseController extends Controller
             array_push($problem_data, $data);
         }
         return $problem_data;
+    }
+
+    public function resetToken($id)
+    {
+        $course = Course::findOrFail($id);
+        $course->token = (new TokenGenerate())->generate(6);
+        $course->save();
+
+        return response()->json(['msg' => 'reset token success']);
     }
 }

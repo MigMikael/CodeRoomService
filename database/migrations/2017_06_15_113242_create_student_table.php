@@ -23,7 +23,7 @@ class CreateStudentTable extends Migration
             $table->string('token')->unique();
             $table->ipAddress('ip')->nullable();
             $table->string('status');
-            $table->string('username');
+            $table->string('username')->unique();
             $table->string('password');
             $table->string('role')->default('student');
             $table->timestamps();
