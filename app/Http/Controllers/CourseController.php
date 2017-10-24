@@ -109,22 +109,35 @@ class CourseController extends Controller
         foreach ($course->lessons as $lesson){
             $lesson->problems;
         }
-        foreach ($course->students as $student){
-            $student->pivot;
-            foreach ($student->lessons as $lesson){
-                if($lesson->course_id == $course->id){
-                    $studentLesson = StudentLesson::where([
-                        ['lesson_id', $lesson->id],
-                        ['student_id', $student->id]
-                    ]);
-                }
-            }
-            $student['lesson'];
-        }
+
         foreach ($course->teachers as $teacher){
             $teacher->courses;
             $teacher->pivot;
         }
+        
+        $progress_data = [];
+        foreach ($course->students as $student){
+            $data['id'] = $student->id;
+            $data['code'] = $student->student_id;
+            $data['name'] = $student->name;
+            $data['course_progress'] = $student->pivot->progress;
+            $data['lesson_progress'] = [];
+            foreach ($course->lessons as $lesson){
+                $data['lesson_progress'][$lesson->name]['progress'] = 0;
+            }
+
+            foreach ($student->lessons as $lesson){
+                if(isset($data['lesson_progress'][$lesson->name]['progress'])){
+                    $data['lesson_progress'][$lesson->name]['progress'] = $lesson->pivot->progress;
+                }
+                /*$temp['name'] = $lesson->name;
+                $temp['progress'] = $lesson->pivot->progress;
+                array_push($data['lesson_progress'], $temp);*/
+            }
+            array_push($progress_data, $data);
+        }
+
+        $course['progress'] = $progress_data;
 
         return $course;
     }
@@ -554,7 +567,7 @@ class CourseController extends Controller
             }
 
             foreach ($student->lessons as $lesson){
-                if($data['lesson_progress'][$lesson->name]['progress'] == 0){
+                if(isset($data['lesson_progress'][$lesson->name]['progress'])){
                     $data['lesson_progress'][$lesson->name]['progress'] = $lesson->pivot->progress;
                 }
                 /*$temp['name'] = $lesson->name;
