@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 
 class AnnouncementController extends Controller
 {
-    public function show($id)
+    public function show($announce_id)
     {
-        $announcement = Announcement::findOrFail($id);
+        $announcement = Announcement::findOrFail($announce_id);
         return $announcement;
     }
 

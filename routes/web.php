@@ -67,7 +67,6 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::post('course/join', 'CourseController@join');
 
-
         Route::group(['middleware' => 'checkBanned', 'checkAccess'], function (){
             #
             Route::get('course/{id}/member', 'CourseController@member');
@@ -75,18 +74,13 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
             Route::get('course/{student_id}/{id}', 'CourseController@showStudent');
             #
             Route::get('course/{id}/lesson/progress', 'CourseController@sumProgress');
+            #
+            Route::get('lesson/{lesson_id}/{student_id}', 'LessonController@showStudent');
+            #
+            Route::get('announcement/{announce_id}', 'AnnouncementController@show');
+            #
+            Route::get('submission/{problem_id}/{student_id}', 'SubmissionController@result');
         });
-
-
-        #
-        Route::get('lesson/{lesson_id}/{student_id}', 'LessonController@showStudent');
-        #
-        Route::get('announcement/{id}', 'AnnouncementController@show');
-
-
-        #
-        Route::get('submission/{problem_id}/{student_id}', 'SubmissionController@result');
-
 
         Route::group(['middleware' => 'checkSubmit'], function (){
             #
@@ -248,7 +242,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('course/{id}', 'CourseController@showAdmin');
         #
         Route::post('course/store', 'CourseController@store');
-        # Todo Remove teacher from Teacher course
+        #
         Route::post('course/edit', 'CourseController@update');
         #
         Route::get('course/status/{id}', 'CourseController@changeStatus');
