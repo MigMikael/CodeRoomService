@@ -84,6 +84,11 @@ class CourseController extends Controller
         }
         $course->save();
 
+        $teacher_courses = TeacherCourse::where('course_id', $course->id)->get();
+        foreach ($teacher_courses as $teacher_cours){
+            $teacher_cours->delete();
+        }
+
         $teachers = $request->get('teachers');
         foreach ($teachers as $teacher){
             $teacher_course = [
