@@ -35,6 +35,7 @@ class LessonController extends Controller
             $resources_file = [];
             foreach ($resources as $resource){
                 $file = File::find($resource->file_id);
+                $file['status'] = $resource->visible;
                 array_push($resources_file, $file);
             }
             $problem['resources_file'] = $resources_file;

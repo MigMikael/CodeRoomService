@@ -189,16 +189,16 @@ class CourseController extends Controller
         }
     }
 
-    public function showStudent(Request $request, $student_id, $course_id)
+    public function showStudent(Request $request, $student_id, $id)
     {
         $course = Course::withCount([
             'students', 'teachers', 'lessons', 'badges', 'announcements'
-        ])->findOrFail($course_id);
+        ])->findOrFail($id);
 
         $student = Student::where('id', $student_id)->firstOrFail();
 
         if($course->mode == 'normal'){                  // normal mode
-            $course['lessons'] = Lesson::where('course_id', $course_id)
+            $course['lessons'] = Lesson::where('course_id', $id)
                 ->normal()
                 ->ordered()
                 ->get();
@@ -214,7 +214,7 @@ class CourseController extends Controller
             if($current_ip != $student->ip){
                 return response()->json(['msg' => 'you already login from another machine']);
             }
-            $course['lessons'] = Lesson::where('course_id', $course_id)
+            $course['lessons'] = Lesson::where('course_id', $id)
                 ->test()
                 ->orderBy('order', 'desc')
                 ->take(1)
@@ -236,7 +236,7 @@ class CourseController extends Controller
         }
         $student_course = StudentCourse::where([
             ['student_id', $student_id],
-            ['course_id', $course_id]
+            ['course_id', $id]
         ])->first();
 
         if(sizeof($student_course) < 1){

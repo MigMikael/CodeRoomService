@@ -65,13 +65,17 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
-        Route::get('course/{id}/member', 'CourseController@member');
-        #
         Route::post('course/join', 'CourseController@join');
-        #
-        Route::get('course/{student_id}/{course_id}', 'CourseController@showStudent');
-        #
-        Route::get('course/{id}/lesson/progress', 'CourseController@sumProgress');
+
+
+        Route::group(['middleware' => 'checkBanned'], function (){
+            #
+            Route::get('course/{id}/member', 'CourseController@member');
+            #
+            Route::get('course/{student_id}/{id}', 'CourseController@showStudent');
+            #
+            Route::get('course/{id}/lesson/progress', 'CourseController@sumProgress');
+        });
 
 
         #

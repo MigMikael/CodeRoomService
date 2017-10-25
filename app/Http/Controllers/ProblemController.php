@@ -18,6 +18,7 @@ use App\Traits\FileTrait;
 use App\Traits\DatabaseTrait;
 use App\ProblemInput;
 use App\ProblemOutput;
+use Storage;
 use Log;
 use DB;
 
@@ -305,13 +306,18 @@ class ProblemController extends Controller
                 }
                 return $new_problem;
             }
-        }else{
-            if($old_name != $problem->name){
-                $old_path =  $course_name.'/'.$problem->id.'/'. $old_name. '/';
-                $prob_path = $course_name.'/'.$problem->id.'/'. $problem->name. '/';
-                rename($old_path, $prob_path);
+        }
+        if($old_name != $problem->name){
+            $old_path = $course_name.'/'.$problem->id.'/'. $old_name. '/';
+            $prob_path = $course_name.'/'.$problem->id.'/'. $problem->name. '/';
+
+            $files = Storage::allFiles($old_path);
+            foreach ($files as $file){
+                $new_file = str_replace($old_path, $prob_path, $file);
+                Storage::copy($file, $new_file);
             }
         }
+
 
         return response()->json(['msg' => 'edit problem success']);
     }
