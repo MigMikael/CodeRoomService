@@ -94,6 +94,11 @@ class UserAuthController extends Controller
         if($p[1] != 'silpakorn.edu'){
             return response()->json(['msg' => 'please use university email']);
         }
+        $student = Student::where('student_id', $student_id)->first();
+        if(sizeof($student) == 1){
+            return response()->json(['msg' => 'student code already exist']);
+        }
+
         $student = Student::where('username', $username)->first();
         if(sizeof($student) == 1){
             return response()->json(['msg' => 'username already used']);
