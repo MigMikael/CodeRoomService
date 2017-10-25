@@ -273,10 +273,10 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 });
 
-Route::get('test/summary/{id}', 'CourseController@summaryDetail');
-Route::get('test/progress/{id}', 'CourseController@progressDetail');
-Route::get('test/{id}/{problem_id}', 'LessonController@exportByProblem');
-Route::get('test4/{id}', 'LessonController@scoreboard');
-Route::get('export_score/{id}', 'LessonController@exportScore');
-Route::get('test/strpos', 'TestController@teststrpos');
+//Route::get('test/summary/{id}', 'CourseController@summaryDetail');
+//Route::get('test/progress/{id}', 'CourseController@progressDetail');
+//Route::get('test/{id}/{problem_id}', 'LessonController@exportByProblem');
+//Route::get('test4/{id}', 'LessonController@scoreboard');
+//Route::get('export_score/{id}', 'LessonController@exportScore');
+//Route::get('test/strpos', 'TestController@teststrpos');
 

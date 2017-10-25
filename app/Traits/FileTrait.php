@@ -213,14 +213,14 @@ trait FileTrait
         if(!file_exists($prob_path)){
             $is_correct = false;
             array_push($wrong_msg, ['problem_path' => 'folder in zip and problem name not match']);
-            Log::info('wrong problem path');
+            //Log::info('wrong problem path');
         }
 
         $question_path = self::question_path($problem);
         if(!file_exists($question_path)){
             $is_correct = false;
             array_push($wrong_msg, ['question_path' => 'question file name and problem name not match']);
-            Log::info('wrong question path');
+            //Log::info('wrong question path');
         }
 
         if ($is_correct){

@@ -105,7 +105,7 @@ class ProblemController extends Controller
 
             $res = self::saveResult($classes, $problem->problemFiles);
             if($res == 'analysis error'){
-                Log::info($res);
+                //Log::info($res);
                 return response()->json(['msg' => $res]);
             }
 
@@ -136,7 +136,7 @@ class ProblemController extends Controller
             $code = self::getFile($file);
 
             $file = explode('/src/', $file);
-            Log::info('#### '. $file[1]);
+            //Log::info('#### '. $file[1]);
 
             if(strrpos($file[1], '/')) {
                 $package = substr($file[1], 0, strrpos($file[1], '/'));
@@ -173,8 +173,8 @@ class ProblemController extends Controller
             $pro_file = ProblemFile::where('filename', $folderName)->first();
 
             if(sizeof($pro_file) != 1){
-                Log::info('in sol wrong folder');
-                return 'in sol wrong folder';
+                //Log::info('in sol wrong folder');
+                return response()->json(['msg' => 'in sol wrong folder']);
             }
 
             if(strpos($fileName, 'in') != false) {          // This is input file
@@ -212,7 +212,7 @@ class ProblemController extends Controller
             foreach ($files as $file){
                 $name = explode('/', $file);
                 $name = $name[sizeof($name) - 1];
-                Log::info($name);
+                //Log::info($name);
                 $mime = self::getMime($file);
                 $fileRecord = [
                     'name' => $name,
@@ -227,7 +227,7 @@ class ProblemController extends Controller
                 ];
                 Resource::create($resource);
             }
-            Log::info('Store Resource Success');
+            //Log::info('Store Resource Success');
         }
     }
 

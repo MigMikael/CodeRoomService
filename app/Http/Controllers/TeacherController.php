@@ -67,7 +67,7 @@ class TeacherController extends Controller
         if($request->hasFile('image')){
             $image = self::storeImage($request->file('image'));
         }else{
-            Log::info('teacher image not found');
+            //Log::info('teacher image not found');
             return response()->json(['msg' => 'teacher image not found']);
         }
 

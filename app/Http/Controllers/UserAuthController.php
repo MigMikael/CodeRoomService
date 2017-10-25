@@ -52,8 +52,8 @@ class UserAuthController extends Controller
                 $_SESSION['userRole'] = 'student';
                 $_SESSION['time'] = Carbon::now();
 
-                Log::info('userID : '.$_SESSION['userID']);
-                Log::info('userRole : '.$_SESSION['userRole']);
+                //Log::info('userID : '.$_SESSION['userID']);
+                //Log::info('userRole : '.$_SESSION['userRole']);
 
                 $student['role'] = 'student';
                 $student->makeVisible('token');
@@ -93,6 +93,10 @@ class UserAuthController extends Controller
         $p = explode('@', $email);
         if($p[1] != 'silpakorn.edu'){
             return response()->json(['msg' => 'please use university email']);
+        }
+        $student = Student::where('username', $username)->first();
+        if(sizeof($student) == 1){
+            return response()->json(['msg' => 'username already used']);
         }
 
         $image = self::genImage($student_id);

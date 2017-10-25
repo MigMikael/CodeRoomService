@@ -135,12 +135,12 @@ class SubmissionController extends Controller
         $problem = $submission->problem;
 
         if ($problem->is_parse == 'true'){
-            Log::info('is_parse : true');
+            //Log::info('is_parse : true');
             $classes = self::analyzeSubmitFile2($submission);
 
             $res = self::saveResult($classes, $submission->submissionFiles);
             if($res == 'analysis error'){
-                Log::info($res);
+                //Log::info($res);
                 return response()->json(['msg' => $res]);
             }
 
@@ -152,7 +152,7 @@ class SubmissionController extends Controller
             foreach ($submission->submissionFiles as $submissionFile){
                 foreach ($submissionFile->results as $result) {
                     array_push($results_classname, $result->class);
-                    Log::info('result : '. $result->class);
+                    //Log::info('result : '. $result->class);
                 }
             }
 
@@ -160,12 +160,12 @@ class SubmissionController extends Controller
             foreach ($problem->problemFiles as $problemFile){
                 foreach ($problemFile->problemAnalysis as $analysis) {
                     array_push($problemAnalysis_classname, $analysis->class);
-                    Log::info('analysis : '. $analysis->class);
+                    //Log::info('analysis : '. $analysis->class);
                 }
             }
 
             $class_diffs = array_diff($problemAnalysis_classname, $results_classname);
-            Log::info(print_r($class_diffs, true));
+            //Log::info(print_r($class_diffs, true));
             foreach ($class_diffs as $diff){
                 array_push($this->wrong, 'ไม่มีคลาส '.$diff);
             }
@@ -234,7 +234,7 @@ class SubmissionController extends Controller
             $code = self::getFile($file);
 
             $file = explode('/src/', $file);
-            Log::info('#### '. $file[1]);
+            //Log::info('#### '. $file[1]);
 
             if(strrpos($file[1], '/')) {
                 $package = substr($file[1], 0, strrpos($file[1], '/'));
@@ -506,7 +506,7 @@ class SubmissionController extends Controller
                 ['problem_id', '=', $problem->id],
                 ['package', '!=', 'driver']
             ])->get();
-            Log::info("Problem File Size " . sizeof($problemFiles));
+            //Log::info("Problem File Size " . sizeof($problemFiles));
             foreach ($problemFiles as $problemFile){
                 foreach ($problemFile->problemAnalysis as $analysis){
                     $problem_score = ProblemScore::where('analysis_id', $analysis->id)->first();
@@ -561,13 +561,13 @@ class SubmissionController extends Controller
 
                 $class_file = strpos($submissionFile->code, 'class ' . $class['name'] . ' ');
 
-                Log::info('class_file '.$class_file);
+                /*Log::info('class_file '.$class_file);
 
                 Log::info('class_package '.$class['package']);
                 Log::info('submit_package '.$submissionFile->package);
 
                 Log::info('strlen class name '.strlen($class['name']));
-                Log::info('strlen file name '. strlen($filename));
+                Log::info('strlen file name '. strlen($filename));*/
 
                 if($class_file == true && $class['package'] == $submissionFile->package){
                     $im = '';
@@ -930,14 +930,14 @@ class SubmissionController extends Controller
                     'extends' => $extends_score,
                     'implements' => $implements_score
                 ];
-                Log::info('-------------------------------------------------------------');
+                /*Log::info('-------------------------------------------------------------');
                 Log::info('##### CLASS NAME'. $result->class);
                 Log::info('-------------------------------------------------------------');
                 Log::info('##### CLASS SCORE '. $class_score);
                 Log::info('##### ENCLOSE SCORE '. $enclose_score);
                 Log::info('##### EXTENDS SCORE '. $extends_score);
                 Log::info('##### IMPLEMENTS SCORE '. $implements_score);
-                Log::info('-------------------------------------------------------------');
+                Log::info('-------------------------------------------------------------');*/
 
                 $rs = ResultScore::create($result_score);
                 $submission->score += $rs->class + $rs->package + $rs->enclose + $rs->extends + $rs->implements;
@@ -978,7 +978,7 @@ class SubmissionController extends Controller
                     }
                     $result_attr->save();
                     $submission->score += $result_attr->score;
-                    Log::info('Attribute IS CORRECT '. $correct);
+                    /*Log::info('Attribute IS CORRECT '. $correct);
 
                     Log::info('-------------------------------------------------------------');
                     Log::info('##### ATTRIBUTE NAME'. $attribute->name);
@@ -993,7 +993,7 @@ class SubmissionController extends Controller
                     Log::info('##### P ATTRIBUTE Access Modifier :'. $result_attr->access_modifier.'5555');
                     Log::info('##### P ATTRIBUTE Non Access Modifier '. $result_attr->non_access_modifier);
                     Log::info('##### P ATTRIBUTE Data Type '. $result_attr->data_type);
-                    Log::info('-------------------------------------------------------------');
+                    Log::info('-------------------------------------------------------------');*/
                 }
 
                 foreach ($analysis->constructors as $constructor){
@@ -1030,7 +1030,7 @@ class SubmissionController extends Controller
                     }
                     $result_con->save();
                     $submission->score += $result_con->score;
-                    Log::info('Constructor IS CORRECT '. $is_correct);
+                    //Log::info('Constructor IS CORRECT '. $is_correct);
                 }
 
                 foreach ($analysis->methods as $method){
@@ -1075,7 +1075,7 @@ class SubmissionController extends Controller
                     }
                     $result_me->save();
                     $submission->score += $result_me->score;
-                    Log::info('Method IS CORRECT '. $is_correct);
+                    //Log::info('Method IS CORRECT '. $is_correct);
                 }
             }
         }

@@ -389,7 +389,7 @@ trait EvaluatorTrait
 
         $result = $res->getBody();
         $json = json_decode($result, true);
-        Log::info('#### Data From Evaluator : '. $res->getBody());
+        //Log::info('#### Data From Evaluator : '. $res->getBody());
 
         return $json;
     }
@@ -440,7 +440,7 @@ trait EvaluatorTrait
 
         $result = $res->getBody();
         $json = json_decode($result, true);
-        Log::info('#### Data From Evaluator : '. $res->getBody());
+        //Log::info('#### Data From Evaluator : '. $res->getBody());
 
         return $json;
     }
@@ -481,7 +481,7 @@ trait EvaluatorTrait
 
         $result = $res->getBody();
         $json = json_decode($result, true);
-        Log::info('#### Data From Evaluator : '. $res->getBody());
+        //Log::info('#### Data From Evaluator : '. $res->getBody());
 
         return $json;
     }

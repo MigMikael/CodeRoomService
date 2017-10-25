@@ -192,7 +192,7 @@ class StudentController extends Controller
 
         $students = [];
         if(!empty($data) && $data->count()){
-            Log::info('###### '.sizeof($data));
+            //Log::info('###### '.sizeof($data));
             foreach ($data as $key => $value) {
                 $id = $value->id;
                 $id = str_replace(' ', '', $id);
@@ -329,7 +329,7 @@ class StudentController extends Controller
         $zipper = new Zipper;
         $zipper->make($des_path)->add($files)->close();
 
-        Log::info($folderName);
+        //Log::info($folderName);
         Storage::deleteDirectory($folderName);
 
         $view_able_name = $problem->name.'_'.$student->student_id.'.zip';

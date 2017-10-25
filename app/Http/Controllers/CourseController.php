@@ -63,7 +63,7 @@ class CourseController extends Controller
             return response()->json(['msg' => 'create course success']);
 
         }else{
-            Log::info('course image not found');
+            //Log::info('course image not found');
             return response()->json(['msg' => 'course image not found']);
         }
     }
@@ -655,7 +655,7 @@ class CourseController extends Controller
                 ['problem_id', '=', $problem_id]
             ])->orderBy('id', 'desc')->first();
 
-            Log::info(sizeof($submission));
+            //Log::info(sizeof($submission));
             if(sizeof($submission) == 1){
                 foreach ($submission->submissionFiles as $submissionFile){
                     foreach ($submissionFile->results as $result){
