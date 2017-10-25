@@ -316,8 +316,8 @@ class ProblemController extends Controller
                 $new_file = str_replace($old_path, $prob_path, $file);
                 Storage::copy($file, $new_file);
             }
+            Storage::deleteDirectory($old_path);
         }
-
 
         return response()->json(['msg' => 'edit problem success']);
     }

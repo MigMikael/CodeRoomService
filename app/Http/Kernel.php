@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'checkMode' => \App\Http\Middleware\CheckServiceMode::class,
         'checkSubmit' => \App\Http\Middleware\CheckSubmitStatus::class,
         'checkBanned' => \App\Http\Middleware\CheckBannedUser::class,
+        'checkAccess' => \App\Http\Middleware\CheckAccessCourse::class,
     ];
 }
