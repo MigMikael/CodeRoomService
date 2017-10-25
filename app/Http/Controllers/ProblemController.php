@@ -234,6 +234,7 @@ class ProblemController extends Controller
     public function update(Request $request)
     {
         $problem = Problem::findOrFail($request->get('id'));
+        $old_name = $problem->name;
 
         $new_problem = [
             'lesson_id' => $problem->lesson_id,
@@ -248,6 +249,10 @@ class ProblemController extends Controller
         ];
         $problem->update($new_problem);
 
+        $course = $problem->lesson->course;
+        $course_name = $course->id.'_'.$course->name;
+        $course_name = str_replace(' ', '_', $course_name);
+
         $new_problem = Problem::find($problem->id);
 
         // delete old file
@@ -257,10 +262,6 @@ class ProblemController extends Controller
             }
 
             $new_file = $request->file('file');
-
-            $course = $problem->lesson->course;
-            $course_name = $course->id.'_'.$course->name;
-            $course_name = str_replace(' ', '_', $course_name);
             $prob_path = $course_name.'/'.$problem->id.'/'. $problem->name. '/';
             $files = self::getFiles($prob_path);
             foreach ($files as $file){
@@ -303,6 +304,12 @@ class ProblemController extends Controller
                     }
                 }
                 return $new_problem;
+            }
+        }else{
+            if($old_name != $problem->name){
+                $old_path =  $course_name.'/'.$problem->id.'/'. $old_name. '/';
+                $prob_path = $course_name.'/'.$problem->id.'/'. $problem->name. '/';
+                rename($old_path, $prob_path);
             }
         }
 
@@ -663,7 +670,7 @@ class ProblemController extends Controller
             if($is_equals){
                 $problem->status = 'show';
             }else{
-                return response()->json(['msg' => 'in and sol not equals']);
+                return response()->json(['msg' => 'in and sol do not match']);
             }
         }
         $problem->save();
