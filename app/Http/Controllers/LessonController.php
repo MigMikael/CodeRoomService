@@ -294,10 +294,15 @@ class LessonController extends Controller
     public function exportByProblem($id, $problem_id)
     {
         $lesson = Lesson::findOrFail($id);
-
         $problem = Problem::findOrFail($problem_id);
+
+
         $exportFilename = $problem->name.'.zip';
+        $rootPath = storage_path() . '/app/' . $problem->name;
+        $exportPath = storage_path() . '/app/' . $exportFilename;
+
         $path = $problem->name . '/';
+
         foreach ($problem->submissions as $submission){
             $student_lesson = Student::where('id', $submission->student->id)->first();
             if(sizeof($student_lesson) == 1){
@@ -306,19 +311,20 @@ class LessonController extends Controller
                 foreach ($submission->submissionFiles as $submissionFile){
                     if($submissionFile->package != 'driver'){
                         Storage::put($eachFilePath . $submissionFile->package .'/'. $submissionFile->filename,
-                            $submissionFile->code
+                            $submissionFile->code,
+                            'public'
                         );
                     }
                 }
             }
         }
-        $rootPath = storage_path() . '/app/' . $problem->name;
-        $exportPath = storage_path() . '/app/' . $exportFilename;
+
         self::zipFile($exportPath, $rootPath);
 
         $zz = base64_encode(file_get_contents($exportPath));
 
         Storage::deleteDirectory($rootPath);
+        Storage::delete($exportPath);
 
         return response()->json([
             'zip' => $zz,
@@ -343,7 +349,10 @@ class LessonController extends Controller
             if($lesson->id == $prob_lesson->id){
                 $eachFilePath = $path . $problem->name . '/';
                 foreach ($submission->submissionFiles as $submissionFile){
-                    Storage::put($eachFilePath . $submissionFile->package . '/' . $submissionFile->filename, $submissionFile->code);
+                    Storage::put($eachFilePath . $submissionFile->package . '/' . $submissionFile->filename,
+                        $submissionFile->code,
+                        'public'
+                    );
                 }
             }
         }
@@ -354,6 +363,7 @@ class LessonController extends Controller
         $zz = base64_encode(file_get_contents($exportPath));
 
         Storage::deleteDirectory($rootPath);
+        Storage::delete($exportPath);
 
         return response()->json([
             'zip' => $zz,
