@@ -2,7 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Announcement;
 use App\Course;
+use App\Lesson;
+use App\Problem;
 use Closure;
 
 class CheckAccessCourse
