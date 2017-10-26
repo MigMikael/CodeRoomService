@@ -67,7 +67,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         #
         Route::post('course/join', 'CourseController@join');
 
-        Route::group(['middleware' => 'checkBanned', 'checkAccess'], function (){
+        Route::group(['middleware' => ['checkBanned', 'checkAccess']], function (){
             #
             Route::get('course/{id}/member', 'CourseController@member');
             #
