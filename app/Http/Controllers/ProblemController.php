@@ -739,4 +739,22 @@ class ProblemController extends Controller
             $output->save();
         }
     }
+
+    public function updateDriver(Request $request)
+    {
+        $id = $request->get('id');
+        $problemFile = ProblemFile::findOrFail($id);
+
+        $filename = $request->get('filename');
+        $code = $request->get('code');
+
+        $problemFile->filename = $filename;
+        $problemFile->code = $code;
+        $problemFile->save();
+
+        $problem = $problemFile->problem;
+        self::sendDriver($problem);
+
+        return response()->json(['msg' => 'update driver success']);
+    }
 }

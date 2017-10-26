@@ -194,6 +194,10 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
+        Route::post('problem/driver/{id}/edit', 'ProblemController@updateDriver');
+
+
+        #
         Route::get('submission/{id}/code', 'SubmissionController@code');
 
 
