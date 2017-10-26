@@ -304,7 +304,11 @@ class LessonController extends Controller
                 $student = $submission->student;
                 $eachFilePath = $path . $student->student_id . '/';
                 foreach ($submission->submissionFiles as $submissionFile){
-                    Storage::put($eachFilePath . $submissionFile->package .'/'. $submissionFile->filename, $submissionFile->code);
+                    if($submissionFile->package != 'driver'){
+                        Storage::put($eachFilePath . $submissionFile->package .'/'. $submissionFile->filename,
+                            $submissionFile->code
+                        );
+                    }
                 }
             }
         }
@@ -313,6 +317,8 @@ class LessonController extends Controller
         self::zipFile($exportPath, $rootPath);
 
         $zz = base64_encode(file_get_contents($exportPath));
+
+        Storage::deleteDirectory($rootPath);
 
         return response()->json([
             'zip' => $zz,
@@ -346,6 +352,8 @@ class LessonController extends Controller
         self::zipFile($exportPath, $rootPath);
 
         $zz = base64_encode(file_get_contents($exportPath));
+
+        Storage::deleteDirectory($rootPath);
 
         return response()->json([
             'zip' => $zz,

@@ -779,5 +779,7 @@ class ProblemController extends Controller
     {
         $problemFile = ProblemFile::findOrFail($id);
         $problemFile->delete();
+
+        return response()->json(['msg' => 'delete driver success']);
     }
 }
