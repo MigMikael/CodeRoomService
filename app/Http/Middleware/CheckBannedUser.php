@@ -21,21 +21,21 @@ class CheckBannedUser
      */
     public function handle($request, Closure $next)
     {
-        if($request->exists('id')){
+        if($request->is('api/teacher/course/*')){
             $course_id = $request->route('id');
             $course = Course::findOrFail($course_id);
 
-        }elseif ($request->exists('lesson_id')){
+        }elseif ($request->is('api/teacher/lesson/*')){
             $lesson_id = $request->get('lesson_id');
             $lesson = Lesson::findOrFail($lesson_id);
             $course = $lesson->course;
 
-        }elseif ($request->exists('announce_id')){
+        }elseif ($request->is('api/teacher/announcement/*')){
             $announce_id = $request->get('announce_id');
             $announce = Announcement::findOrFail($announce_id);
             $course = $announce->course;
 
-        }elseif ($request->exists('problem_id')){
+        }elseif ($request->is('api/teacher/submission/*')){
             $problem_id = $request->get('problem_id');
             $problem = Problem::findOrFail($problem_id);
             $course = $problem->lesson->course;

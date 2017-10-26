@@ -745,10 +745,8 @@ class ProblemController extends Controller
         $id = $request->get('id');
         $problemFile = ProblemFile::findOrFail($id);
 
-        $filename = $request->get('filename');
         $code = $request->get('code');
 
-        $problemFile->filename = $filename;
         $problemFile->code = $code;
         $problemFile->save();
 
@@ -756,5 +754,13 @@ class ProblemController extends Controller
         self::sendDriver($problem);
 
         return response()->json(['msg' => 'update driver success']);
+    }
+
+    public function deleteDriver($id)
+    {
+        $problemFile = ProblemFile::findOrFail($id);
+        $problemFile->delete();
+
+
     }
 }

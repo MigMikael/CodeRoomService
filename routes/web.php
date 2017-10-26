@@ -151,7 +151,7 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
         #
         Route::get('problem/{id}', 'ProblemController@show');
-        # Todo Edit Problem File
+        #
         Route::post('problem/edit', 'ProblemController@update');
         #
         Route::post('problem/store', 'ProblemController@store');
@@ -194,7 +194,9 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
-        Route::post('problem/driver/{id}/edit', 'ProblemController@updateDriver');
+        Route::post('problem/driver/edit', 'ProblemController@updateDriver');
+        #
+        Route::delete('problem/driver/{id}/delete', 'ProblemController@deleteDriver');
 
 
         #
