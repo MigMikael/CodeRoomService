@@ -740,6 +740,25 @@ class ProblemController extends Controller
         }
     }
 
+    public function storeDriver(Request $request)
+    {
+        $problem_id = $request->get('problem_id');
+        $problem = Problem::findOrFail($problem_id);
+        $file = $request->file('driver');
+
+        $problemFile = [
+            'problem_id' => $problem->id,
+            'package' => 'driver',
+            'filename' => $file->getClientOriginalName(),
+            'mime' => 'java'
+        ];
+        $problemFile = ProblemFile::create($problemFile);
+        $problem = $problemFile->problem;
+        self::sendDriver($problem);
+
+        return response()->json(['msg' => 'store driver success']);
+    }
+
     public function updateDriver(Request $request)
     {
         $id = $request->get('id');
@@ -760,7 +779,5 @@ class ProblemController extends Controller
     {
         $problemFile = ProblemFile::findOrFail($id);
         $problemFile->delete();
-
-
     }
 }

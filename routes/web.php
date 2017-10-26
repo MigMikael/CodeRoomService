@@ -194,6 +194,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
+        Route::post('problem/driver/store', 'ProblemCOntroller@storeDriver');
+        #
         Route::post('problem/driver/edit', 'ProblemController@updateDriver');
         #
         Route::delete('problem/driver/{id}/delete', 'ProblemController@deleteDriver');
