@@ -971,6 +971,11 @@ class SubmissionController extends Controller
                     }else{
                         $correct = false;
                         $result_attr = new ResultAttribute;
+                        $result_attr->result_id = $result->id;
+                        $result_attr->access_modifier = 'wrong';
+                        $result_attr->non_access_modifier = 'wrong';
+                        $result_attr->data_type = 'wrong';
+                        $result_attr->name = 'wrong';
                     }
 
                     if($correct){
@@ -1024,6 +1029,10 @@ class SubmissionController extends Controller
                     }else{
                         $is_correct = false;
                         $result_con = new ResultConstructor;
+                        $result_con->result_id = $result->id;
+                        $result_con->access_modifier = 'wrong';
+                        $result_con->name = 'wrong';
+                        $result_con->parameter = 'wrong';
                     }
 
                     if($is_correct){
@@ -1070,6 +1079,14 @@ class SubmissionController extends Controller
                     } else {
                         $is_correct = false;
                         $result_me = new ResultMethod;
+                        $result_me->result_id = $result->id;
+                        $result_me->access_modifier = 'wrong';
+                        $result_me->non_access_modifier = 'wrong';
+                        $result_me->return_type = 'wrong';
+                        $result_me->name = 'wrong';
+                        $result_me->parameter = 'wrong';
+                        $result_me->recursive = 'wrong';
+                        $result_me->loop = 'wrong';
                     }
 
                     if ($is_correct){
