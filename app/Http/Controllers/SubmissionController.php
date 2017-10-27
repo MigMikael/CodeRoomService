@@ -191,6 +191,9 @@ class SubmissionController extends Controller
 
                 // send Student Code to Evaluator
                 $scores = self::evaluateFile($submission);
+                if($scores == null){
+                    array_push($this->wrong, 'ผลลัพธ์ผิดในทุกชุดข้อมูลทดสอบ');
+                }
                 self::saveScore($scores, $submission);
 
             }else{
@@ -206,9 +209,6 @@ class SubmissionController extends Controller
 
                 self::sendDriver($problem);
                 $scores = self::evaluateFile2($submission);
-                if($scores == null){
-                    array_push($this->wrong, 'ผลลัพธ์ผิดในทุกชุดข้อมูลทดสอบ');
-                }
                 self::saveScore2($scores, $submission);
             }
         }
