@@ -17,6 +17,7 @@ use App\Submission;
 use App\SubmissionFile;
 use App\SubmissionOutput;
 use App\ProblemFile;
+use App\Problem;
 use App\ProblemInput;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -191,7 +192,7 @@ class SubmissionController extends Controller
 
                 // send Student Code to Evaluator
                 $scores = self::evaluateFile($submission);
-                if($scores == null){
+                if(sizeof($scores) == 0){
                     array_push($this->wrong, 'ผลลัพธ์ผิดในทุกชุดข้อมูลทดสอบ');
                 }
                 self::saveScore($scores, $submission);
@@ -1104,5 +1105,96 @@ class SubmissionController extends Controller
                 }
             }
         }
+    }
+
+    public function resubmit(Request $request)
+    {
+        $problem_id = $request->get('problem_id');
+        $problem = Problem::findOrFail($problem_id);
+        $submissions = Submission::where('problem_id', $problem_id)->get();
+        foreach ($submissions as $submission){
+            foreach ($submission->submissionFiles as $submissionFile){
+                $submissionFile->delete();
+            }
+
+            if ($problem->is_parse == 'true'){
+                $classes = self::analyzeSubmitFile2($submission);
+
+                self::saveResult($classes, $submission->submissionFiles);
+
+                foreach ($submission->submissionFiles as $submissionFile){
+                    self::calStructureScore2($submissionFile);
+                }
+
+                $results_classname = [];
+                foreach ($submission->submissionFiles as $submissionFile){
+                    foreach ($submissionFile->results as $result) {
+                        array_push($results_classname, $result->class);
+                        //Log::info('result : '. $result->class);
+                    }
+                }
+
+                $problemAnalysis_classname = [];
+                foreach ($problem->problemFiles as $problemFile){
+                    foreach ($problemFile->problemAnalysis as $analysis) {
+                        array_push($problemAnalysis_classname, $analysis->class);
+                        //Log::info('analysis : '. $analysis->class);
+                    }
+                }
+
+                $class_diffs = array_diff($problemAnalysis_classname, $results_classname);
+                //Log::info(print_r($class_diffs, true));
+                foreach ($class_diffs as $diff){
+                    array_push($this->wrong, 'ไม่มีคลาส '.$diff);
+                }
+            }
+
+            $hasTestCase = self::checkTestCase($problem);
+            if ($hasTestCase){
+                $hasDriver = self::checkDriver($problem);
+                $currentVer = self::getCurrentVersion($problem);
+
+                if(!$hasDriver) {
+                    // this submit in problem that not have driver
+                    $data = self::checkInputVersion($problem, $hasDriver);
+                    if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
+                        self::sendNewInput($problem);
+                    }
+
+                    $data = self::checkOutputVersion($problem, $hasDriver);
+                    if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
+                        self::sendNewOutput($problem);
+                    }
+
+                    // send Student Code to Evaluator
+                    $scores = self::evaluateFile($submission);
+                    if(sizeof($scores) == 0){
+                        array_push($this->wrong, 'ผลลัพธ์ผิดในทุกชุดข้อมูลทดสอบ');
+                    }
+                    self::saveScore($scores, $submission);
+
+                }else{
+                    $data = self::checkInputVersion($problem, $hasDriver);
+                    if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
+                        self::sendNewInput2($problem);
+                    }
+
+                    $data = self::checkOutputVersion($problem, $hasDriver);
+                    if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
+                        self::sendNewOutput2($problem);
+                    }
+
+                    self::sendDriver($problem);
+                    $scores = self::evaluateFile2($submission);
+                    self::saveScore2($scores, $submission);
+                }
+            }
+            if(sizeof($this->wrong) > 0){
+                $submission->is_accept = 'false';
+                $submission->save();
+            }
+            self::updateStudentProgress($submission);
+        }
+        return response()->json(['msg' => 'inspection problem success']);
     }
 }

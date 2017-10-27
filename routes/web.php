@@ -184,6 +184,14 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
+        Route::post('problem/driver/store', 'ProblemController@storeDriver');
+        #
+        Route::post('problem/driver/edit', 'ProblemController@updateDriver');
+        #
+        Route::delete('problem/driver/{id}/delete', 'ProblemController@deleteDriver');
+
+
+        #
         Route::post('problem/resource/store', 'ResourceController@store');
         #
         Route::post('problem/resource/edit', 'ResourceController@update');
@@ -194,15 +202,9 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 
         #
-        Route::post('problem/driver/store', 'ProblemController@storeDriver');
-        #
-        Route::post('problem/driver/edit', 'ProblemController@updateDriver');
-        #
-        Route::delete('problem/driver/{id}/delete', 'ProblemController@deleteDriver');
-
-
-        #
         Route::get('submission/{id}/code', 'SubmissionController@code');
+        #
+        Route::post('submission/resubmit/', 'SubmissionController@resubmit');
 
 
         #
