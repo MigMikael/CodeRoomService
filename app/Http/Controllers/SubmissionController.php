@@ -970,6 +970,7 @@ class SubmissionController extends Controller
                         }
                     }else{
                         $correct = false;
+                        $result_attr = new ResultAttribute;
                     }
 
                     if($correct){
@@ -1022,6 +1023,7 @@ class SubmissionController extends Controller
                         }
                     }else{
                         $is_correct = false;
+                        $result_con = new ResultConstructor;
                     }
 
                     if($is_correct){
@@ -1067,6 +1069,7 @@ class SubmissionController extends Controller
                         }
                     } else {
                         $is_correct = false;
+                        $result_me = new ResultMethod;
                     }
 
                     if ($is_correct){
