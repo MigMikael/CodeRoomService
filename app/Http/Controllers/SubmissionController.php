@@ -920,6 +920,8 @@ class SubmissionController extends Controller
                     $enclose_score = 0;
                     $extends_score = 0;
                     $implements_score = 0;
+
+                    $result = Result::where('submission_file_id', $submissionFile->id)->first();
                 }
 
                 $result_score = [
