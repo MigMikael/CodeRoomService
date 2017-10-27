@@ -747,14 +747,14 @@ class ProblemController extends Controller
         $problem = Problem::findOrFail($problem_id);
         $file = $request->file('driver');
         $ex = $file->getClientOriginalExtension();
-        $path = Storage::put($file->getFilename(). '.' . $ex, File2::get($file));
+        Storage::put($file->getFilename(). '.' . $ex, File2::get($file));
 
         $problemFile = [
             'problem_id' => $problem->id,
             'package' => 'driver',
             'filename' => $file->getClientOriginalName(),
             'mime' => 'java',
-            'code' => self::getFile($path),
+            'code' => self::getFile(storage_path('/app/'.$file->getFilename(). '.' . $ex)),
         ];
         $problemFile = ProblemFile::create($problemFile);
         $problem = $problemFile->problem;
@@ -770,9 +770,9 @@ class ProblemController extends Controller
 
         $file = $request->file('driver');
         $ex = $file->getClientOriginalExtension();
-        $path = Storage::put($file->getFilename(). '.' . $ex, File2::get($file));
+        Storage::put($file->getFilename(). '.' . $ex, File2::get($file));
 
-        $problemFile->code = self::getFile($path);
+        $problemFile->code = self::getFile(storage_path('/app/'.$file->getFilename(). '.' . $ex));
         $problemFile->save();
 
         $problem = $problemFile->problem;
