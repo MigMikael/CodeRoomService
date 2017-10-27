@@ -206,6 +206,9 @@ class SubmissionController extends Controller
 
                 self::sendDriver($problem);
                 $scores = self::evaluateFile2($submission);
+                if($scores == null){
+                    array_push($this->wrong, 'ผลลัพธ์ผิดในทุกชุดข้อมูลทดสอบ');
+                }
                 self::saveScore2($scores, $submission);
             }
         }
@@ -972,10 +975,10 @@ class SubmissionController extends Controller
                         $correct = false;
                         $result_attr = new ResultAttribute;
                         $result_attr->result_id = $result->id;
-                        $result_attr->access_modifier = 'wrong';
-                        $result_attr->non_access_modifier = 'wrong';
-                        $result_attr->data_type = 'wrong';
-                        $result_attr->name = 'wrong';
+                        $result_attr->access_modifier = ' ';
+                        $result_attr->non_access_modifier = ' ';
+                        $result_attr->data_type = ' ';
+                        $result_attr->name = ' ';
                     }
 
                     if($correct){
@@ -1030,9 +1033,9 @@ class SubmissionController extends Controller
                         $is_correct = false;
                         $result_con = new ResultConstructor;
                         $result_con->result_id = $result->id;
-                        $result_con->access_modifier = 'wrong';
-                        $result_con->name = 'wrong';
-                        $result_con->parameter = 'wrong';
+                        $result_con->access_modifier = ' ';
+                        $result_con->name = ' ';
+                        $result_con->parameter = ' ';
                     }
 
                     if($is_correct){
@@ -1080,13 +1083,13 @@ class SubmissionController extends Controller
                         $is_correct = false;
                         $result_me = new ResultMethod;
                         $result_me->result_id = $result->id;
-                        $result_me->access_modifier = 'wrong';
-                        $result_me->non_access_modifier = 'wrong';
-                        $result_me->return_type = 'wrong';
-                        $result_me->name = 'wrong';
-                        $result_me->parameter = 'wrong';
-                        $result_me->recursive = 'wrong';
-                        $result_me->loop = 'wrong';
+                        $result_me->access_modifier = ' ';
+                        $result_me->non_access_modifier = ' ';
+                        $result_me->return_type = ' ';
+                        $result_me->name = ' ';
+                        $result_me->parameter = ' ';
+                        $result_me->recursive = ' ';
+                        $result_me->loop = ' ';
                     }
 
                     if ($is_correct){
