@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\File as File2;
 use App\File;
 use App\Problem;
 use App\ProblemAnalysis;
@@ -746,7 +747,7 @@ class ProblemController extends Controller
         $problem = Problem::findOrFail($problem_id);
         $file = $request->file('driver');
         $ex = $file->getClientOriginalExtension();
-        $path = Storage::put($file->getFilename(). '.' . $ex, File::get($file));
+        $path = Storage::put($file->getFilename(). '.' . $ex, File2::get($file));
 
         $problemFile = [
             'problem_id' => $problem->id,
@@ -769,7 +770,7 @@ class ProblemController extends Controller
 
         $file = $request->file('driver');
         $ex = $file->getClientOriginalExtension();
-        $path = Storage::put($file->getFilename(). '.' . $ex, File::get($file));
+        $path = Storage::put($file->getFilename(). '.' . $ex, File2::get($file));
 
         $problemFile->code = self::getFile($path);
         $problemFile->save();
