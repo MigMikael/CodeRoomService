@@ -12,6 +12,7 @@ use App\ResultAttribute;
 use App\ResultConstructor;
 use App\ResultMethod;
 use App\ResultScore;
+use App\Student;
 use App\StudentLesson;
 use App\Submission;
 use App\SubmissionFile;
@@ -217,7 +218,10 @@ class SubmissionController extends Controller
             $submission->is_accept = 'false';
             $submission->save();
         }
-        self::updateStudentProgress($submission);
+        $student = Student::findOrFail($student_id);
+        if($student->role == 'student'){
+            self::updateStudentProgress($submission);
+        }
 
         $submission['wrong'] = $this->wrong;
         return $submission;
