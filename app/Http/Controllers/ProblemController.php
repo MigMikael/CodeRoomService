@@ -754,7 +754,7 @@ class ProblemController extends Controller
             'package' => 'driver',
             'filename' => $file->getClientOriginalName(),
             'mime' => 'java',
-            'code' => self::getFile('/'.storage_path('/app/'.$file->getFilename(). '.' . $ex)),
+            'code' => self::getFile('/app/'.$file->getFilename(). '.' . $ex),
         ];
         $problemFile = ProblemFile::create($problemFile);
         $problem = $problemFile->problem;
