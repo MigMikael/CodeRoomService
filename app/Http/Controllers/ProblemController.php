@@ -754,7 +754,7 @@ class ProblemController extends Controller
             'package' => 'driver',
             'filename' => $file->getClientOriginalName(),
             'mime' => 'java',
-            'code' => self::getFile('/app/'.$file->getFilename(). '.' . $ex),
+            'code' => Storage::get($file->getFilename().'.'.$ex),
         ];
         $problemFile = ProblemFile::create($problemFile);
         $problem = $problemFile->problem;
@@ -772,7 +772,7 @@ class ProblemController extends Controller
         $ex = $file->getClientOriginalExtension();
         Storage::put($file->getFilename(). '.' . $ex, File2::get($file));
 
-        $problemFile->code = self::getFile(storage_path('/app/'.$file->getFilename(). '.' . $ex));
+        $problemFile->code = Storage::get($file->getFilename().'.'.$ex);
         $problemFile->save();
 
         $problem = $problemFile->problem;
