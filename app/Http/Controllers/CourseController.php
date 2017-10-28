@@ -15,6 +15,7 @@ use App\ProblemInput;
 use App\ProblemMethod;
 use App\ProblemOutput;
 use App\ProblemScore;
+use App\Resource;
 use App\Student;
 use App\StudentCourse;
 use App\StudentLesson;
@@ -403,8 +404,10 @@ class CourseController extends Controller
                 'name' => $lesson->name,
                 'course_id' => $new_course->id,
                 'status' => $lesson->status,
+                'mode' => $lesson->mode,
                 'order' => $lesson->order,
                 'open_submit' => $lesson->open_submit,
+                'guide' => $lesson->guide
             ];
             $new_lesson = Lesson::create($new_lesson);
             foreach ($lesson->problems as $problem){
@@ -419,6 +422,7 @@ class CourseController extends Controller
                     'memorylimit' => $problem->memorylimit,
                     'is_parse' => $problem->is_parse,
                     'score' => $problem->score,
+                    'status' => $problem->status
                 ];
                 $new_problem = Problem::create($new_problem);
 
@@ -436,6 +440,15 @@ class CourseController extends Controller
                     Storage::copy($file, $new_file);
                 }
                 Storage::deleteDirectory($new_course_path . '/' . $problem->id);
+                foreach ($problem->resources as $resource){
+                    $new_resource = [
+                        'problem_id' => $new_problem->id,
+                        'file_id' => $resource->file_id,
+                        'visible' => 'false'
+                    ];
+                    Resource::create($new_resource);
+                }
+
                 foreach ($problem->problemFiles as $problemFile){
                     $new_prob_file = [
                         'problem_id' => $new_problem->id,
