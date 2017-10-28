@@ -440,7 +440,9 @@ class CourseController extends Controller
                     Storage::copy($file, $new_file);
                 }
                 Storage::deleteDirectory($new_course_path . '/' . $problem->id);
-                foreach ($problem->resources as $resource){
+                $resources = Resource::where('problem_id', $problem->id)->get();
+                Log::info(sizeof($resources));
+                foreach ($resources as $resource){
                     $new_resource = [
                         'problem_id' => $new_problem->id,
                         'file_id' => $resource->file_id,
