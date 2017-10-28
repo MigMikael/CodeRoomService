@@ -370,7 +370,7 @@ class CourseController extends Controller
             'name' => $new_name,
             'image' => $course->image,
             'color' => $course->color,
-            'status' => $course->status,
+            'status' => 'disable',
             'token' => $new_token,
             'mode' => 'normal'
         ];
@@ -422,7 +422,7 @@ class CourseController extends Controller
                     'memorylimit' => $problem->memorylimit,
                     'is_parse' => $problem->is_parse,
                     'score' => $problem->score,
-                    'status' => $problem->status
+                    'status' => 'hide'
                 ];
                 $new_problem = Problem::create($new_problem);
 

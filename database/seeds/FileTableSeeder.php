@@ -137,5 +137,14 @@ class FileTableSeeder extends Seeder
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);
+
+        // 15
+        DB::table('file')->insert([
+            'name' => 'thearchangel.jpg',
+            'mime' => 'image/jpeg',
+            'original_name' => 'thearchangel.jpg',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
     }
 }

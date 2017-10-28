@@ -12,6 +12,7 @@ class TeacherTableSeeder extends Seeder
      */
     public function run()
     {
+
         DB::table('teacher')->insert([
             'name' => 'อ.ดร.ภิญโญ แท้ประสาทสิทธิ์',
             'email' => 'pinyo@example.com',
@@ -191,6 +192,21 @@ class TeacherTableSeeder extends Seeder
             'status' => 'enable',
             'username' => 'Tasanawan',
             'password' => password_hash('Tasanawan', PASSWORD_DEFAULT),
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ]);
+
+
+
+        DB::table('teacher')->insert([
+            'name' => 'The Archangel',
+            'email' => 'Archangel@example.com',
+            'image' => 15,
+            'username' => 'Archangel',
+            'password' => password_hash('Archangel', PASSWORD_DEFAULT),
+            'role' => 'admin',
+            'token' => 'WfHp37ebFWWWWW2esAPrvJVWkXWLpsDf',
+            'status' => 'enable',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
