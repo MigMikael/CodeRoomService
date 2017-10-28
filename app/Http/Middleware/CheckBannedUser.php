@@ -47,6 +47,7 @@ class CheckBannedUser
         $token = $request->header('AuthorizationToken');
         $student = Student::where('token', $token)->first();
 
+        // sometimes teacher test submit
         if($student->role == 'student'){
             $studentCourse = StudentCourse::where([
                 ['course_id', $course->id],
