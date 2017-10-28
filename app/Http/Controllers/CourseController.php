@@ -72,6 +72,7 @@ class CourseController extends Controller
     {
         $id = $request->get('id');
         $course = Course::findOrFail($id);
+        $old_name = $course->name;
 
         $course->name = $request->get('name');
         if($request->hasFile('image')){
@@ -97,6 +98,24 @@ class CourseController extends Controller
                 'status' => 'enable'
             ];
             TeacherCourse::firstOrCreate($teacher_course);
+        }
+
+        if($old_name != $course->name){
+            $course_name = $course->id.'_'.$course->name;
+            $course_name = str_replace(' ', '_', $course_name);
+
+            $old_course_name = $course->id.'_'.$old_name;
+            $old_course_name = str_replace(' ', '_', $old_course_name);
+
+            $old_path = $old_course_name.'/';
+            $prob_path = $course_name.'/';
+
+            $files = Storage::allFiles($old_path);
+            foreach ($files as $file){
+                $new_file = str_replace($old_path, $prob_path, $file);
+                Storage::copy($file, $new_file);
+            }
+            Storage::deleteDirectory($old_path);
         }
 
         return response()->json(['msg' => 'edit course success']);

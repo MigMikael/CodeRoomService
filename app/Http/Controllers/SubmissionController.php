@@ -1114,7 +1114,9 @@ class SubmissionController extends Controller
         $submissions = Submission::where('problem_id', $problem_id)->get();
         foreach ($submissions as $submission){
             foreach ($submission->submissionFiles as $submissionFile){
-                $submissionFile->delete();
+                foreach ($submissionFile->results as $result){
+                    $result->delete();
+                }
             }
 
             if ($problem->is_parse == 'true'){
