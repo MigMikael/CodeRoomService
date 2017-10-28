@@ -34,16 +34,14 @@ class FileController extends Controller
         $course_name = $course->id.'_'.$course->name;
         $course_name = str_replace(' ', '_', $course_name);
 
-        /*if (App::environment('local')) {
+        if (App::environment('local')) {
             $file = Storage::get($course_name.'\\'.$problem->id.'\\'.$problem->name.'\\'.$question->name);
 
         }else{
             $file = Storage::get($course_name.'/'.$problem->id.'/'.$problem->name.'/'.$question->name);
-        }*/
+        }
 
-        $pathToFile = storage_path('/app/'.$course_name.'/'.$problem->id.'/'.$problem->name.'/'.$question->name);
-        return response()->download($pathToFile, $question->original_name, ['Content-Type' => $question->mime]);
-        /*return response($file, 200)
-            ->header('Content-Type', $question->mime);*/
+        return response($file, 200)
+            ->header('Content-Type', $question->mime);
     }
 }
