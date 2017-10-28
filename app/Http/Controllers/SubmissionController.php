@@ -296,7 +296,11 @@ class SubmissionController extends Controller
         foreach ($submissionFiles as $submissionFile){
             $problemFile = ProblemFile::where('filename', '=', $submissionFile->filename)->first();
 
-            $problemOutputNum = ProblemInput::where('problem_file_id', '=', $problemFile->id)->count();
+            if(sizeof($problemFile) != 1){
+                $problemOutputNum = 1;
+            }else{
+                $problemOutputNum = ProblemInput::where('problem_file_id', '=', $problemFile->id)->count();
+            }
 
             if($problemOutputNum > 0){
                 $count = 1;
