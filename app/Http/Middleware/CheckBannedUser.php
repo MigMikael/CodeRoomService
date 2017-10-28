@@ -47,13 +47,15 @@ class CheckBannedUser
         $token = $request->header('AuthorizationToken');
         $student = Student::where('token', $token)->first();
 
-        $studentCourse = StudentCourse::where([
-            ['course_id', $course->id],
-            ['student_id', $student->id]
-        ])->first();
+        if($student->role == 'student'){
+            $studentCourse = StudentCourse::where([
+                ['course_id', $course->id],
+                ['student_id', $student->id]
+            ])->first();
 
-        if ($studentCourse->status == 'disable'){
-            return response()->json(['msg' => 'user banned form this course']);
+            if ($studentCourse->status == 'disable'){
+                return response()->json(['msg' => 'user banned form this course']);
+            }
         }
 
         return $next($request);
