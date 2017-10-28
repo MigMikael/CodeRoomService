@@ -90,13 +90,12 @@ trait DatabaseTrait
 
         $accept_count = 0;
         foreach ($lesson->problems as $problem){
-            $accept_submission = Submission::where([
+            $submission = Submission::where([
                 ['student_id', $student->id],
                 ['problem_id', $problem->id],
-                ['is_accept', 'true']
-            ])->first();
+            ])->orderBy('id', 'desc')->first();
 
-            if(sizeof($accept_submission) > 0){
+            if($submission->is_accept == 'true'){
                 $accept_count++;
             }
         }
