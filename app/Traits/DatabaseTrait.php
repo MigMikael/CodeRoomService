@@ -95,9 +95,12 @@ trait DatabaseTrait
                 ['problem_id', $problem->id],
             ])->orderBy('id', 'desc')->first();
 
-            if($submission->is_accept == 'true'){
-                $accept_count++;
+            if(sizeof($submission) == 1){
+                if($submission->is_accept == 'true'){
+                    $accept_count++;
+                }
             }
+
         }
 
         //Log::info('Accept Count : '.$accept_count);
