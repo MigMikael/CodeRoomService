@@ -205,29 +205,22 @@ trait FileTrait
 
     public function checkFileStructure($problem)
     {
-        $is_correct = true;
         $wrong_msg = [];
 
         $prob_path = self::problem_path($problem);
         $prob_path = $prob_path . $problem->name;
         if(!file_exists($prob_path)){
-            $is_correct = false;
             array_push($wrong_msg, ['problem_path' => 'folder in zip and problem name not match']);
             //Log::info('wrong problem path');
         }
 
         $question_path = self::question_path($problem);
         if(!file_exists($question_path)){
-            $is_correct = false;
             array_push($wrong_msg, ['question_path' => 'question file name and problem name not match']);
             //Log::info('wrong question path');
         }
 
-        if ($is_correct){
-            return $is_correct;
-        }else{
-            return $wrong_msg;
-        }
+        return $wrong_msg;
     }
 
     public function checkTestCase($problem)

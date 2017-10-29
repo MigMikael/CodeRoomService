@@ -85,10 +85,10 @@ class ProblemController extends Controller
         self::unzipProblem($file, $problem);
         self::deleteFile($file);
 
-        $response = self::checkFileStructure($problem);
-        if($response != true){
+        $wrong_msg = self::checkFileStructure($problem);
+        if(sizeof($wrong_msg) > 0){
             $problem->delete();
-            return response()->json($response);
+            return response()->json($wrong_msg);
         }
 
         $question_file = self::storeQuestion($problem->name);
