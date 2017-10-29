@@ -210,5 +210,20 @@ class TeacherTableSeeder extends Seeder
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
+
+
+
+        DB::table('teacher')->insert([
+            'name' => 'CodeOne',
+            'email' => 'codeone@admin.com',
+            'image' => 16,
+            'username' => 'CodeOne',
+            'password' => password_hash('manmigau', PASSWORD_DEFAULT),
+            'role' => 'admin',
+            'token' => 'WfHp37ebFAAAAA2esAPrvJVWkXWLpsDf',
+            'status' => 'enable',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ]);
     }
 }
