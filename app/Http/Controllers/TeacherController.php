@@ -197,7 +197,7 @@ class TeacherController extends Controller
 
     public function getAll()
     {
-        $teachers = Teacher::all();
+        $teachers = Teacher::where('role', '!=', 'admin')->get();
         return $teachers;
     }
 }
