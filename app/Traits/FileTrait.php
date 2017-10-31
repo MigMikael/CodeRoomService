@@ -180,6 +180,12 @@ trait FileTrait
         //Storage::delete($file->name);
     }
 
+    public function unzipFile($filePath, $name)
+    {
+        $zipper = new Zipper();
+        $zipper->make($filePath)->extractTo(storage_path('/app/'.$name));
+    }
+
     public function zipFile($exportPath, $rootPath)
     {
         $zip = new ZipArchive();

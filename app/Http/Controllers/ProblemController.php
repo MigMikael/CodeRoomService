@@ -563,6 +563,60 @@ class ProblemController extends Controller
         }
     }
 
+    public function storesInputAndOutput(Request $request)
+    {
+        $problem_file_id = $request->get('problem_file_id');
+        $problemFile = ProblemFile::findOrFail($problem_file_id);
+
+        if($request->hasFile('file')){
+            $theFile = $request->file('file');
+            $ex = $theFile->getClientOriginalExtension();
+            Storage::put($theFile->getFilename(). '.' . $ex, File2::get($theFile));
+            self::unzipFile(storage_path('/app/'), $theFile->getFilename());
+        }else{
+            return response()->json(['msg' => 'file not found']);
+        }
+
+        $type = $request->get('type');
+        if($type == 'input'){
+            $files = self::getFiles(storage_path('/app/'.$theFile->getFilename()));
+            foreach ($files as $file){
+                $content = self::getFile($file);
+                $name = explode('/', $file);
+
+                $input = [
+                    'problem_file_id' => $problem_file_id,
+                    'version' => self::getMaxInputVersion($problemFile) + 1,
+                    'filename' => $name[-1],
+                    'content' => $content
+                ];
+
+                ProblemInput::create($input);
+            }
+            return response()->json(['msg' => 'add input success']);
+
+        }elseif($type == 'output'){
+            $files = self::getFiles(storage_path('/app/'.$theFile->getFilename()));
+            foreach ($files as $file){
+                $content = self::getFile($file);
+                $name = explode('/', $file);
+
+                $output = [
+                    'problem_file_id' => $problem_file_id,
+                    'version' => self::getMaxInputVersion($problemFile) + 1,
+                    'filename' => $name[-1],
+                    'content' => $content
+                ];
+
+                ProblemOutput::create($output);
+            }
+            return response()->json(['msg' => 'add output success']);
+
+        }else{
+            return response()->json(['msg' => 'type can be only input and output']);
+        }
+    }
+
     public function updateInput(Request $request)
     {
         $id = $request->get('id');
