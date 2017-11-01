@@ -116,6 +116,12 @@ class UserAuthController extends Controller
             'username' => $username,
             'password' => password_hash($password, PASSWORD_DEFAULT)
         ];
+
+        session_start();
+        $_SESSION['userID'] = $student->id;
+        $_SESSION['userRole'] = 'student';
+        $_SESSION['time'] = Carbon::now();
+        
         $student = Student::firstOrCreate($student);
         $student->makeVisible('token');
         $student->makeVisible('username');
