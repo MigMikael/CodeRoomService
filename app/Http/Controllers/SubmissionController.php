@@ -322,8 +322,8 @@ class SubmissionController extends Controller
                             'error' => 'Memory Limit Exceed',
                         ];
                         array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
-                    }elseif ($score['score'] == 'Compile Error'){
-                        // this is time limit exceed
+                    }/*elseif ($score['score'] == 'Compile Error'){
+
                         $output = [
                             'submission_file_id' => $submissionFile->id,
                             'content' => '',
@@ -331,7 +331,7 @@ class SubmissionController extends Controller
                             'error' => 'Compile Error',
                         ];
                         array_push($this->wrong, 'ไม่สามารถรันโค้ดได้');
-                    }else{
+                    }*/else{
                         // this is wrong
                         $output = [
                             'submission_file_id' => $submissionFile->id,
@@ -389,7 +389,7 @@ class SubmissionController extends Controller
                                 'error' => 'Memory Limit Exceed',
                             ];
                             array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
-                        }elseif ($score['score'] == 'Compile Error'){
+                        }/*elseif ($score['score'] == 'Compile Error'){
                             // this is time limit exceed
                             $output = [
                                 'submission_file_id' => $submissionFile->id,
@@ -398,7 +398,7 @@ class SubmissionController extends Controller
                                 'error' => 'Compile Error',
                             ];
                             array_push($this->wrong, 'ไม่สามารถรันโค้ดได้');
-                        }else{
+                        }*/else{
                             // this is wrong
                             $output = [
                                 'submission_file_id' => $submissionFile->id,
