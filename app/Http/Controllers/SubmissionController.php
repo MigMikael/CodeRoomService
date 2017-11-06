@@ -323,7 +323,6 @@ class SubmissionController extends Controller
                         ];
                         array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
                     }elseif ($score['score'] == 'Compile Error'){
-
                         $output = [
                             'submission_file_id' => $submissionFile->id,
                             'content' => '',
@@ -337,7 +336,7 @@ class SubmissionController extends Controller
                             'submission_file_id' => $submissionFile->id,
                             'content' => '',
                             'score' => 0,
-                            'error' => $score['score'],
+                            'error' => '-',
                         ];
                         array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
                     }
@@ -404,7 +403,7 @@ class SubmissionController extends Controller
                                 'submission_file_id' => $submissionFile->id,
                                 'content' => '',
                                 'score' => 0,
-                                'error' => $score['score'],
+                                'error' => '-',
                             ];
                             array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
                         }
