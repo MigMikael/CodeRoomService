@@ -305,7 +305,7 @@ class SubmissionController extends Controller
             if($problemOutputNum > 0){
                 $count = 1;
                 Log::info(print_r($scores, true));
-                if($scores['score'] == 'Complie Error'){
+                if(isset($scores['score']) && $scores['score'] == 'Complie Error'){
                     $output = [
                         'submission_file_id' => $submissionFile->id,
                         'content' => '',
