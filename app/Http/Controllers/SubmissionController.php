@@ -305,7 +305,15 @@ class SubmissionController extends Controller
             if($problemOutputNum > 0){
                 $count = 1;
                 foreach ($scores as $score){
-                    if($score['score'] == '100.000000'){
+                    if (array_key_exists('complie', $score)){
+                        $output = [
+                            'submission_file_id' => $submissionFile->id,
+                            'content' => '',
+                            'score' => 0,
+                            'error' => 'Compile Error',
+                        ];
+                        array_push($this->wrong, 'ไม่สามารถรันโค้ดได้ (Syntax Error)');
+                    }elseif($score['score'] == '100.000000'){
                         // this is correct
                         $output = [
                             'submission_file_id' => $submissionFile->id,
@@ -363,7 +371,15 @@ class SubmissionController extends Controller
                 foreach ($scores as $score){
                     if($score['name'] == $fileName){
                         /*Log::info(gettype($score['score']));*/
-                        if($score['score'] == '100.000000'){
+                        if (array_key_exists('complie', $score)){
+                            $output = [
+                                'submission_file_id' => $submissionFile->id,
+                                'content' => '',
+                                'score' => 0,
+                                'error' => 'Syntax Error',
+                            ];
+                            array_push($this->wrong, 'ไม่สามารถรันโค้ดได้ (Syntax Error)');
+                        }elseif($score['score'] == '100.000000'){
                             // this is correct
                             $output = [
                                 'submission_file_id' => $submissionFile->id,
