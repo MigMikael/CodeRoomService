@@ -305,15 +305,14 @@ class SubmissionController extends Controller
             if($problemOutputNum > 0){
                 $count = 1;
                 //Log::info(print_r($scores, true));
-                if(sizeof($scores) == 1){
+                if($scores['score'] == 'Compile Error'){
                     $output = [
                         'submission_file_id' => $submissionFile->id,
                         'content' => '',
                         'score' => 0,
                         'error' => $scores['score'],
                     ];
-                    $o = SubmissionOutput::create($output);
-                    $submission->score += $o->score;
+                    SubmissionOutput::create($output);
                 }else{
                     foreach ($scores as $score){
                         if($score['score'] == '100.000000'){
