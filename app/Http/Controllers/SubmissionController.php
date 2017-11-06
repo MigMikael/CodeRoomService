@@ -304,6 +304,7 @@ class SubmissionController extends Controller
 
             if($problemOutputNum > 0){
                 $count = 1;
+                Log::info(print_r($scores, true));
                 foreach ($scores as $score){
                     if($score['score'] == '100.000000'){
                         // this is correct
