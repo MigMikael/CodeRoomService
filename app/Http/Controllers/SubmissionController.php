@@ -313,6 +313,7 @@ class SubmissionController extends Controller
                         'error' => 'Compile Error',
                     ];
                     SubmissionOutput::create($output);
+                    array_push($this->wrong, 'ไม่สามารถรันโค้ดได้');
                 }else{
                     foreach ($scores as $score){
                         if($score['score'] == '100.000000'){
@@ -332,14 +333,6 @@ class SubmissionController extends Controller
                                 'error' => 'Memory Limit Exceed',
                             ];
                             array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
-                        }elseif ($score['score'] == 'Compile Error'){
-                            $output = [
-                                'submission_file_id' => $submissionFile->id,
-                                'content' => '',
-                                'score' => 0,
-                                'error' => 'Compile Error',
-                            ];
-                            array_push($this->wrong, 'ไม่สามารถรันโค้ดได้');
                         }else{
                             // this is wrong
                             $output = [
@@ -382,45 +375,56 @@ class SubmissionController extends Controller
                 foreach ($scores as $score){
                     if($score['name'] == $fileName){
                         /*Log::info(gettype($score['score']));*/
-                        if($score['score'] == '100.000000'){
-                            // this is correct
-                            $output = [
-                                'submission_file_id' => $submissionFile->id,
-                                'content' => '',
-                                'score' => $score['score'],
-                                'error' => '',
-                            ];
-                        }elseif ($score['score'] == 'Exited with error status 1'){
-                            // this is time limit exi
-                            $output = [
-                                'submission_file_id' => $submissionFile->id,
-                                'content' => '',
-                                'score' => 0,
-                                'error' => 'Memory Limit Exceed',
-                            ];
-                            array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
-                        }elseif ($score['score'] == 'Compile Error'){
-                            // this is time limit exceed
+                        if(isset($scores['score']) && $scores['score'] == 'Complie Error'){
                             $output = [
                                 'submission_file_id' => $submissionFile->id,
                                 'content' => '',
                                 'score' => 0,
                                 'error' => 'Compile Error',
                             ];
+                            SubmissionOutput::create($output);
                             array_push($this->wrong, 'ไม่สามารถรันโค้ดได้');
                         }else{
-                            // this is wrong
-                            $output = [
-                                'submission_file_id' => $submissionFile->id,
-                                'content' => '',
-                                'score' => 0,
-                                'error' => '-',
-                            ];
-                            array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
+                            if($score['score'] == '100.000000'){
+                                // this is correct
+                                $output = [
+                                    'submission_file_id' => $submissionFile->id,
+                                    'content' => '',
+                                    'score' => $score['score'],
+                                    'error' => '',
+                                ];
+                            }elseif ($score['score'] == 'Exited with error status 1'){
+                                // this is time limit exi
+                                $output = [
+                                    'submission_file_id' => $submissionFile->id,
+                                    'content' => '',
+                                    'score' => 0,
+                                    'error' => 'Memory Limit Exceed',
+                                ];
+                                array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
+                            }elseif ($score['score'] == 'Compile Error'){
+                                // this is time limit exceed
+                                $output = [
+                                    'submission_file_id' => $submissionFile->id,
+                                    'content' => '',
+                                    'score' => 0,
+                                    'error' => 'Compile Error',
+                                ];
+                                array_push($this->wrong, 'ไม่สามารถรันโค้ดได้');
+                            }else{
+                                // this is wrong
+                                $output = [
+                                    'submission_file_id' => $submissionFile->id,
+                                    'content' => '',
+                                    'score' => 0,
+                                    'error' => '-',
+                                ];
+                                array_push($this->wrong, 'ผลลัพธ์ผิดในชุดข้อมูลทดสอบที่ '.$count);
+                            }
+                            $o = SubmissionOutput::create($output);
+                            $submission->score += $o->score;
+                            $count++;
                         }
-                        $o = SubmissionOutput::create($output);
-                        $submission->score += $o->score;
-                        $count++;
                     }
                 }
             }
