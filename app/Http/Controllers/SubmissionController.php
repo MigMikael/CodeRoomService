@@ -304,7 +304,7 @@ class SubmissionController extends Controller
 
             if($problemOutputNum > 0){
                 $count = 1;
-                //Log::info(print_r($scores, true));
+                Log::info(print_r($scores, true));
                 if($scores['score'] == 'Compile Error'){
                     $output = [
                         'submission_file_id' => $submissionFile->id,
