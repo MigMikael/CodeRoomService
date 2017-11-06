@@ -577,13 +577,12 @@ class ProblemController extends Controller
             return response()->json(['msg' => 'file not found']);
         }
 
-        $type = $request->get('type');
-        if($type == 'input'){
-            $files = self::getFiles(storage_path('/app/'.$theFile->getFilename()));
-            foreach ($files as $file){
-                $content = self::getFile($file);
-                $name = explode('/', $file);
+        $files = self::getFiles(storage_path('/app/'.$theFile->getFilename()));
+        foreach ($files as $file){
+            $content = self::getFile($file);
+            $name = explode('/', $file);
 
+            if(strpos($name[-1], '.in')){
                 $input = [
                     'problem_file_id' => $problem_file_id,
                     'version' => self::getMaxInputVersion($problemFile) + 1,
@@ -592,15 +591,7 @@ class ProblemController extends Controller
                 ];
 
                 ProblemInput::create($input);
-            }
-            return response()->json(['msg' => 'add input success']);
-
-        }elseif($type == 'output'){
-            $files = self::getFiles(storage_path('/app/'.$theFile->getFilename()));
-            foreach ($files as $file){
-                $content = self::getFile($file);
-                $name = explode('/', $file);
-
+            }elseif (strpos($name[-1], '.sol')){
                 $output = [
                     'problem_file_id' => $problem_file_id,
                     'version' => self::getMaxInputVersion($problemFile) + 1,
@@ -610,11 +601,8 @@ class ProblemController extends Controller
 
                 ProblemOutput::create($output);
             }
-            return response()->json(['msg' => 'add output success']);
-
-        }else{
-            return response()->json(['msg' => 'type can be only input and output']);
         }
+        return response()->json(['msg' => 'add success']);
     }
 
     public function updateInput(Request $request)
