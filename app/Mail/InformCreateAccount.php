@@ -33,7 +33,7 @@ class InformCreateAccount extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.owner.inform')
+        return $this->view('emails.owner_inform')
             ->with([
                 'username' => $this->teacher->username,
                 'password' => $this->temp_pass
