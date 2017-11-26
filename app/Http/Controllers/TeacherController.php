@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\File;
 use App\Helper\TokenGenerate;
+use App\Mail\InformCreateAccount;
 use App\StudentLesson;
 use App\Teacher;
 use App\Traits\FileTrait;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
 use App\Student;
 use App\Course;
+use Mail;
 use Log;
 
 class TeacherController extends Controller
@@ -71,6 +73,8 @@ class TeacherController extends Controller
             return response()->json(['msg' => 'teacher image not found']);
         }
 
+        $temp_password = (new TokenGenerate())->generate(5);
+
         $teacher = [
             'name' => $name,
             'email' => $email,
@@ -79,7 +83,7 @@ class TeacherController extends Controller
             'role' => 'teacher',
             'status' => 'enable',
             'username' => $email,
-            'password' => password_hash($email, PASSWORD_DEFAULT),
+            'password' => password_hash($temp_password, PASSWORD_DEFAULT),
         ];
         $teacher = Teacher::create($teacher);
 
@@ -92,10 +96,14 @@ class TeacherController extends Controller
             'ip' => '',
             'status' => 'enable',
             'username' => $email,
-            'password' => password_hash($email, PASSWORD_DEFAULT),
+            'password' => password_hash($temp_password, PASSWORD_DEFAULT),
             'role' => 'hidden'
         ];
         Student::firstOrCreate($student);
+
+        // Send mail to inform teacher account
+        Mail::to('chanachai_mig@hotmail.com')
+            ->send(new InformCreateAccount($teacher, $temp_password));
 
         return response()->json(['msg' => 'create teacher success']);
     }
