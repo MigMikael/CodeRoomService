@@ -283,6 +283,13 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
 
 });
 
+Route::get('send_test_email', function(){
+    Mail::raw('Sending emails with Mailgun and Laravel is easy!', function($message)
+    {
+        $message->to('chanachai_mig@hotmail.com');
+    });
+});
+
 //Route::get('test/summary/{id}', 'CourseController@summaryDetail');
 //Route::get('test/progress/{id}', 'CourseController@progressDetail');
 //Route::get('test/{id}/{problem_id}', 'LessonController@exportByProblem');
