@@ -6,7 +6,8 @@
 <body>
 <h2>Inform Account Create</h2>
 <div>Your account successfully create!!!</div>
-<div> Username: {{ $username }}</div>
-<div> Password: {{ $password }}</div>
+<div>Username: {{ $username }}</div>
+<div>Password: {{ $password }}</div>
+<div>Please change password for security</div>
 </body>
 </html>

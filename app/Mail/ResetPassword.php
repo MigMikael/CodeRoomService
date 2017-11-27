@@ -8,11 +8,11 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class InformCreateAccount extends Mailable
+class ResetPassword extends Mailable
 {
     use Queueable, SerializesModels;
 
-    protected $teacher;
+    protected $username;
     protected $temp_pass;
 
     /**
@@ -21,9 +21,9 @@ class InformCreateAccount extends Mailable
      * @param Teacher $teacher
      * @param $temp_pass
      */
-    public function __construct(Teacher $teacher, $temp_pass)
+    public function __construct($username, $temp_pass)
     {
-        $this->teacher = $teacher;
+        $this->username = $username;
         $this->temp_pass = $temp_pass;
     }
 
@@ -34,9 +34,9 @@ class InformCreateAccount extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.owner_inform')->with([
-                'username' => $this->teacher->username,
-                'password' => $this->temp_pass
-            ]);
+        return $this->view('emails.reset_password')->with([
+            'username' => $this->username,
+            'password' => $this->temp_pass
+        ]);
     }
 }

@@ -21,7 +21,7 @@ class CreateTeacherTable extends Migration
             $table->string('token')->unique();
             $table->enum('role', ['admin', 'teacher']);
             $table->string('status');
-            $table->string('username');
+            $table->string('username')->unique();
             $table->string('password');
             $table->timestamps();
         });

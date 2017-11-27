@@ -101,7 +101,7 @@ class StudentController extends Controller
 
         $name = $request->get('name');
         $email = $request->get('email');
-        $username = $request->get('username');
+        //$username = $request->get('username');
 
         if ($request->hasFile('image')){
             $image = File::findOrFail($student->image);
@@ -114,7 +114,7 @@ class StudentController extends Controller
 
         $student->name = $name;
         $student->email = $email;
-        $student->username = $username;
+        //$student->username = $username;
         $student->save();
 
         $student->makeVisible('token');

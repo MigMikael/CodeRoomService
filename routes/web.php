@@ -34,9 +34,10 @@ Route::post('login', 'UserAuthController@login');
 #
 Route::get('logout', 'UserAuthController@logout');
 
-
 #
 Route::post('register', 'UserAuthController@registerUser');
+#
+Route::post('reset_password', 'UserAuthController@resetPassword');
 
 #--------------------------------------------------------------------------------------------------------
 

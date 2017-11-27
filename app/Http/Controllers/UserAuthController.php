@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Mail\ResetPassword;
 use App\Student;
 use App\Teacher;
 use Carbon\Carbon;
@@ -8,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Traits\ImageTrait;
 use App\Helper\TokenGenerate;
 use Log;
+use Mail;
 
 class UserAuthController extends Controller
 {
@@ -127,5 +129,37 @@ class UserAuthController extends Controller
         $_SESSION['time'] = Carbon::now();
 
         return $student;
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $username = $request->get('username');
+        $teacher = Teacher::where('username', $username)->first();
+        if(sizeof($teacher) == 1){
+            $tempPass = (new TokenGenerate())->generate(5);
+            $teacher->password = password_hash($tempPass, PASSWORD_DEFAULT);
+            $teacher->save();
+
+            Mail::to($teacher->email)
+                ->send(new ResetPassword($teacher->username, $tempPass));
+
+            return response()->json(['msg' => 'reset password success']);
+
+        }else{
+            $student = Student::where('username', $username)->first();
+            if(sizeof($student) == 1){
+                $tempPass = (new TokenGenerate())->generate(5);
+                $student->password = password_hash($tempPass, PASSWORD_DEFAULT);
+                $student->save();
+
+                Mail::to($student->email)
+                    ->send(new ResetPassword($student->username, $tempPass));
+
+                return response()->json(['msg' => 'reset password success']);
+
+            }else{
+                return response()->json(['msg' => 'username not found']);
+            }
+        }
     }
 }

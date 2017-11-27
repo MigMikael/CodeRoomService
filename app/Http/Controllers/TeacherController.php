@@ -148,7 +148,7 @@ class TeacherController extends Controller
 
         $name = $request->get('name');
         $email = $request->get('email');
-        $username = $request->get('username');
+        //$username = $request->get('username');
 
         if ($request->hasFile('image')){
             $image = File::findOrFail($teacher->image);
@@ -162,7 +162,7 @@ class TeacherController extends Controller
 
         $teacher->name = $name;
         $teacher->email = $email;
-        $teacher->username = $username;
+        //$teacher->username = $username;
         $teacher->save();
 
         $teacher->makeVisible('token');
