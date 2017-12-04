@@ -152,8 +152,12 @@ class UserAuthController extends Controller
                 $student->password = password_hash($tempPass, PASSWORD_DEFAULT);
                 $student->save();
 
-                Mail::to($student->email)
-                    ->send(new ResetPassword($student->username, $tempPass));
+                if($student->email == ''){
+                    return response()->json(['msg' => 'email not found']);
+                }else{
+                    Mail::to($student->email)
+                        ->send(new ResetPassword($student->username, $tempPass));
+                }
 
                 return response()->json(['msg' => 'reset password success']);
 
