@@ -13,6 +13,7 @@ use Log;
 
 trait EvaluatorTrait
 {
+    protected $evaluator_IP = "172.27.225.100:3000";
     public function getSubjectName($problem)
     {
         $subjectName = $problem->lesson->course->name;
@@ -24,7 +25,7 @@ trait EvaluatorTrait
 
     public function checkInputVersion($problem, $hasDriver)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
 
         $client = new Client();
@@ -47,7 +48,7 @@ trait EvaluatorTrait
 
     public function checkOutputVersion($problem, $hasDriver)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
 
         $client = new Client();
@@ -70,7 +71,7 @@ trait EvaluatorTrait
 
     public function sendNewInput($problem)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
 
         $inputs = [];
@@ -107,7 +108,7 @@ trait EvaluatorTrait
 
     public function sendNewInput2($problem)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
 
         $inputs = [];
@@ -147,7 +148,7 @@ trait EvaluatorTrait
 
     public function sendNewOutput($problem)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
 
         $outputs = [];
@@ -184,7 +185,7 @@ trait EvaluatorTrait
 
     public function sendNewOutput2($problem)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
 
         $outputs = [];
@@ -225,7 +226,7 @@ trait EvaluatorTrait
     public function evaluateFile($submission)
     {
         $problem = $submission->problem;
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
 
         $data = [];
@@ -291,7 +292,7 @@ trait EvaluatorTrait
     public function evaluateFile2($submission)
     {
         $problem = $submission->problem;
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
 
         $data = [];
@@ -334,7 +335,7 @@ trait EvaluatorTrait
 
     public function sendDriver($problem)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
 
         $drivers = [];
@@ -376,7 +377,7 @@ trait EvaluatorTrait
 
     public function analyzeSubmitFile($submissionFile)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $codes = [];
         array_push($codes, $submissionFile->code);
 
@@ -396,7 +397,7 @@ trait EvaluatorTrait
 
     public function analyzeSubmitFile2($submission)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($submission->problem);
         $data = [];
         foreach ($submission->submissionFiles as $submissionFile){
@@ -447,7 +448,7 @@ trait EvaluatorTrait
 
     public function analyzeProblemFile($problem)
     {
-        $evaluator_ip = env('EVALUATOR_IP');
+        $evaluator_ip = $this->evaluator_IP;
         $subjectName = self::getSubjectName($problem);
         $data = [];
 
