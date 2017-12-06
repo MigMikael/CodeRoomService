@@ -195,7 +195,7 @@ class StudentController extends Controller
             //Log::info('###### '.sizeof($data));
             foreach ($data as $key => $value) {
                 $id = $value->id;
-                $id = str_replace(' ', '', $id);
+                $id = str_replace(' 0', '0', $id);
                 $students[] = ['student_id' => $id, 'name' => $value->name];
                 //Log::info('###### '. $id.' '.$value->name);
             }
