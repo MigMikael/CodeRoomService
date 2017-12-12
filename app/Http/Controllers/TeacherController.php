@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\File;
 use App\Helper\TokenGenerate;
 use App\Mail\InformCreateAccount;
-use App\StudentLesson;
 use App\Teacher;
 use App\Traits\FileTrait;
 use Illuminate\Http\Request;
@@ -115,12 +114,11 @@ class TeacherController extends Controller
 
         $teacher->name = $request->get('name');
         $teacher->email = $request->get('email');
-        $teacher->username = $request->get('username');
+        $teacher->role = $request->get('role');
 
         $student = Student::where('student_id', $teacher->id)->first();
         $student->name = $teacher->name;
         $student->email = $teacher->email;
-        $student->username = $teacher->username;
 
         if ($request->hasFile('image')){
             $image = File::findOrFail($teacher->image);
@@ -207,5 +205,19 @@ class TeacherController extends Controller
     {
         $teachers = Teacher::where('role', '!=', 'admin')->get();
         return $teachers;
+    }
+
+    public function destroy($id)
+    {
+        $teacher = Teacher::findOrFail($id);
+        if($teacher->role == 'admin'){
+            return response()->json(['msg' => 'admin cannot be delete']);
+        }
+
+        $student = Student::where('student_id', $teacher->id)->first();
+        $teacher->delete();
+        $student->delete();
+
+        return response()->json(['msg' => 'delete teacher success']);
     }
 }

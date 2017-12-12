@@ -279,6 +279,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('teacher/status/{teacher_id}', 'TeacherController@changeStatus');
         #
         Route::get('teacher/course/{course_id}', 'CourseController@teacherMember');
+        #
+        Route::delete('teacher/{id}/delete', 'TeacherController@destroy');
 
     });
 
