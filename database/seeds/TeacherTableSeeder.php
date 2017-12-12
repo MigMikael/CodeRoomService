@@ -198,7 +198,7 @@ class TeacherTableSeeder extends Seeder
 
 
 
-        DB::table('teacher')->insert([
+        /*DB::table('teacher')->insert([
             'name' => 'The Archangel',
             'email' => 'Archangel@example.com',
             'image' => 15,
@@ -209,7 +209,7 @@ class TeacherTableSeeder extends Seeder
             'status' => 'enable',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
-        ]);
+        ]);*/
 
 
 
