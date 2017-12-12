@@ -203,7 +203,10 @@ class TeacherController extends Controller
 
     public function getAll()
     {
-        $teachers = Teacher::all();
+        $teachers = Teacher::where([
+            ['username', '!=', 'CodeOne'],
+            ['username', '!=', 'The Archangel']
+        ])->get();
         return $teachers;
     }
 
