@@ -203,7 +203,7 @@ class TeacherController extends Controller
 
     public function getAll()
     {
-        $teachers = Teacher::where('role', '!=', 'admin')->get();
+        $teachers = Teacher::all();
         return $teachers;
     }
 
