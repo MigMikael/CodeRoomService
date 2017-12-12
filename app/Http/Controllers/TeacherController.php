@@ -203,10 +203,9 @@ class TeacherController extends Controller
 
     public function getAll()
     {
-        $teachers = Teacher::where([
-            ['username', '!=', 'CodeOne'],
-            ['username', '!=', 'The Archangel']
-        ])->get();
+        $teachers = Teacher::where('username', '!=', 'CodeOne')
+            ->orWhere('username', '!=', 'The Archangel')
+            ->get();
         return $teachers;
     }
 
