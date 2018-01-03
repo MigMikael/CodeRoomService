@@ -234,6 +234,8 @@ Route::group(['middleware' => 'userAuth', 'prefix' => 'api'], function (){
         Route::get('student/all/{course_id}', 'StudentController@getAll');
         #
         Route::get('student/submission/{id}/code', 'StudentController@submissionCode');
+        #
+        Route::get('student/{student_id}/problem/{problem_id}', 'StudentController@submissionCode2');
 
 
         #

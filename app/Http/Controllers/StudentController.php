@@ -16,6 +16,7 @@ use Excel;
 use Log;
 use Storage;
 use Zipper;
+use Carbon\Carbon;
 
 class StudentController extends Controller
 {
@@ -334,5 +335,56 @@ class StudentController extends Controller
         $view_able_name = $problem->name.'_'.$student->student_id.'.zip';
         return response()->download(storage_path().'/app/'.$theName, $view_able_name)
             ->deleteFileAfterSend(true);
+    }
+
+    public function submissionCode2($student_id, $problem_id)
+    {
+        $submission = Submission::where([
+            ['student_id', '=', $student_id],
+            ['problem_id', '=', $problem_id]
+        ])->orderByDesc('id')->first();
+
+        $student = $submission->student;
+        $problem = $submission->problem;
+
+        $now = str_replace(' ', '_', Carbon::now());
+        $folderName = $problem->name.'_'.$student->student_id.'_'.$now.'/src/';
+
+        foreach ($submission->submissionFiles as $submissionFile){
+            $packageName = '';
+            if ($submissionFile->package != 'default package') {
+                $temps = explode('.', $submissionFile->package);
+                foreach ($temps as $temp) {
+                    $packageName .= $temp . '/';
+                }
+            }
+            if($submissionFile->package != 'driver'){
+                Storage::put($folderName.$packageName.$submissionFile->filename, $submissionFile->code);
+            }
+        }
+        $folderName = str_replace('/src/', '', $folderName);
+        $files = storage_path().'/app/'.$folderName;
+
+        $theName = $problem->name.'_'.$student->student_id.'_'.$now.'.zip';
+        $des_path = storage_path().'/app/'.$theName;
+
+        $zipper = new Zipper;
+        $zipper->make($des_path)->add($files)->close();
+
+        //Log::info($folderName);
+        Storage::deleteDirectory($folderName);
+
+        $zz = base64_encode(file_get_contents($des_path));
+
+        Storage::deleteDirectory($files);
+        Storage::delete($des_path);
+
+        return response()->json([
+            'zip' => $zz,
+        ]);
+
+        /*$view_able_name = $problem->name.'_'.$student->student_id.'.zip';
+        return response()->download(storage_path().'/app/'.$theName, $view_able_name)
+            ->deleteFileAfterSend(true);*/
     }
 }
