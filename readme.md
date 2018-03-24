@@ -1,51 +1,50 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+<p align="center"><a href="http://202.28.72.76/Coderoom-frontend/#!/login" target="_blank"><img src="http://202.28.72.76/Coderoom-frontend/images/cpsu.png" height="200px"></a></p>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+# CodeRoomService
+เว็บเซอร์วิสสำหรับระบบ CodeRoom 
 
-## About Laravel
+## About CodeRoom
+โค้ดรูมคือระบบบริหารจัดการรายวิชาเกี่ยวกับการโปรแกรมมิ่งภาษา Java แบบครบวงจร ประกอบด้วยสามส่วน ได้แก่
+1. CodeRoom-Frontend [ [Github](https://github.com/Thanadej8/Coderoom-frontend) ]
+    * ส่วนประสานงานกับผู้ใช้ 
+    * พัฒนาโดย [Thanadej8](https://github.com/Thanadej8)
+2. CodeRoom-Service [Here]
+    * เว็บเซอร์วิสสำหรับบริหารจัดการข้อมูลในภาพรวม สั่งการ Evaluator และจัดการข้อมูลให้กับ Frontend
+    * พัฒนาโดย [MigMikael](https://github.com/MigMikael)
+3. Evaluator [ [Bitbucket#1](https://bitbucket.org/sucoderoom/coderoomcore) ] [ [Bitbucket#2](https://bitbucket.org/ElderBrother/coderoomjava) ]
+    * วิเคราะห์โครงสร้างโค้ด รันโค้ดและให้คะแนนตามแต่ละเทสเคส
+    * พัฒนาโดย [Nanthipath](https://bitbucket.org/ElderBrother/)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+## Developer
+_CodeRoomService_ พัฒนาโดย **นาย ชนะไชย พุทธรักษา** [[Website](https://migmikael.github.io/)] นักศึกษาภาควิชาคอมพิวเตอร์ คณะวิทยาศาสตร์ มหาวิทยาลัยศิลปากร โปรเจคนี้เป็นส่วนหนึ่งของปริญญานิพนธ์ระดับปริญญาตรี
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
+* Key Features
+    * **สามารถตรวจวิเคราะห์โครงสร้างโค้ดของนักเรียนและให้คะแนนเป็นส่วนๆ**
+    * **เปืดโอกาสให้อาจารย์สามารถออกแบบโจทย์ที่เกี่ยวกับการเขียนโปรแกรมเชิงวัตถุได้ (Object Oriented Programming)**
+    * **ฟังก์ชั่นในการช่วยแนะนำนักเรียนให้เขียนโค้ดที่ถูกต้องตามที่อาจารย์กำหนด**     
+    * รันโค้ดของนักเรียนและให้คะแนนความถูกต้องตามแต่ละเทสเคส
+    * อาจารย์สามารถจัดเนื้อหาของบทเรียน เพิ่ม ลบ แก้ไข และเรียงลำดับโจทย์ในแต่ละบทเรียน
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
-
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
-
-- **[Vehikl](http://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Styde](https://styde.net)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
-
+* สำหรับอาจารย์
+    * สร้าง แก้ไข จัดการคอร์ส
+    * สร้าง แก้ไข จัดการบทเรียน
+    * สร้าง แก้ไข จัดการโจทย์
+    * เพิ่ม ลบนักเรียน ออกจากรายวิชา
+    * ตรวจสอบความก้าวหน้าในการทำโจทย์ของนักเรียนในรายวิชา
+    * Export โค้ดของนักเรียนในคอร์สที่ตนเองดูแล
+    
+* สำหรับนักศึกษา
+    * เข้าร่วมคอร์สเรียนโดยใช้ Token ประจำคอร์ส
+    * ส่งโค้ดตรวจและรับผลตรวจ
+    * ดูความก้าวหน้าของนักเรียนคนอื่นๆ ในคอร์สเรียน
+    * Export โค้ดที่เคยส่ง
 ## Security Vulnerabilities
+If you discover a security vulnerability within this project or have any suggestion, please contact developer, we appreciate your comment.
+* [chanachai_mig@hotmail.com](mailto:chanachai_mig@hotmail.com)
+* [Facebook](https://www.facebook.com/mig.mikael?ref=bookmarks)
+* [Twitter](https://twitter.com/Chanachai_Mig)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+## Live version
+[Link](http://202.28.72.76/Coderoom-frontend/#!/login)
