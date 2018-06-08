@@ -13,7 +13,7 @@ use Log;
 
 trait EvaluatorTrait
 {
-    protected $evaluator_IP = "172.27.225.100:3000";
+    protected $evaluator_IP = "172.27.229.201:3000";
     public function getSubjectName($problem)
     {
         $subjectName = $problem->lesson->course->name;
@@ -38,7 +38,7 @@ trait EvaluatorTrait
             //$url = 'http://posttestserver.com/post.php?subject='.$subjectName.'&problem='.$problem->name;
         }
 
-        $response = $client->request('GET', urlencode($url));
+        $response = $client->request('GET', $url);
         $result = $response->getBody();
         //Log::info('#### checkInputVersion '. $response->getBody());
         $json = json_decode($result, true);
@@ -61,7 +61,7 @@ trait EvaluatorTrait
             //$url = 'http://posttestserver.com/post.php?subject='.$subjectName.'&problem='.$problem->name;
         }
 
-        $response = $client->request('GET', urlencode($url));
+        $response = $client->request('GET', $url);
         $result = $response->getBody();
         //Log::info('#### checkOutputVersion '. $response->getBody());
         $json = json_decode($result, true);
