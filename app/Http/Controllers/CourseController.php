@@ -42,8 +42,10 @@ class CourseController extends Controller
     {
         if($request->hasFile('image')){
             $image = self::storeImage($request->file('image'));
+            $name = $request->get('name');
+            $name = str_replace('/', '-', $name);
             $course = [
-                'name' => $request->get('name'),
+                'name' => $name,
                 'color' => '244:67:54',
                 'token' => (new TokenGenerate())->generate(6),
                 'image' => $image->id,
@@ -75,7 +77,9 @@ class CourseController extends Controller
         $course = Course::findOrFail($id);
         $old_name = $course->name;
 
-        $course->name = $request->get('name');
+        $new_name = $request->get('name');
+        $new_name = str_replace('/', '-', $new_name);
+        $course->name = $new_name;
         if($request->hasFile('image')){
             $image = File::findOrFail($course->image);
             self::deleteFile($image);

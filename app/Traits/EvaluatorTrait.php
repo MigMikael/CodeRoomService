@@ -38,7 +38,7 @@ trait EvaluatorTrait
             //$url = 'http://posttestserver.com/post.php?subject='.$subjectName.'&problem='.$problem->name;
         }
 
-        $response = $client->request('GET', $url);
+        $response = $client->request('GET', urlencode($url));
         $result = $response->getBody();
         //Log::info('#### checkInputVersion '. $response->getBody());
         $json = json_decode($result, true);
@@ -61,7 +61,7 @@ trait EvaluatorTrait
             //$url = 'http://posttestserver.com/post.php?subject='.$subjectName.'&problem='.$problem->name;
         }
 
-        $response = $client->request('GET', $url);
+        $response = $client->request('GET', urlencode($url));
         $result = $response->getBody();
         //Log::info('#### checkOutputVersion '. $response->getBody());
         $json = json_decode($result, true);
