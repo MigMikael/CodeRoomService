@@ -286,6 +286,7 @@ trait EvaluatorTrait
 
         $result = $res->getBody();
         $json = json_decode($result, true);
+        Log::info('#### Data From Evaluator '. $result);
         return $json;
     }
 

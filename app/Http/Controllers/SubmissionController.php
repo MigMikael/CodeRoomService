@@ -178,7 +178,6 @@ class SubmissionController extends Controller
             $hasDriver = self::checkDriver($problem);
             $currentVer = self::getCurrentVersion($problem);
 
-
             if(!$hasDriver) {
                 // this submit in problem that not have driver
                 $data = self::checkInputVersion($problem, $hasDriver);
