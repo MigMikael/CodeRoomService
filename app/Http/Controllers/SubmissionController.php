@@ -226,6 +226,7 @@ class SubmissionController extends Controller
         foreach ($submission->submissionFiles as $submissionFile){
             $submissionFile->outputs;
         }
+        Log::info("submission ". $submission);
         return $submission;
 
         //return response()->json(['msg' => 'submit success']);
