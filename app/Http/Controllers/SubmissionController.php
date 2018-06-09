@@ -223,8 +223,8 @@ class SubmissionController extends Controller
         }
 
         $submission['wrong'] = $this->wrong;
-        foreach ($submission->submissionFiles() as $submissionFile){
-            $submissionFile->outputs();
+        foreach ($submission->submissionFiles as $submissionFile){
+            $submissionFile->outputs;
         }
         return $submission;
 

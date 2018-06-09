@@ -172,7 +172,17 @@ class ProblemController extends Controller
             $folderName = $folderName.'.java';
             $version = 1;
 
-            $pro_file = ProblemFile::where('filename', $folderName)->first();
+            $pro_file = null;
+            $pro_files = ProblemFile::where('filename', $folderName)->get();
+            foreach ($pro_files as $prop_file){
+                $this_problem = $prop_file->problem;
+                if ($this_problem->id == $problem->id){
+                    $pro_file = $prop_file;
+                }
+            }
+            if($pro_file == null){
+                return response()->json(['msg' => 'Source file not found']);
+            }
 
             if(sizeof($pro_file) != 1){
                 //Log::info('in sol wrong folder');
