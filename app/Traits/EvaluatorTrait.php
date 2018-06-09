@@ -41,6 +41,10 @@ trait EvaluatorTrait
         $response = $client->request('GET', $url);
         $result = $response->getBody();
         Log::info('#### checkInputVersion '. $response->getBody());
+
+        Log::info('status code : '. $response->getStatusCode());
+        Log::info('content-type : '. $response->getHeader('content-type')[0]);
+
         $json = json_decode($result, true);
 
         return $json;
