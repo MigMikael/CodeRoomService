@@ -38,15 +38,11 @@ trait EvaluatorTrait
             //$url = 'http://posttestserver.com/post.php?subject='.$subjectName.'&problem='.$problem->name;
         }
 
-        try {
-            $response = $client->request('GET', $url);
-            $result = $response->getBody();
-            Log::info('#### checkInputVersion '. $response->getBody());
+        $response = $client->request('GET', $url);
+        $result = $response->getBody();
+        Log::info('#### checkInputVersion '. $response->getBody());
+        $json = json_decode($result, true);
 
-            $json = json_decode($result, true);
-        } catch (\Exception $e){
-            $json = "Error Communication with Evaluator";
-        }
         return $json;
     }
 
@@ -443,13 +439,9 @@ trait EvaluatorTrait
             ]
         ]);
 
-        try {
-            $result = $res->getBody();
-            $json = json_decode($result, true);
-            Log::info('#### Data From Evaluator : '. $res->getBody());
-        }catch (\Exception $e){
-            $json = "Error Communication with Evaluator";
-        }
+        $result = $res->getBody();
+        $json = json_decode($result, true);
+        Log::info('#### Data From Evaluator : '. $res->getBody());
 
         return $json;
     }
