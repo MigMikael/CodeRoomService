@@ -139,37 +139,40 @@ class SubmissionController extends Controller
         if ($problem->is_parse == 'true'){
             //Log::info('is_parse : true');
             $classes = self::analyzeSubmitFile2($submission);
-
-            $res = self::saveResult($classes, $submission->submissionFiles);
-            if($res == 'analysis error'){
-                //Log::info($res);
-                return response()->json(['msg' => $res]);
-            }
-
-            foreach ($submission->submissionFiles as $submissionFile){
-                self::calStructureScore2($submissionFile);
-            }
-
-            $results_classname = [];
-            foreach ($submission->submissionFiles as $submissionFile){
-                foreach ($submissionFile->results as $result) {
-                    array_push($results_classname, $result->class);
-                    //Log::info('result : '. $result->class);
+            if($classes == "Error Communication with Evaluator"){
+                array_push($this->wrong, $classes);
+            }else{
+                $res = self::saveResult($classes, $submission->submissionFiles);
+                if($res == 'analysis error'){
+                    //Log::info($res);
+                    return response()->json(['msg' => $res]);
                 }
-            }
 
-            $problemAnalysis_classname = [];
-            foreach ($problem->problemFiles as $problemFile){
-                foreach ($problemFile->problemAnalysis as $analysis) {
-                    array_push($problemAnalysis_classname, $analysis->class);
-                    //Log::info('analysis : '. $analysis->class);
+                foreach ($submission->submissionFiles as $submissionFile){
+                    self::calStructureScore2($submissionFile);
                 }
-            }
 
-            $class_diffs = array_diff($problemAnalysis_classname, $results_classname);
-            //Log::info(print_r($class_diffs, true));
-            foreach ($class_diffs as $diff){
-                array_push($this->wrong, 'ไม่มีคลาส '.$diff);
+                $results_classname = [];
+                foreach ($submission->submissionFiles as $submissionFile){
+                    foreach ($submissionFile->results as $result) {
+                        array_push($results_classname, $result->class);
+                        //Log::info('result : '. $result->class);
+                    }
+                }
+
+                $problemAnalysis_classname = [];
+                foreach ($problem->problemFiles as $problemFile){
+                    foreach ($problemFile->problemAnalysis as $analysis) {
+                        array_push($problemAnalysis_classname, $analysis->class);
+                        //Log::info('analysis : '. $analysis->class);
+                    }
+                }
+
+                $class_diffs = array_diff($problemAnalysis_classname, $results_classname);
+                //Log::info(print_r($class_diffs, true));
+                foreach ($class_diffs as $diff){
+                    array_push($this->wrong, 'ไม่มีคลาส '.$diff);
+                }
             }
         }
 
@@ -178,40 +181,46 @@ class SubmissionController extends Controller
             $hasDriver = self::checkDriver($problem);
             $currentVer = self::getCurrentVersion($problem);
 
-
             if(!$hasDriver) {
                 // this submit in problem that not have driver
                 $data = self::checkInputVersion($problem, $hasDriver);
-                if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
-                    self::sendNewInput($problem);
-                }
+                if($data == 'Error Communication with Evaluator'){
+                    array_push($this->wrong, $data);
+                }else{
+                    if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
+                        self::sendNewInput($problem);
+                    }
 
-                $data = self::checkOutputVersion($problem, $hasDriver);
-                if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
-                    self::sendNewOutput($problem);
-                }
+                    $data = self::checkOutputVersion($problem, $hasDriver);
+                    if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
+                        self::sendNewOutput($problem);
+                    }
 
-                // send Student Code to Evaluator
-                $scores = self::evaluateFile($submission);
-                if(sizeof($scores) == 0){
-                    array_push($this->wrong, 'ผลลัพธ์ผิดในทุกชุดข้อมูลทดสอบ');
+                    // send Student Code to Evaluator
+                    $scores = self::evaluateFile($submission);
+                    if(sizeof($scores) == 0){
+                        array_push($this->wrong, 'ผลลัพธ์ผิดในทุกชุดข้อมูลทดสอบ');
+                    }
+                    self::saveScore($scores, $submission);
                 }
-                self::saveScore($scores, $submission);
-
             }else{
                 $data = self::checkInputVersion($problem, $hasDriver);
-                if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
-                    self::sendNewInput2($problem);
-                }
+                if($data == 'Error Communication with Evaluator'){
+                    array_push($this->wrong, $data);
+                }else{
+                    if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
+                        self::sendNewInput2($problem);
+                    }
 
-                $data = self::checkOutputVersion($problem, $hasDriver);
-                if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
-                    self::sendNewOutput2($problem);
-                }
+                    $data = self::checkOutputVersion($problem, $hasDriver);
+                    if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
+                        self::sendNewOutput2($problem);
+                    }
 
-                self::sendDriver($problem);
-                $scores = self::evaluateFile2($submission);
-                self::saveScore2($scores, $submission);
+                    self::sendDriver($problem);
+                    $scores = self::evaluateFile2($submission);
+                    self::saveScore2($scores, $submission);
+                }
             }
         }
         if(sizeof($this->wrong) > 0){
