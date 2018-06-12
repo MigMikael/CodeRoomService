@@ -40,7 +40,7 @@ trait EvaluatorTrait
 
         $response = $client->request('GET', $url);
         $result = $response->getBody();
-        Log::info('#### checkInputVersion '. $response->getBody());
+        #Log::info('#### checkInputVersion '. $response->getBody());
         $json = json_decode($result, true);
 
         return $json;
@@ -63,7 +63,7 @@ trait EvaluatorTrait
 
         $response = $client->request('GET', $url);
         $result = $response->getBody();
-        Log::info('#### checkOutputVersion '. $response->getBody());
+        #Log::info('#### checkOutputVersion '. $response->getBody());
         $json = json_decode($result, true);
 
         return $json;
@@ -286,7 +286,7 @@ trait EvaluatorTrait
 
         $result = $res->getBody();
         $json = json_decode($result, true);
-        Log::info('#### Data From Evaluator '. $result);
+        #Log::info('#### Data From Evaluator '. $result);
         return $json;
     }
 
@@ -483,7 +483,7 @@ trait EvaluatorTrait
 
         $result = $res->getBody();
         $json = json_decode($result, true);
-        Log::info('#### Data From Evaluator : '. $res->getBody());
+        #Log::info('#### Data From Evaluator : '. $res->getBody());
 
         return $json;
     }
