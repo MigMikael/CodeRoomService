@@ -77,33 +77,35 @@ trait EvaluatorTrait
         $inputs = [];
         $inputs['subject'] = $subjectName;
         $inputs['problem'] = $problem->name;
-        $inputs['in'] = [];
+
+        $client = new Client();
+        $url = $evaluator_ip.'/api/teacher/send_in';
+        //$url = 'http://www.posttestserver.com/post.php';
 
         foreach ($problem->problemFiles as $problemFile){
             foreach ($problemFile->inputs as $input){
+                $inputs['in'] = [];
                 $realInput = [
                     'version' => $input->version,
                     'filename' => $input->filename,
                     'content' => $input->content,
                 ];
                 array_push($inputs['in'], $realInput);
+
+                $res = $client->request('POST', $url, [
+                    'json' => [
+                        'subject' => $inputs['subject'],
+                        'problem' => $inputs['problem'],
+                        'in' => $inputs['in'],
+                    ]
+                ]);
+
+                Log::info('Send in : ' . $res->getBody());
             }
         }
 
-        $client = new Client();
-        $url = $evaluator_ip.'/api/teacher/send_in';
-        //$url = 'http://www.posttestserver.com/post.php';
-
-        $res = $client->request('POST', $url, [
-            'json' => [
-                'subject' => $inputs['subject'],
-                'problem' => $inputs['problem'],
-                'in' => $inputs['in'],
-            ]
-        ]);
-
-        $result = $res->getBody();
-        return $result;
+        #$result = $res->getBody();
+        #return $result;
     }
 
     public function sendNewInput2($problem)
@@ -154,33 +156,35 @@ trait EvaluatorTrait
         $outputs = [];
         $outputs['subject'] = $subjectName;
         $outputs['problem'] = $problem->name;
-        $outputs['sol'] = [];
+
+        $client = new Client();
+        $url = $evaluator_ip.'/api/teacher/send_sol';
+        //$url = 'http://www.posttestserver.com/post.php';
 
         foreach ($problem->problemFiles as $problemFile){
             foreach ($problemFile->outputs as $output){
+                $outputs['sol'] = [];
                 $realOutput = [
                     'version' => $output->version,
                     'filename' => $output->filename,
                     'content' => $output->content,
                 ];
                 array_push($outputs['sol'], $realOutput);
+
+                $res = $client->request('POST', $url, [
+                    'json' => [
+                        'subject' => $outputs['subject'],
+                        'problem' => $outputs['problem'],
+                        'sol' => $outputs['sol'],
+                    ]
+                ]);
+
+                Log::info('Send sol : ' . $res->getBody());
             }
         }
 
-        $client = new Client();
-        $url = $evaluator_ip.'/api/teacher/send_sol';
-        //$url = 'http://www.posttestserver.com/post.php';
-
-        $res = $client->request('POST', $url, [
-            'json' => [
-                'subject' => $outputs['subject'],
-                'problem' => $outputs['problem'],
-                'sol' => $outputs['sol'],
-            ]
-        ]);
-
-        $result = $res->getBody();
-        return $result;
+        # $result = $res->getBody();
+        # return $result;
     }
 
     public function sendNewOutput2($problem)
