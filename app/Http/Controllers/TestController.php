@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ProblemInput;
 use App\TeacherCourse;
 use Illuminate\Support\Facades\App;
 use App\Course;
@@ -464,6 +465,24 @@ class TestController extends Controller
         }else{
             return $pos;
         }
+    }
+
+    public function testFTP()
+    {
+        $problem_input = ProblemInput::find(166);
+
+        $executionStartTime = microtime(true);
+
+        $stream = fopen('data://text/plain,'. $problem_input->content, 'r');
+        $content_stream = stream_get_contents($stream);
+        Log::info('type ftp : '. gettype($content_stream));
+        Storage::disk('ftp')->put('something.txt', $content_stream);
+
+        $executionEndTime = microtime(true);
+        $second = $executionEndTime - $executionStartTime;
+        Log::info('time ftp : '. $second);
+
+        return response()->json(['msg' => 'FTP file success']);
     }
 
 }

@@ -55,6 +55,20 @@ return [
             'visibility' => 'public',
         ],
 
+        'ftp' => [
+            'driver'   => 'ftp',
+            'host'     => '172.27.229.201',
+            'username' => 'coderoomcore',
+            'password' => 'CodeRoomCore$123',
+
+            // Optional FTP Settings...
+            // 'port'     => 21,
+            // 'root'     => '',
+            // 'passive'  => true,
+            // 'ssl'      => true,
+            // 'timeout'  => 30,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_KEY'),
