@@ -501,9 +501,9 @@ class TestController extends Controller
             // Upload file
             echo "Connection successful, uploading file now..."."n";
 
-            $file = 'test.txt';
+            $file = 'http://202.28.72.76/CodeRoomService/public/test.txt';
             $contents = file_get_contents($file);
-            file_put_contents("ssh2.sftp://{$sftp}/{$file}", $contents);
+            file_put_contents("ssh2.sftp://{$sftp}/".public_path('test.txt'), $contents);
 
         } else {
             echo "Unable to authenticate with server"."n";
