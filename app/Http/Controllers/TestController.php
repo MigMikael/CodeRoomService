@@ -505,7 +505,7 @@ class TestController extends Controller
             #$contents = file_get_contents($file);
             #file_put_contents("ssh2.sftp://{$sftp}/".public_path('test.txt'), $contents);
 
-            $resFile = fopen("ssh2.sftp://{$sftp}/test.txt", 'w');
+            $resFile = fopen("ssh2.sftp://".intval($sftp)."/test.txt", 'w');
             fwrite($resFile, 'Test Writing from remote');
             fclose($resFile);
 
