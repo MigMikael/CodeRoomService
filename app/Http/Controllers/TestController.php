@@ -499,11 +499,15 @@ class TestController extends Controller
             $sftp = ssh2_sftp($connection);
 
             // Upload file
-            echo "Connection successful, uploading file now..."."n";
+            echo "Connection successful, uploading file now...<br>";
 
-            $file = 'http://202.28.72.76/CodeRoomService/public/test.txt';
-            $contents = file_get_contents($file);
-            file_put_contents("ssh2.sftp://{$sftp}/".public_path('test.txt'), $contents);
+            #$file = 'http://202.28.72.76/CodeRoomService/public/test.txt';
+            #$contents = file_get_contents($file);
+            #file_put_contents("ssh2.sftp://{$sftp}/".public_path('test.txt'), $contents);
+
+            $resFile = fopen("ssh2.sftp://{$sftp}/test.txt", 'w');
+            fwrite($resFile, 'Test Writing from remote');
+            fclose($resFile);
 
         } else {
             echo "Unable to authenticate with server"."n";
