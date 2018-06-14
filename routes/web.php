@@ -302,3 +302,4 @@ Route::get('send_test_email', function(){
 //Route::get('export_score/{id}', 'LessonController@exportScore');
 //Route::get('test/strpos', 'TestController@teststrpos');
 Route::get('test_ftp', 'TestController@testFTP');
+Route::get('test_ftp2', 'TestController@testFTP2');

@@ -485,4 +485,25 @@ class TestController extends Controller
         return response()->json(['msg' => 'FTP file success']);
     }
 
+    public function testFTP2()
+    {
+        $ftp_server = '172.27.229.201';
+        $ftp_username = 'coderoomcore';
+        $ftp_userpass = 'CodeRoomCore$123';
+
+        $ftp_conn = ftp_connect($ftp_server) or die('Could not connect to $ftp_server');
+        $login = ftp_login($ftp_conn, $ftp_username, $ftp_userpass);
+
+        $file = 'angry_emoji.png';
+
+        if(ftp_put($ftp_conn, 'somefile.txt', $file, FTP_ASCII)){
+            echo "Success";
+        }
+        else{
+            echo "Error";
+        }
+
+        ftp_close($ftp_conn);
+    }
+
 }
