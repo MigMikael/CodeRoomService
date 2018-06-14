@@ -487,23 +487,27 @@ class TestController extends Controller
 
     public function testFTP2()
     {
-        $ftp_server = '172.27.229.201';
-        $ftp_username = 'coderoomcore';
-        $ftp_userpass = 'CodeRoomCore$123';
+        $server = '172.27.229.201';
+        $port = '22';
+        $username = 'coderoomcore';
+        $passwd = 'CodeRoomCore$123';
 
-        $ftp_conn = ftp_connect($ftp_server) or die('Could not connect to $ftp_server');
-        $login = ftp_login($ftp_conn, $ftp_username, $ftp_userpass);
+        // connect
+        $connection = ssh2_connect($server, $port);
+        if (ssh2_auth_password($connection, $username, $passwd)) {
+            // initialize sftp
+            $sftp = ssh2_sftp($connection);
 
-        $file = 'angry_emoji.png';
+            // Upload file
+            echo "Connection successful, uploading file now..."."n";
 
-        if(ftp_put($ftp_conn, 'somefile.txt', $file, FTP_ASCII)){
-            echo "Success";
+            $file = 'test.txt';
+            $contents = file_get_contents($file);
+            file_put_contents("ssh2.sftp://{$sftp}/{$file}", $contents);
+
+        } else {
+            echo "Unable to authenticate with server"."n";
         }
-        else{
-            echo "Error";
-        }
-
-        ftp_close($ftp_conn);
     }
 
 }
