@@ -10,6 +10,7 @@ namespace App\Traits;
 use GuzzleHttp\Client;
 use App\ProblemInput;
 use Log;
+use SSH;
 
 trait EvaluatorTrait
 {

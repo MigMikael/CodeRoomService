@@ -519,9 +519,7 @@ class TestController extends Controller
 
     public function testSFTP()
     {
-        /*
         Log::info('start send string');
-        #SSH::into('evaluator')->put(public_path('test.txt'), '/test.txt');
 
         $myfile = fopen(public_path('large.txt'), "r") or die("Unable to open file!");
         $str = fread($myfile, filesize(public_path('large.txt')));
@@ -529,11 +527,12 @@ class TestController extends Controller
 
         SSH::into('evaluator')->putString('large.txt', $str);
         Log::info('finish send string');
-        */
 
+        /*
         $problem = Problem::findOrFail(34);
         $this->SFTPinput($problem);
         $this->SFTPoutput($problem);
+        */
     }
 
 }

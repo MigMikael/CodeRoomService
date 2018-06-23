@@ -182,13 +182,14 @@ class SubmissionController extends Controller
                 // this submit in problem that not have driver
                 $data = self::checkInputVersion($problem, $hasDriver);
                 if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
-                    self::sendNewInput($problem);
-                    #self::SFTPinput($problem);
+                    #self::sendNewInput($problem);
+                    self::SFTPinput($problem);
                 }
 
                 $data = self::checkOutputVersion($problem, $hasDriver);
                 if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
                     self::sendNewOutput($problem);
+                    self::SFTPoutput($problem);
                 }
 
                 // send Student Code to Evaluator
