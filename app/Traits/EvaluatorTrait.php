@@ -108,6 +108,25 @@ trait EvaluatorTrait
         #return $result;
     }
 
+    public function SFTPinput($problem)
+    {
+        $subjectName = self::getSubjectName($problem);
+        $dest_path = '/home/coderoomcore/evaluate/input/'. $subjectName . '/' . $problem->name . '/';
+
+        foreach ($problem->problemFiles as $problemFile) {
+            foreach ($problemFile->inputs as $input) {
+                # send .in file
+                SSH::into('evaluator')->putString($dest_path . $input->filename, $input->content);
+
+                # send .ver file
+                $filename = explode('.', $input->filename);
+                SSH::into('evaluator')->putString($dest_path . $filename[0] . '.version', $input->version);
+
+                Log::info('Finish Send ' . $dest_path . $input->filename);
+            }
+        }
+    }
+
     public function sendNewInput2($problem)
     {
         $evaluator_ip = $this->evaluator_IP;
@@ -185,6 +204,25 @@ trait EvaluatorTrait
 
         # $result = $res->getBody();
         # return $result;
+    }
+
+    public function SFTPoutput($problem)
+    {
+        $subjectName = self::getSubjectName($problem);
+        $dest_path = '/home/coderoomcore/evaluate/out/'. $subjectName . '/' . $problem->name . '/';
+
+        foreach ($problem->problemFiles as $problemFile) {
+            foreach ($problemFile->outputs as $output) {
+                # send .sol file
+                SSH::into('evaluator')->putString($dest_path . $output->filename, $output->content);
+
+                # send .ver file
+                $filename = explode('.', $output->filename);
+                SSH::into('evaluator')->putString($dest_path . $filename[0] . '.version', $output->version);
+
+                Log::info('Finish Send ' . $dest_path . $output->filename);
+            }
+        }
     }
 
     public function sendNewOutput2($problem)

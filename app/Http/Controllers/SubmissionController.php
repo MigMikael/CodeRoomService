@@ -183,6 +183,7 @@ class SubmissionController extends Controller
                 $data = self::checkInputVersion($problem, $hasDriver);
                 if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
                     self::sendNewInput($problem);
+                    #self::SFTPinput($problem);
                 }
 
                 $data = self::checkOutputVersion($problem, $hasDriver);

@@ -21,10 +21,12 @@ use Log;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Helper\TokenGenerate;
 use SSH;
+use App\Traits\EvaluatorTrait;
 
 class TestController extends Controller
 {
     use FileTrait;
+    use EvaluatorTrait;
 
     public function start(Request $request, $value)
     {
@@ -517,6 +519,7 @@ class TestController extends Controller
 
     public function testSFTP()
     {
+        /*
         Log::info('start send string');
         #SSH::into('evaluator')->put(public_path('test.txt'), '/test.txt');
 
@@ -526,6 +529,11 @@ class TestController extends Controller
 
         SSH::into('evaluator')->putString('large.txt', $str);
         Log::info('finish send string');
+        */
+
+        $problem = Problem::findOrFail(34);
+        $this->SFTPinput($problem);
+        $this->SFTPoutput($problem);
     }
 
 }
