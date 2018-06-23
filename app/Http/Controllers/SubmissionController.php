@@ -188,7 +188,7 @@ class SubmissionController extends Controller
 
                 $data = self::checkOutputVersion($problem, $hasDriver);
                 if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
-                    self::sendNewOutput($problem);
+                    #self::sendNewOutput($problem);
                     self::SFTPoutput($problem);
                 }
 
