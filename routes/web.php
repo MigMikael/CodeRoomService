@@ -303,3 +303,4 @@ Route::get('send_test_email', function(){
 //Route::get('test/strpos', 'TestController@teststrpos');
 Route::get('test_ftp', 'TestController@testFTP');
 Route::get('test_ftp2', 'TestController@testFTP2');
+Route::get('test_sftp', 'TestController@testSFTP');

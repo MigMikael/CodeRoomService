@@ -505,13 +505,20 @@ class TestController extends Controller
             #$contents = file_get_contents($file);
             #file_put_contents("ssh2.sftp://{$sftp}/".public_path('test.txt'), $contents);
 
-            $resFile = fopen("ssh2.sftp://".intval($sftp)."/test.txt", 'w');
+            $resFile = fopen("ssh2.sftp://".(int)$sftp."/test.txt", 'w');
             fwrite($resFile, 'Test Writing from remote');
             fclose($resFile);
 
         } else {
             echo "Unable to authenticate with server"."n";
         }
+    }
+
+    public function testSFTP()
+    {
+        Log::info('start send file');
+        SSH::into('evaluator')->put(public_path('test.txt'), '/');
+        Log::info('finish send file');
     }
 
 }
