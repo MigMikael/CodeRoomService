@@ -519,14 +519,18 @@ class TestController extends Controller
 
     public function testSFTP()
     {
+        $time_start = microtime(true);
         Log::info('start send string');
 
         $myfile = fopen(public_path('large.txt'), "r") or die("Unable to open file!");
         $str = fread($myfile, filesize(public_path('large.txt')));
         fclose($myfile);
-
         SSH::into('evaluator')->putString('large.txt', $str);
         Log::info('finish send string');
+
+        $time_end = microtime(true);
+        $execution_time = $time_end - $time_start;
+        Log::info('Execution Time : '.$execution_time);
 
         /*
         $problem = Problem::findOrFail(34);
