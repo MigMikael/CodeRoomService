@@ -128,6 +128,27 @@ trait EvaluatorTrait
         }
     }
 
+    public function signalFinishSendIn($problem)
+    {
+        $evaluator_ip = $this->evaluator_IP;
+        $subjectName = self::getSubjectName($problem);
+
+        $inputs = [];
+        $inputs['subject'] = $subjectName;
+        $inputs['problem'] = $problem->name;
+
+        $client = new Client();
+        $url = $evaluator_ip.'/teacher/send_in_2';
+        $res = $client->request('POST', $url, [
+            'json' => [
+                'subject' => $inputs['subject'],
+                'problem' => $inputs['problem']
+            ]
+        ]);
+
+        Log::info('Signal Send in : ' . $res->getBody());
+    }
+
     public function sendNewInput2($problem)
     {
         $evaluator_ip = $this->evaluator_IP;
@@ -224,6 +245,27 @@ trait EvaluatorTrait
                 Log::info('Finish Send ' . $dest_path . $output->filename);
             }
         }
+    }
+
+    public function signalFinishSendOut($problem)
+    {
+        $evaluator_ip = $this->evaluator_IP;
+        $subjectName = self::getSubjectName($problem);
+
+        $inputs = [];
+        $inputs['subject'] = $subjectName;
+        $inputs['problem'] = $problem->name;
+
+        $client = new Client();
+        $url = $evaluator_ip.'/teacher/send_out_2';
+        $res = $client->request('POST', $url, [
+            'json' => [
+                'subject' => $inputs['subject'],
+                'problem' => $inputs['problem']
+            ]
+        ]);
+
+        Log::info('Signal Send out : ' . $res->getBody());
     }
 
     public function sendNewOutput2($problem)
