@@ -138,7 +138,7 @@ trait EvaluatorTrait
         $inputs['problem'] = $problem->name;
 
         $client = new Client();
-        $url = $evaluator_ip.'/teacher/send_in_2';
+        $url = $evaluator_ip.'/api/teacher/send_in_2';
         $res = $client->request('POST', $url, [
             'json' => [
                 'subject' => $inputs['subject'],
@@ -257,7 +257,7 @@ trait EvaluatorTrait
         $inputs['problem'] = $problem->name;
 
         $client = new Client();
-        $url = $evaluator_ip.'/teacher/send_out_2';
+        $url = $evaluator_ip.'/api/teacher/send_out_2';
         $res = $client->request('POST', $url, [
             'json' => [
                 'subject' => $inputs['subject'],
