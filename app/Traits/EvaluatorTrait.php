@@ -113,6 +113,9 @@ trait EvaluatorTrait
     {
         $subjectName = self::getSubjectName($problem);
         $dest_path = '/home/mig/input/'. $subjectName . '/' . $problem->name . '/';
+        SSH::into('evaluator')->run([
+            'mkdir -p '.$subjectName.'/' . $problem->name
+        ]);
 
         foreach ($problem->problemFiles as $problemFile) {
             foreach ($problemFile->inputs as $input) {
@@ -232,6 +235,10 @@ trait EvaluatorTrait
     {
         $subjectName = self::getSubjectName($problem);
         $dest_path = '/home/mig/out/'. $subjectName . '/' . $problem->name . '/';
+
+        SSH::into('evaluator')->run([
+            'mkdir -p '.$subjectName.'/' . $problem->name
+        ]);
 
         foreach ($problem->problemFiles as $problemFile) {
             foreach ($problemFile->outputs as $output) {
