@@ -114,6 +114,7 @@ trait EvaluatorTrait
         $subjectName = self::getSubjectName($problem);
         $dest_path = '/home/mig/input/'. $subjectName . '/' . $problem->name . '/';
         SSH::into('evaluator')->run([
+            'cd /home/mig/input',
             'mkdir -p '.$subjectName.'/' . $problem->name
         ]);
 
@@ -237,6 +238,7 @@ trait EvaluatorTrait
         $dest_path = '/home/mig/out/'. $subjectName . '/' . $problem->name . '/';
 
         SSH::into('evaluator')->run([
+            'cd /home/mig/out',
             'mkdir -p '.$subjectName.'/' . $problem->name
         ]);
 
