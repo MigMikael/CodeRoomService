@@ -184,14 +184,14 @@ class SubmissionController extends Controller
                 if ($data['in'] == null || $data['in'][0]['version'] != $currentVer) {
                     #self::sendNewInput($problem);
                     self::SFTPinput($problem);
-                    self::signalFinishSendIn($problem);
+                    #self::signalFinishSendIn($problem);
                 }
 
                 $data = self::checkOutputVersion($problem, $hasDriver);
                 if ($data['sol'] == null || $data['sol'][0]['version'] != $currentVer) {
                     #self::sendNewOutput($problem);
                     self::SFTPoutput($problem);
-                    self::signalFinishSendOut($problem);
+                    #self::signalFinishSendOut($problem);
                 }
 
                 // send Student Code to Evaluator
