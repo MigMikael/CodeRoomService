@@ -112,7 +112,7 @@ trait EvaluatorTrait
     public function SFTPinput($problem)
     {
         $subjectName = self::getSubjectName($problem);
-        $dest_path = '/home/coderoomcore/evaluate/input/'. $subjectName . '/' . $problem->name . '/';
+        $dest_path = '/home/mig/input/'. $subjectName . '/' . $problem->name . '/';
 
         foreach ($problem->problemFiles as $problemFile) {
             foreach ($problemFile->inputs as $input) {
@@ -231,7 +231,7 @@ trait EvaluatorTrait
     public function SFTPoutput($problem)
     {
         $subjectName = self::getSubjectName($problem);
-        $dest_path = '/home/coderoomcore/evaluate/out/'. $subjectName . '/' . $problem->name . '/';
+        $dest_path = '/home/mig/out/'. $subjectName . '/' . $problem->name . '/';
 
         foreach ($problem->problemFiles as $problemFile) {
             foreach ($problemFile->outputs as $output) {
