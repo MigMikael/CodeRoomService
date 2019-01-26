@@ -72,7 +72,7 @@ class TeacherController extends Controller
             return response()->json(['msg' => 'teacher image not found']);
         }
 
-        $temp_password = (new TokenGenerate())->generate(5);
+        $temp_password = $email;
 
         $teacher = [
             'name' => $name,
@@ -101,8 +101,8 @@ class TeacherController extends Controller
         Student::firstOrCreate($student);
 
         // Send mail to inform teacher account
-        Mail::to('chanachai_mig@hotmail.com')
-            ->send(new InformCreateAccount($teacher, $temp_password));
+        #Mail::to('chanachai_mig@hotmail.com')
+            #->send(new InformCreateAccount($teacher, $temp_password));
 
         return response()->json(['msg' => 'create teacher success']);
     }
