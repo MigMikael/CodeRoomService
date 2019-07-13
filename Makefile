@@ -6,6 +6,7 @@ hello:
 install:
 	cd laradock; docker-compose up -d apache2 mysql workspace
 	cd laradock; cp env-example .env
+	brew install php@7.1
 	curl -sS https://getcomposer.org/installer |php
 	sudo mv composer.phar /usr/local/bin/composer
 	composer install
