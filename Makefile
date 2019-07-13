@@ -4,8 +4,10 @@ hello:
 	@echo "Hello"
 
 install:
-	wget https://raw.githubusercontent.com/composer/getcomposer.org/76a7060ccb93902cd7576b67264ad91c8a2700e2/web/installer -O - -q | php --
-	mv composer.phar composer
+	cd laradock; docker-compose up -d apache2 mysql workspace
+	cd laradock; cp env-example .env
+	curl -sS https://getcomposer.org/installer |php
+	sudo mv composer.phar /usr/local/bin/composer
 	composer install
 	docker exec -it laradock_mysql_1 mysql -u"root" -p"root" -e 'create database if not exists coderoom_db'
 	docker exec -it laradock_mysql_1 mysql -u"root" -p"root" -e 'alter user "root"@"localhost" identified with mysql_native_password by "root"'
